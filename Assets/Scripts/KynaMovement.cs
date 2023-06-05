@@ -20,6 +20,8 @@ public class KynaMovement : MonoBehaviour
     {
         setNewPosition();
 
+        //New
+
         transform.position = Nposition;
     }
 
