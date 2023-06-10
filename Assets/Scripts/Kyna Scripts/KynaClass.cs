@@ -14,10 +14,15 @@ public class KynaClass : MonoBehaviour
     private GhostObjectClass offHandinstance;
     private GhostObjectClass onHandinstance;
 
+    //Movement variables.
     public float positionOffset;
-
     public float maxSpeed;
     private float speed;
+
+    //Rotation variables.
+    public float rotateSpeed = 5f;
+
+    private Vector3 targetPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -33,12 +38,10 @@ public class KynaClass : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Set the position to mouse.
-        Vector3 NPos = setNewMousePosition();
         //Look at the position.
-        transform.LookAt(NPos);
+        lookAt(targetPosition);
         //Find out if the transform is near the NPosition.
-        bool positionFound = isNearPosition(NPos);
+        bool positionFound = isNearPosition(targetPosition);
 
         //Check if character is at position. If not, then move there.
         if (!positionFound)
@@ -59,26 +62,14 @@ public class KynaClass : MonoBehaviour
         }
 
         //Set the position based on idle.
-        transform.position = bareHandinstance.Move(speed, NPos, transform.position);
+        transform.position = bareHandinstance.Move(speed, targetPosition, transform.position);
         //Set the bareHands idle to the mouse Position.
-        bareHandinstance.gameObject.transform.position = NPos;
+        bareHandinstance.gameObject.transform.position = targetPosition;
     }
 
-
-    private Vector3 setNewMousePosition()
+    public void setTargetPos(Vector3 pos)
     {
-        Vector3 dir = Vector3.zero;
-        //Now get the position based on camera.
-        Ray ray = Maincam_.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            //Now change Kyna's position to where the ray had hit. Set y to 0.
-            Vector3 pos = hit.point;
-            pos.y = 0;
-            dir = pos;
-        }
-
-        return dir;
+        targetPosition = pos;
     }
 
     private bool isNearPosition(Vector3 targetPos)
@@ -92,5 +83,20 @@ public class KynaClass : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private void lookAt(Vector3 pos)
+    {
+        // Determine which direction to rotate towards
+        Vector3 targetDir = pos - transform.position;
+
+        // The step size is equal to speed times frame time.
+        float step = rotateSpeed * Time.deltaTime;
+
+        // Rotate the forward vector towards the target direction by one step
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
+
+        // Calculate a rotation a step closer to the target and applies rotation to this object
+        transform.rotation = Quaternion.LookRotation(newDirection);
     }
 }
