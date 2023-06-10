@@ -9,14 +9,10 @@ public class PlayerControl : MonoBehaviour
     private GameObject player_;
     private OptionsScript options;
 
-
-    private GameObject offhand;
-    private GameObject onHand;
-
     private Animator kynaAnim_;
 
     //Controls
-    private KeyCode attack;
+    private KeyCode onHand;
 
 
     // Start is called before the first frame update
@@ -25,16 +21,16 @@ public class PlayerControl : MonoBehaviour
         kyna_ = GameObject.FindGameObjectWithTag("Kyna");
         kynaAnim_ = kyna_.GetComponentInChildren<Animator>();
         player_ = GameObject.FindGameObjectWithTag("Player");
-
-        attack = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().attack;
+        onHand = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().onHand;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(attack))
+        //When the onHand button is pressed, do the following.
+        if (Input.GetKeyDown(onHand))
         {
-            kynaAnim_.SetTrigger("Attack1");
+
         }
     }
 }

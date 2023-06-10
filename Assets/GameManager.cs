@@ -15,10 +15,7 @@ public class GameManager : MonoBehaviour
     //Level setting stuff.
     private float levelNum = 0;
     private float difficulty = 25f;
-
-    public bool nextLevel = false;
-
-    private int count = 0;
+    private bool nextLevel = false;
 
     //An enum for zone types.
     private enum zoneType

@@ -8,6 +8,7 @@ TagManager:
   - Fireball
   - GameManager
   - Kyna
+  - GhostInteractable
   layers:
   - Default
   - TransparentFX
