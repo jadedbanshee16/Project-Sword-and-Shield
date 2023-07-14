@@ -6,9 +6,9 @@ using Cinemachine;
 public class PlayerControl : MonoBehaviour
 {
     //Set all needed objects for scripts.
-    private KynaClass kyna_;
-    private GameObject player_;
-    private Camera cam_;
+    public KynaClass kyna_;
+    public GameObject player_;
+    public Camera cam_;
     private OptionsScript options;
     private Animator kynaAnim_;
 
@@ -20,7 +20,7 @@ public class PlayerControl : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         kyna_ = GameObject.FindGameObjectWithTag("Kyna").GetComponent<KynaClass>();
         kynaAnim_ = kyna_.GetComponentInChildren<Animator>();
@@ -38,8 +38,11 @@ public class PlayerControl : MonoBehaviour
             kyna_.setTargetPos(new Vector3(newPos.x, 0, newPos.z));
         } else
         {
-            //Every update, reset mouse position to move Kyna ghost.
-            kyna_.setTargetPos(MousePosition());
+            if(cam_ != null)
+            {
+                //Every update, reset mouse position to move Kyna ghost.
+                kyna_.setTargetPos(MousePosition());
+            }
         }
 
         //When the onHand button is pressed, do the following.

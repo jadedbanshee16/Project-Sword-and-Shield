@@ -58,7 +58,7 @@ public class LevelGeneration : MonoBehaviour
 
     [Header("Player")]
     public GameObject Player;
-    private GameObject playerInstance;
+    public GameObject playerInstance;
 
     [Header("Level objects")]
     public GameObject lvlInteractableZone;
@@ -107,7 +107,7 @@ public class LevelGeneration : MonoBehaviour
      */
     public void GenerateMap(float difficulty)
     {
-        Debug.Log("-----------------------");
+        //Debug.Log("-----------------------");
         //Set the size and complexity of game based on difficulty.
         walkSize = (int)(maxWalkSize * difficulty);
         //islandProbability = (difficulty * 100);
@@ -246,7 +246,18 @@ public class LevelGeneration : MonoBehaviour
         lvlExitInstance = createZones(lvlExit, (int)zoneType.exit);
 
         exitStairsInstance = createObject(exitStairs, lvlExitInstance.transform);
-        playerInstance = createObject(Player, lvlSpawnInstance.transform);
+
+        //Ensure that there isn't a player already loaded. If they are loaded, then set position to lvlSpawnInstance.
+        if(GameObject.FindGameObjectWithTag("Player") == null)
+        {
+            playerInstance = Instantiate(Player, lvlSpawnInstance.transform.position, Quaternion.identity);
+        } else
+        {
+            playerInstance = GameObject.FindGameObjectWithTag("Player").transform.parent.gameObject;
+            playerInstance.transform.GetChild(1).transform.position = lvlSpawnInstance.transform.position;
+            //Debug.Log("player: " + playerInstance.transform.position + " | lvlSpawn: " + lvlSpawnInstance.transform.position);
+        }
+
 
         createZones(lvlInteractableZone, (int)zoneType.interactable);
         createBridges(lvlBridges[0], 0, 0.00f);
@@ -1007,7 +1018,7 @@ public class LevelGeneration : MonoBehaviour
             }
         }
 
-    }
+    } 
 
     /*
  * A function to take a number, an amount and an array to find out if the amount of the duplicate number in the array is grater than the amount.

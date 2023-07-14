@@ -9,10 +9,8 @@ using UnityEngine;
 public class KynaClass : MonoBehaviour
 {
     private Camera Maincam_;
-    public GameObject bareHand;
-    private GhostObjectClass bareHandinstance;
-    private GhostObjectClass offHandinstance;
-    private GhostObjectClass onHandinstance;
+    public GameObject cursor_;
+    public GameObject cursorInstance;
 
     //Movement variables.
     public float positionOffset;
@@ -31,7 +29,7 @@ public class KynaClass : MonoBehaviour
         speed = 0;
 
         //Start the inventory and set the first as the bareHand obj.
-        bareHandinstance = Instantiate(bareHand, transform.position, Quaternion.identity).GetComponent<GhostObjectClass>();
+        cursorInstance = Instantiate(cursor_, transform.position, Quaternion.identity, transform);
 
     }
 
@@ -62,9 +60,9 @@ public class KynaClass : MonoBehaviour
         }
 
         //Set the position based on idle.
-        transform.position = bareHandinstance.Move(speed, targetPosition, transform.position);
+        transform.position = Move(speed, targetPosition, transform.position);
         //Set the bareHands idle to the mouse Position.
-        bareHandinstance.gameObject.transform.position = targetPosition;
+        cursorInstance.transform.position = targetPosition;
     }
 
     public void setTargetPos(Vector3 pos)
@@ -98,5 +96,17 @@ public class KynaClass : MonoBehaviour
 
         // Calculate a rotation a step closer to the target and applies rotation to this object
         transform.rotation = Quaternion.LookRotation(newDirection);
+    }
+
+    /*
+ * A class to move the user in a certain way.
+ * This can be a teleport or moving slowly over time, depending on how the sub / main class deals with this.
+ */
+    public Vector3 Move(float speed, Vector3 TargetPos, Vector3 currentPos)
+    {
+        //Base Move should move the playter via speed to the new position.
+        Vector3 NDir = Vector3.Normalize(TargetPos - currentPos);
+        currentPos += NDir * (speed * Time.deltaTime);
+        return currentPos;
     }
 }
