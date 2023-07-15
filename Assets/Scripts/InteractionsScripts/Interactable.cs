@@ -10,8 +10,7 @@ public class Interactable : MonoBehaviour
         playerInteractable
     }
 
-    public string name;
-    public string id_name;
+    public string ObjName;
 
     public Transform interactionTransform;
 
@@ -22,9 +21,17 @@ public class Interactable : MonoBehaviour
     Transform player_;
     public interactType interactableType;
 
+    //Grab the inventory.
+    public Inventory inv;
+
     public virtual void Interact()
     {
         Debug.Log("INTERACT");
+    }
+
+    private void Start()
+    {
+        inv = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Inventory>();
     }
 
     private void Update()

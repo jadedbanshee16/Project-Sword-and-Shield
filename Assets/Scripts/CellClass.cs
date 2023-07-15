@@ -5,44 +5,88 @@ using UnityEngine;
 public class CellClass : MonoBehaviour
 {
     //Fields
-    public bool left = false;
-    public bool right = false;
-    public bool up = false;
-    public bool down = false;
+    public GameObject[] zones;
+    public GameObject[] walls;
 
-    //Sets
-    public void setLeft(bool b)
+    private bool allZonesUsed;
+
+    //Make a single zone null, meaning it is no longer available to be used.
+    public void removeZone(int index)
     {
-        left = b;
-    }
-    public void setRight(bool b)
-    {
-        right = b;
-    }
-    public void setUp(bool b)
-    {
-        up = b;
-    }
-    public void setDown(bool b)
-    {
-        down = b;
+        zones[index] = null;
+
+        //Check to see if all zones are unavailable.
+        allZonesUsed = isAllUsed();
     }
 
-    //Gets
-    public bool getLeft()
+    //Remove a single wall.
+    public void removeWalls(int index)
     {
-        return left;
+        walls[index] = null;
     }
-    public bool getRight()
+
+    //Remove all walls between a min and max number.
+    //CONSTRAINTS IS 0 - 4.
+    public void removeWalls(int min, int max)
     {
-        return right;
+        for(int i = min - 1; i < max; i++)
+        {
+            walls[i] = null;
+        }
     }
-    public bool getUp()
+
+    //Add wall to the walls list and instantiate the wall.
+    public void addWall(GameObject obj, int index, Vector3 pos)
     {
-        return up;
+        walls[index - 1] = Instantiate(obj, pos, Quaternion.identity, transform);
     }
-    public bool getDown()
+
+    //Return the transform on one of the zones by index.
+    public Transform getZone(int index)
     {
-        return down;
+        Transform trans = null;
+        if(zones[index] != null)
+        {
+            trans = zones[index].transform;
+        }
+
+        return trans;
+    }
+
+    //Return the boolean displaying if all zones are unavailable.
+    public bool getAllZonesUsed()
+    {
+        return allZonesUsed;
+    }
+
+    //Find out if all zones are being used.
+    //Outputs a boolean flag to show it's all being used.
+    public bool isAllUsed()
+    {
+        bool used = true;
+        for (int i = 0; i < zones.Length; i++)
+        {
+            if (zones[i] != null)
+            {
+                used = false;
+            }
+        }
+
+        return used;
+    }
+
+    public int findAvailable()
+    {
+        int used = -1;
+        for (int i = 0; i < zones.Length; i++)
+        {
+            if (zones[i] != null)
+            {
+                used = i;
+                return used;
+            }
+        }
+
+        return used;
     }
 }

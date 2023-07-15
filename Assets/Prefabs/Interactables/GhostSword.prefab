@@ -261,13 +261,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1f608d25b789fb45b8ee715b0f0d068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Sword
-  id_name: GhostSword_Level_1.1
+  ObjName: 
   interactionTransform: {fileID: 8469722857708692344}
   radius: 0.39
   interactableType: 0
+  inv: {fileID: 0}
   lvl: 1
-  type: 0
+  obj: {fileID: 4699961442769155595, guid: 2cb471004e4e80443942c238213d1f62, type: 3}
 --- !u!65 &8469722859524391634
 BoxCollider:
   m_ObjectHideFlags: 0

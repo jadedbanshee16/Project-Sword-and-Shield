@@ -63,6 +63,7 @@ public class LevelGeneration : MonoBehaviour
     [Header("Level objects")]
     public GameObject lvlInteractableZone;
     public GameObject[] lvlBridges;
+    public GameObject[] lvlAdditions;
     public GameObject lvlChests;
 
     private GameObject[,] cells;
@@ -222,7 +223,7 @@ public class LevelGeneration : MonoBehaviour
         c = islandCount();
 
         //Reset edges
-        setNoEdges();
+        //setNoEdges();
 
         //Iterate through the amount of islands.
         for (int z = 1; z <= c; z++)
@@ -233,13 +234,10 @@ public class LevelGeneration : MonoBehaviour
                 //Only go through the current island.
                 if(islands[b].x == z)
                 {
-                    setNeighbours(islands[b]);
+                    setWalls(islands[b]);
                 }
             }
         }
-
-        //Create the walls.
-        CreateWall();
 
         //Now, create the the exit and entrance instances.
         lvlSpawnInstance = createZones(lvlSpawn, (int)zoneType.spawn);
@@ -259,9 +257,9 @@ public class LevelGeneration : MonoBehaviour
         }
 
 
-        createZones(lvlInteractableZone, (int)zoneType.interactable);
+        //createZones(lvlInteractableZone, (int)zoneType.interactable);
         createBridges(lvlBridges[0], 0, 0.00f);
-        createInteractable(lvlChests, 20f, 5);
+        //createInteractables(lvlAdditions, 110f, 20);
     }
 
     /*
@@ -276,45 +274,63 @@ public class LevelGeneration : MonoBehaviour
         newCell.transform.localPosition = new Vector3(x * cellSizeX, 0f, z * cellSizeZ);
     }
 
-    /*
-     * Create walls around the edges of a cell.
-     */
-    private void CreateWall()
+    private void setWalls(Vector3 cell)
     {
-        //Go through all grid points and generate a wall at that point.
-        //Iterate through all the grid points and find the open edges of each.
-        for (int i = 0; i < sizeX; i++)
+        //Neighbour booleans.
+        bool isUp = false;
+        bool isRight = false;
+        bool isDown = false;
+        bool isLeft = false;
+
+        //First, find a matching square.
+        for (int x = 0; x < islands.Count; x++)
         {
-            for (int u = 0; u < sizeZ; u++)
+            if (cell.x == islands[x].x)
             {
-                //If there is a cell in this zone, then check edges.
-                if (cells[i, u] != null)
+                //Find up (1)
+                if (cell.z - 1 == islands[x].z && cell.y == islands[x].y)
                 {
-                    //Get the object of that cell.
-                    CellClass c = cells[i, u].GetComponent<CellClass>();
+                    isUp = true;
+                }
 
-                    //Place a new object in the world at position.
-                    if (!c.getLeft())
-                    {
-                        Instantiate(hWall, new Vector3(c.gameObject.transform.position.x - cellSizeX / 2f, 0, c.gameObject.transform.position.z), Quaternion.identity, c.gameObject.transform);
-                    }
+                //Find right. (2)
+                if (cell.y + 1 == islands[x].y && cell.z == islands[x].z)
+                {
+                    isRight = true;
+                }
 
-                    if (!c.getRight())
-                    {
-                        Instantiate(hWall, new Vector3(c.gameObject.transform.position.x + cellSizeX / 2f, 0, c.gameObject.transform.position.z), Quaternion.identity, c.gameObject.transform);
-                    }
+                //Find down (3)
+                if (cell.z + 1 == islands[x].z && cell.y == islands[x].y)
+                {
+                    isDown = true;
+                }
 
-                    if (!c.getUp())
-                    {
-                        Instantiate(vWall, new Vector3(c.gameObject.transform.position.x, 0, c.gameObject.transform.position.z + cellSizeZ / 2), Quaternion.identity, c.gameObject.transform);
-                    }
-
-                    if (!c.getDown())
-                    {
-                        Instantiate(vWall, new Vector3(c.gameObject.transform.position.x, 0, c.gameObject.transform.position.z - cellSizeZ / 2), Quaternion.identity, c.gameObject.transform);
-                    }
+                //Find left. (4)
+                if (cell.y - 1 == islands[x].y && cell.z == islands[x].z)
+                {
+                    isLeft = true;
                 }
             }
+        }
+
+        CellClass c = cells[(int)cell.y, (int)cell.z].GetComponent<CellClass>();
+
+        //Add walls.
+        if (!isUp)
+        {
+            c.addWall(vWall, 1, new Vector3(c.gameObject.transform.position.x, 0, c.gameObject.transform.position.z - cellSizeZ / 2f));
+        }
+        if (!isRight)
+        {
+            c.addWall(hWall, 2, new Vector3(c.gameObject.transform.position.x + cellSizeX / 2f, 0, c.gameObject.transform.position.z));
+        }
+        if (!isDown)
+        {
+            c.addWall(vWall, 3, new Vector3(c.gameObject.transform.position.x, 0, c.gameObject.transform.position.z + cellSizeZ / 2f));
+        }
+        if (!isLeft)
+        {
+            c.addWall(hWall, 4, new Vector3(c.gameObject.transform.position.x - cellSizeX / 2f, 0, c.gameObject.transform.position.z));
         }
     }
 
@@ -361,7 +377,7 @@ public class LevelGeneration : MonoBehaviour
                 {
                     int rand = UnityEngine.Random.Range(1, islandDivision);
                     //If you go through all the counts and there is more in the count than island cells, then try again.
-                    if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.interactableCount), pairs))
+                    if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.single), pairs))
                     {
                         pairs[pair] = new Vector2(i, rand);
                     }
@@ -369,7 +385,7 @@ public class LevelGeneration : MonoBehaviour
                     {
                         for (int y = 0; y < islandCount() - 1; y++)
                         {
-                            if (!countDuplicates(y + 1, countIslandCells(y + 1, islandCellCountType.interactableCount), pairs))
+                            if (!countDuplicates(y + 1, countIslandCells(y + 1, islandCellCountType.single), pairs))
                             {
                                 pairs[pair] = new Vector2(i, y + 1);
                             }
@@ -377,183 +393,6 @@ public class LevelGeneration : MonoBehaviour
                     }
                     pair++;
                 }
-
-
-
-                //islandCount() - 1) * 2
-                /*List<int> islandNumbers = new List<int>();
-
-                //Populate islandNumbers. Ensure each number has at least 1 in each, then random for the rest.
-                for(int i = 0; i < (islandCount() - 1) * 2; i++)
-                {
-                    if(i < islandCount())
-                    {
-                        islandNumbers.Add(i + 1);
-                    } else
-                    {
-                        int rand = UnityEngine.Random.Range(1, islandCount() + 1);
-
-                        //If you go through all the counts and there is more in the count than island cells, then try again.
-                        if(!countDuplicates(rand, countIslandCells(rand, islandCellCountType.interactableCount), islandNumbers)) {
-                            islandNumbers.Add(rand);
-                        } else
-                        {
-                            for(int y = 0; y < islandCount() - 1; y++)
-                            {
-                                if(!countDuplicates(y + 1, countIslandCells(y + 1, islandCellCountType.interactableCount), islandNumbers))
-                                {
-                                    islandNumbers.Add(y + 1);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for(int i = 0; i < islandNumbers.Count; i++)
-                {
-                    Debug.Log(islandNumbers[i] + " | " + countIslandCells(islandNumbers[i], islandCellCountType.interactableCount));
-                }*/
-
-                //Find the most duplicates and hold it largestAmount.
-                /*int pair = 0;
-                int first = 0;
-                int last = islandNumbers.Count - 1;
-
-                //Go through and link all the furthest points if capable of being linked.
-                while(pair < pairs.Length)
-                {
-                    //If first and last are NOT the same, then make a link.
-                    if(islandNumbers[first] != islandNumbers[last])
-                    {
-                        pairs[pair] = new Vector2(islandNumbers[first], islandNumbers[last]);
-                        //Remove first and last.
-                        islandNumbers.RemoveAt(first);
-                        islandNumbers.RemoveAt(last - 1);
-                        //reset last as things changed.
-                        last = islandNumbers.Count - 1;
-                        //Pair worked, so iterate.
-                        pair++;
-                    } else
-                    {
-                        last--;
-                    }
-                }*/
-
-                //Print the pairs.
-                /*for (int i = 0; i < pairs.Length; i++)
-                {
-                    if(pairs[i] != null)
-                    {
-                        Debug.Log("Pair " + i + ": " + pairs[i].x + " | " + pairs[i].y);
-                    }
-                }*/
-
-                //First, count the duplicates of all the islands.
-                /*int[] dupList = new int[islandCount()];
-
-                int largestAmount = 0;
-
-                for (int i = 0; i < dupList.Length; i++)
-                {
-                    dupList[i] = countDuplicates((i + 1), islandNumbers);
-
-                    if(dupList[i] > largestAmount)
-                    {
-                        largestAmount = dupList[i];
-                    }
-                }*/
-
-                //Start with the first, then take it to the one with the largest amount.
-                /*while(islandNumbers.Count == 0)
-                {
-                    //Pick the first number. and placeholder 2.
-                    int val1 = 0;
-                    int val2 = val1;
-
-                    int lAmount = 0;
-                    int largestDup = 0;
-                    //Find the largest duplicate.
-                    for(int b = 0; b < dupList.Length; b++)
-                    {
-                        if(dupList[b] > lAmount && islandNumbers[val1] != b + 1)
-                        {
-                            largestDup = b + 1;
-                            lAmount = dupList[b];
-                        }
-                    }
-
-                    //Now, start iterating i until you run out of the amount, pairing as you go.
-                    for(int i = 0; i < islandNumbers.Count; i++)
-                    {
-                        if(islandNumbers[i] == largestDup)
-                        {
-                            //Create a pair.
-                        }
-                    }
-
-                }*/
-                //Iterate through as many pairs for part 1.
-                /*for (int b = 0; b < islandCount() - 1; b++)
-                {
-                    //This value will be the second number in the set.
-                    int val1 = b + 1, val2 = val1;
-
-                    int errorCount = 5;
-
-                    //Ensure at least one island goes to the last island, as that doesn't get a chance to work.
-                    if(val1 == 1)
-                    {
-                        val2 = islandCount();
-                    }
-
-                    int count = 0;
-
-                    //Keep choosing a random number until a valid one is created.
-                    while (val1 > 1 && (errorCount > 0 && val1 == val2))
-                    {
-                        //Debug.Log("Flag 1");
-                        val2 = UnityEngine.Random.Range(1, islandCount() + 1);
-
-                        //Debug.Log("Flag 2");
-                        for (int x = 0; x < pairs.Length; x++)
-                        {
-                            //Ensure this isn't already used AND there is only 2 tiles.
-                            if(pairs[x] != null && (pairs[x].x == val2 || pairs[x].y == val2))
-                            {
-                                count++;
-                            }
-
-                        }
-
-                        //Debug.Log("Flag 3");
-                        //Find out if this binding already exists.
-                        for (int x = 0; x < pairs.Length; x++)
-                        {
-                            //Ensure this isn't already used AND there is only 2 tiles.
-                            if (pairs[x] != null && pairs[x].y == val1 && pairs[x].x == val2)
-                            {
-                                //Failed. Restart.
-                                val2 = val1;
-                            }
-                        }
-
-                        //Debug.Log("Flag 4");
-                        if (countIslandCells(val2, islandCellCountType.interactableCount) + 1 < count)
-                        {
-                            val2 = val1;
-                        }
-
-                        //Now iterate the error count.
-                        errorCount--;
-                    }
-
-                    //Debug.Log("Flag 5");
-                    pairs[b] = new Vector2(val1, val2);
-                    //Debug.Log("Pair " + b + ": " + pairs[b].x + " | " + pairs[b].y);
-                }*/
-
-
-
 
                 bool valid = false;
                 int counter = 0;
@@ -603,22 +442,7 @@ public class LevelGeneration : MonoBehaviour
                     Debug.Log(valid);
                 }
 
-                //Now, see how many duplicates of each their are. Match duplicates until at least one works off.
 
-                //Print the pairs.
-                /*for(int i = 0; i < pairs.Length; i++)
-                {
-                    if(pairs[i] != null)
-                    {
-                        Debug.Log("Pair " + i + ": " + pairs[i].x + " | " + pairs[i].y);
-                    }
-                }*/
-
-                /*for (int x = 0; x < islands.Count; x++)
-                {
-                    Debug.Log(islands[x].x + " | " + (int)islands[x].y + " | " + (int)islands[x].z);
-                }*/
-                //Debug.Log("+++++++++++");
                 //Decide how many teleporters are needed.
                 for (int i = 0; i < pairs.Length; i++)
                 {
@@ -629,7 +453,9 @@ public class LevelGeneration : MonoBehaviour
                     {
                         if(islands[x].x == (int)pairs[i].x)
                         {
-                            if(interactableCells[(int)islands[x].y, (int)islands[x].z] != null)
+                            //If the cell is not null AND has available slots, add to list.
+                            if(GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null && 
+                              !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
                             {
                                 firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
                             }
@@ -640,57 +466,60 @@ public class LevelGeneration : MonoBehaviour
                     {
                         if (islands[x].x == (int)pairs[i].y)
                         {
-                            if (interactableCells[(int)islands[x].y, (int)islands[x].z] != null)
+                            if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                              !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
                             {
                                 secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
                             }
                         }
                     }
 
-                    /*Debug.Log(firstArr.Count);
-                    //Print the island pieces.
-                    for(int b = 0; b < firstArr.Count; b++)
-                    {
-                        if(firstArr[b] != null)
-                        {
-                            Debug.Log(firstArr[b].x + " | " + firstArr[b].y);
-                        }
-                    }
-
-                    Debug.Log(secondArr.Count);
-                    //Print the island pieces.
-                    for (int b = 0; b < secondArr.Count; b++)
-                    {
-                        if (secondArr[b] != null)
-                        {
-                            Debug.Log(secondArr[b].x + " | " + secondArr[b].y);
-                        }
-                    }*/
+                    GameObject objt1;
+                    GameObject objt2;
 
                     int randNum = UnityEngine.Random.Range(0, firstArr.Count);
-                    int randNum2 = UnityEngine.Random.Range(0, secondArr.Count);
+                    int randZone = UnityEngine.Random.Range(0, 5);
+                    //Create  the first teleporter at a random point on the map.
+                    //Find out if the random zone is available.
+                    if (GetCell(firstArr[randNum]).GetComponent<CellClass>().getZone(randZone) == null)
+                    {
+                        //If not, then find an available zone.
+                        randZone = GetCell(firstArr[randNum]).GetComponent<CellClass>().findAvailable();
+                    }
 
-                    //Now create a teleporter within the island.
-                    GameObject objt1 = Instantiate(obj, interactableCells[(int)firstArr[randNum].x, (int)firstArr[randNum].y].transform);
-                    GameObject objt2 = Instantiate(obj, interactableCells[(int)secondArr[randNum2].x, (int)secondArr[randNum2].y].transform);
+                    objt1 = Instantiate(obj, GetCell(firstArr[randNum]).GetComponent<CellClass>().getZone(randZone).position,
+                        Quaternion.identity, GetCell(firstArr[randNum]).transform);
+                    GetCell(firstArr[randNum]).GetComponent<CellClass>().removeZone(randZone);
+
+
+                    randNum = UnityEngine.Random.Range(0, secondArr.Count);
+                    randZone = UnityEngine.Random.Range(0, 5);
+                    //Create a second teleporter at a random point on the map.
+                    //Find out if the random zone is available.
+                    if (GetCell(secondArr[randNum]).GetComponent<CellClass>().getZone(randZone) == null)
+                    {
+                        //If not, then find an available zone.
+                        randZone = GetCell(secondArr[randNum]).GetComponent<CellClass>().findAvailable();
+                    }
+
+                    objt2 = Instantiate(obj, GetCell(secondArr[randNum]).GetComponent<CellClass>().getZone(randZone).position,
+                        Quaternion.identity, GetCell(secondArr[randNum]).transform);
+                    GetCell(secondArr[randNum]).GetComponent<CellClass>().removeZone(randZone);
 
                     //Now, try and place a pair point on another island.
                     objt1.GetComponent<TeleporterScript>().setPartner(objt2, (int)pairs[i].y);
                     objt2.GetComponent<TeleporterScript>().setPartner(objt1, (int)pairs[i].x);
 
-                    //Keep the zones, but remove it from the interactable cell list so it can't be used later.
-                    interactableCells[(int)firstArr[randNum].x, (int)firstArr[randNum].y] = null;
-                    interactableCells[(int)secondArr[randNum2].x, (int)secondArr[randNum2].y] = null;
                 }
             }
 
         }
     }
 
-    /*
+    /* create Interactable [obsolete]
      * Create some interactables, such as chests.
-     */
-    private void createInteractable(GameObject obj, float rand, int amount)
+     *
+    private void createInteractables(GameObject[] objs, float rand, int amount)
     {
         for(int i = 0; i < sizeX; i++)
         {
@@ -698,18 +527,28 @@ public class LevelGeneration : MonoBehaviour
             {
                 if(interactableCells[i,u] != null)
                 {
-                    //Now if random placed chest needs to be placed, then place a chest.
-                    if (UnityEngine.Random.Range(0, 100) < rand && amount > 0)
+                    //Now, go through all the zones in this cell.
+                    for(int b = 0; b < 5; b++)
                     {
-                        Instantiate(obj, interactableCells[i,u].transform);
-                        interactableCells[i, u] = null;
-                        amount--;
+                        int num = UnityEngine.Random.Range(0, objs.Length + 1);
+                        //Now if random placed chest needs to be placed, then place a chest.
+                        if (num < objs.Length - 1 && UnityEngine.Random.Range(0, 100) < rand)
+                        {
+                            Instantiate(objs[num], interactableCells[i, u].transform.parent.GetChild(b + 1).transform.position, Quaternion.identity);
+                        } else if (num < objs.Length && UnityEngine.Random.Range(0, 100) < rand && amount > 0)
+                        {
+                            Instantiate(objs[num], interactableCells[i, u].transform.parent.GetChild(b + 1).transform.position, Quaternion.identity);
+                            amount--;
+                        }
                     }
+
+                    interactableCells[i, u] = null;
+
                 }
 
             }
         }
-    }
+    }*/
 
     /*
      * Create a spawn zone on one of the valid tiles.
@@ -719,39 +558,50 @@ public class LevelGeneration : MonoBehaviour
         GameObject objt = new GameObject();
 
         //Create the spawn.
-        if (type == 1)
+        if (type == 0)
         {
-            //Iterate through grid points.
-            for (int i = 0; i < sizeX; i++)
+            //Find the first island, and the gridpoint within it. Get a random number of the first island.
+            int pos = UnityEngine.Random.Range(countIslandCells(1, islandCellCountType.fullcount) - countIslandCells(1, islandCellCountType.single), 
+                                                countIslandCells(1, islandCellCountType.fullcount));
+
+            //Find that island and create the zone on that island.
+            if(cells[(int)islands[pos].y, (int)islands[pos].z] != null)
             {
-                for (int u = 0; u < sizeZ; u++)
+                //Choose a random position to place the entrance.
+                int randNum = UnityEngine.Random.Range(0, 5);
+                Destroy(objt);
+                //Create the respawn position in the middle of the 
+                objt = Instantiate(obj, GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>().getZone(randNum).position, 
+                                        Quaternion.identity, GetCell(new Vector2(islands[pos].y, islands[pos].z)).transform);
+
+                //Now remove all interactions from this cell.
+                for(int i = 0; i < 5; i++)
                 {
-                    //If valid point, then spawn there.
-                    if (cells[i, u] != null)
-                    {
-                        //Destroy the placeholder.
-                        Destroy(objt);
-                        objt = Instantiate(obj, GetCell(new Vector2(i, u)).transform.position, Quaternion.identity, GetCell(new Vector2(i, u)).transform);
-                        return objt;
-                    }
+                    GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>().removeZone(i);
                 }
+
+                return objt;
             }
-        } else if (type == 0)
+        } else if (type == 1)
         {
-            //Iterate through grid points.
-            for (int i = sizeX - 1; i >= 0; i--)
+            //Find the first island, and the gridpoint within it. Get a random number of the first island.
+            int pos = UnityEngine.Random.Range(countIslandCells(islandCount() / 2, islandCellCountType.fullcount) - countIslandCells(islandCount() / 2, islandCellCountType.single), 
+                countIslandCells(islandCount() / 2, islandCellCountType.fullcount));
+
+            //Find that island and create the zone on that island.
+            if (cells[(int)islands[pos].y, (int)islands[pos].z] != null)
             {
-                for (int u = sizeZ - 1; u >= 0; u--)
-                {
-                    //If valid point, then spawn there.
-                    if (cells[i, u] != null)
-                    {
-                        //Destroy the placeholder.
-                        Destroy(objt);
-                        objt = Instantiate(obj, GetCell(new Vector2(i, u)).transform.position, Quaternion.identity, GetCell(new Vector2(i, u)).transform);
-                        return objt;
-                    }
-                }
+                //Choose a random position to place the entrance.
+                int randNum = UnityEngine.Random.Range(0, 5);
+                Destroy(objt);
+                //Create the respawn position in the middle of the 
+                objt = Instantiate(obj, GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>().getZone(randNum).position,
+                                        Quaternion.identity, GetCell(new Vector2(islands[pos].y, islands[pos].z)).transform);
+
+                //Remove JUST the zone that the exit is using.
+                GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>().removeZone(randNum);
+
+                return objt;
             }
         } else if (type == 2)
         {
@@ -775,7 +625,7 @@ public class LevelGeneration : MonoBehaviour
                                                         cellCol.bounds.max.x - cellCol.bounds.center.x, 
                                                         cellCol.bounds.max.z - cellCol.bounds.center.z);
 
-                        //Destroy the placeholder.
+                        //Set the gameobject to the interactable cells.
                         interactableCells[i,u] = Instantiate(obj, new Vector3(pos.x * 0.5f + GetCell(new Vector2(i, u)).transform.position.x, 0, 
                                                      pos.y * 0.5f + GetCell(new Vector2(i, u)).transform.position.z), Quaternion.identity, GetCell(new Vector2(i,u)).transform);
                     }
@@ -784,42 +634,6 @@ public class LevelGeneration : MonoBehaviour
         }
 
         return objt;
-    }
-
-    private void setNeighbours(Vector3 cell)
-    {
-        //First, find a matching square.
-        for(int x = 0; x < islands.Count; x++)
-        {
-            if(cell.x == islands[x].x)
-            {
-                CellClass c = cells[(int)cell.y, (int)cell.z].GetComponent<CellClass>();
-
-                //Find left.
-                if (cell.y - 1 == islands[x].y && cell.z == islands[x].z)
-                {
-                    c.setLeft(true);
-                }
-
-                //Find right.
-                if (cell.y + 1 == islands[x].y && cell.z == islands[x].z)
-                {
-                    c.setRight(true);
-                }
-
-                //Find up
-                if (cell.z + 1 == islands[x].z && cell.y == islands[x].y)
-                {
-                    c.setUp(true);
-                }
-
-                //Find down
-                if (cell.z - 1 == islands[x].z && cell.y == islands[x].y)
-                {
-                    c.setDown(true);
-                }
-            }
-        }
     }
 
     /*
@@ -893,6 +707,9 @@ public class LevelGeneration : MonoBehaviour
         return false;
     }
 
+    /*
+     * Set all the possible cells to have no walls.
+     */
     private void setNoEdges()
     {
         for (int y = 0; y < sizeX; y++)
@@ -903,10 +720,7 @@ public class LevelGeneration : MonoBehaviour
                 {
                     CellClass c = cells[y, u].GetComponent<CellClass>();
 
-                    c.setLeft(false);
-                    c.setRight(false);
-                    c.setUp(false);
-                    c.setDown(false);
+                    c.removeWalls(1, 4);
                 }
 
             }

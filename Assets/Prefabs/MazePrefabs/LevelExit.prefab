@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.024, y: 0.747, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5941698005275821756}
   m_RootOrder: 1
@@ -118,7 +119,8 @@ Transform:
   m_GameObject: {fileID: 5941698005275821757}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.445695, y: -10.846562, z: 8.215071}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.32825, y: 0.32825, z: 0.32825}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6990186891352453577}
   - {fileID: 1022082051}
@@ -706,16 +708,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59d666d2cf28fa247b02802c45d6194e, type: 3}
---- !u!1 &7658918026109512563 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4052350741544304101, guid: 59d666d2cf28fa247b02802c45d6194e, type: 3}
-  m_PrefabInstance: {fileID: 5941698004369938070}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6990186891352453577 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3708440703416248159, guid: 59d666d2cf28fa247b02802c45d6194e, type: 3}
-  m_PrefabInstance: {fileID: 5941698004369938070}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4847455930773521950 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1238694023145967752, guid: 59d666d2cf28fa247b02802c45d6194e, type: 3}
@@ -734,6 +726,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.009333836, y: 0.005777739, z: 0.71359235}
   m_Center: {x: -0.0053330828, y: -0.00093796576, z: -0.36679372}
+--- !u!4 &6990186891352453577 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3708440703416248159, guid: 59d666d2cf28fa247b02802c45d6194e, type: 3}
+  m_PrefabInstance: {fileID: 5941698004369938070}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7658918026109512563 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4052350741544304101, guid: 59d666d2cf28fa247b02802c45d6194e, type: 3}
+  m_PrefabInstance: {fileID: 5941698004369938070}
+  m_PrefabAsset: {fileID: 0}
 --- !u!64 &4689552029112643731
 MeshCollider:
   m_ObjectHideFlags: 0

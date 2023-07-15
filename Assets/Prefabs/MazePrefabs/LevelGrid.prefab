@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,7 +54,12 @@ MonoBehaviour:
   lvlExit: {fileID: 5587404323163756932, guid: 9146d8d193cd67446acbcd0dec187f45, type: 3}
   exitStairs: {fileID: 5941698005275821757, guid: d0127645f3661e94ea7faa68c30aee5e, type: 3}
   Player: {fileID: 5555037366337481951, guid: cf13e8e4c0b611449a8e49db7b1647ae, type: 3}
+  playerInstance: {fileID: 0}
   lvlInteractableZone: {fileID: 2769002211416262117, guid: 9a215eae7d9473c41855f8f2b94410ce, type: 3}
   lvlBridges:
   - {fileID: 3183084719847282016, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+  lvlAdditions:
+  - {fileID: 8777578047669759797, guid: c8c1ddcd928b1664b8ec887d6cfb74a1, type: 3}
+  - {fileID: 7362562339215550970, guid: 5d7a114d930fccf499b2c6881f602c5d, type: 3}
+  - {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
   lvlChests: {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}

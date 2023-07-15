@@ -9,6 +9,8 @@ TagManager:
   - GameManager
   - Kyna
   - GhostInteractable
+  - Enemy
+  - Weapon Slot
   layers:
   - Default
   - TransparentFX
