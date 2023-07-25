@@ -10,8 +10,20 @@ public class MapObjectPackage : MonoBehaviour
 {
     public GameObject[] objects;
 
+    public int endFirstIsland;
+
     public GameObject getObject(int ind)
     {
         return objects[ind];
+    }
+
+    public int objectAmount()
+    {
+        return objects.Length;
+    }
+
+    public int getPairIndex()
+    {
+        return endFirstIsland;
     }
 }

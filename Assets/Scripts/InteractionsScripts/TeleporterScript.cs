@@ -17,6 +17,7 @@ public class TeleporterScript : Interactable
     private void Start()
     {
         interactionButton = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().interact;
+
     }
 
     private void Update()

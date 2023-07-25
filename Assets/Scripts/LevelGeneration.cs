@@ -252,14 +252,74 @@ public class LevelGeneration : MonoBehaviour
             playerInstance.transform.GetChild(1).transform.position = lvlInstances[0].transform.position;
         }
 
+        //Create pairs of islands in the pairs list for 'bridges'.
+        createIslandPairs(lvlBridges[0]);
 
-        createBridgeZones(lvlBridges[0], 0);
+        //Generate puzzles in the world.
+        //DEBUG: The only puzzle available is a teleporter. As more are added, have them generate different points.
+
+        //Bridge objects. These are created objects that specifically deal with travelling across islands, and use island pairs.
+        //Decide how many teleporters are needed.
+        for (int b = 0; b < bridgePairs.Length; b++)
+        {
+            List<Vector2> firstArr = new List<Vector2>();
+            List<Vector2> secondArr = new List<Vector2>();
+            //First, create two arrays pf interactable cell types that are linked to each island.
+            for (int x = 0; x < islands.Count; x++)
+            {
+                if (islands[x].x == (int)bridgePairs[b].x)
+                {
+                    //If the cell is not null AND has available slots, add to list.
+                    if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                      !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                    {
+                        firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                    }
+                }
+            }
+
+            for (int x = 0; x < islands.Count; x++)
+            {
+                if (islands[x].x == (int)bridgePairs[b].y)
+                {
+                    if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                      !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                    {
+                        secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                    }
+                }
+            }
+
+            //Now, add a package. So far, the teleporter package is all there is.
+            MapObjectPackage newPackageObjects = Instantiate(lvlBridges[0], this.transform).GetComponent<MapObjectPackage>();
+
+            int randNum = 0;
+
+            for(int v = 0; v < newPackageObjects.objectAmount(); v++)
+            {
+                //Find the cell position.
+                if(newPackageObjects.getPairIndex() < v)
+                {
+                    randNum = UnityEngine.Random.Range(0, firstArr.Count);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[randNum]).GetComponent<CellClass>(), true);
+
+                } else
+                {
+                    randNum = UnityEngine.Random.Range(0, secondArr.Count);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(secondArr[randNum]).GetComponent<CellClass>(), true);
+                }
+            }
+
+
+        }
+
+
         createObjectZones(lvlAdditions, 3);
     }
     /*
      * Spawn an object in the world, if there is space for it.
      */
-    private GameObject createObject(MapObject obj, CellClass cell)
+    private GameObject createObject(MapObject obj, CellClass cell, bool instantiated)
     {
         int index = cell.findAvailable(obj.takenSpaces);
 
@@ -267,163 +327,125 @@ public class LevelGeneration : MonoBehaviour
 
         if (index > -1)
         {
-            float prob = obj.getSpawnProbability();
-
-            //If higher than percentage, then Instantiate.
-            if (UnityEngine.Random.Range(0, 100) < prob)
+            if (instantiated)
             {
-                //Create a random rotation
-                o = Instantiate(obj.gameObject, cell.getZone(index).position, Quaternion.identity, cell.gameObject.transform);
+                o = obj.gameObject;
+                o.transform.position = cell.getZone(index).position;
+                o.transform.rotation = Quaternion.identity;
+                o.transform.SetParent(cell.gameObject.transform);
                 cell.removeZone(index, obj.takenSpaces, o);
+            } else
+            {
+                float prob = obj.getSpawnProbability();
+
+                //If higher than percentage, then Instantiate.
+                if (UnityEngine.Random.Range(0, 100) < prob)
+                {
+                    //Create a random rotation
+                    o = Instantiate(obj.gameObject, cell.getZone(index).position, Quaternion.identity, cell.gameObject.transform);
+                    cell.removeZone(index, obj.takenSpaces, o);
+                }
             }
         }
 
         return o;
     }
-    private void createBridgeZones(GameObject obj, int type)
+    private void createIslandPairs(GameObject obj)
     {
-        //Make different types based on distance.
-        //Teleport (0) is without distance.
-        if(type == 0)
+        if (islandCount() > 1)
         {
-            if(islandCount() > 1)
+            //Create an array to give pair information.
+            bridgePairs = new Vector2[islandCount() - 1];
+
+            int islandDivision;
+            //Get first half of pairs. If even, just cut in half. If not, then add 1 to make even for division.
+            if (islandCount() % 2 == 0)
             {
-                //Create an array to give pair information.
-                bridgePairs = new Vector2[islandCount() - 1];
+                islandDivision = islandCount() / 2;
 
-                int islandDivision;
-                //Get first half of pairs. If even, just cut in half. If not, then add 1 to make even for division.
-                if (islandCount() % 2 == 0)
-                {
-                    islandDivision = islandCount() / 2;
+            }
+            else
+            {
+                islandDivision = (islandCount() + 1) / 2;
+            }
 
-                } else
+            int pair = 0;
+
+            //Get the amount of islands and if it's even, then half. If not, add one, halve, then remove the last.
+            for (int i = 1; i < islandDivision; i++)
+            {
+                bridgePairs[pair] = new Vector2(i, i + 1);
+                pair++;
+            }
+
+            for (int i = islandDivision + 1; i <= islandCount(); i++)
+            {
+                int rand = UnityEngine.Random.Range(1, islandDivision);
+                //If you go through all the counts and there is more in the count than island cells, then try again.
+                if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.single), bridgePairs))
                 {
-                    islandDivision = (islandCount() + 1) / 2;
+                    bridgePairs[pair] = new Vector2(i, rand);
                 }
-
-                int pair = 0;
-
-                //Get the amount of islands and if it's even, then half. If not, add one, halve, then remove the last.
-                for(int i = 1; i < islandDivision; i++)
+                else
                 {
-                    bridgePairs[pair] = new Vector2(i, i + 1);
-                    pair++;
-                }
-
-                for(int i = islandDivision + 1; i <= islandCount(); i++)
-                {
-                    int rand = UnityEngine.Random.Range(1, islandDivision);
-                    //If you go through all the counts and there is more in the count than island cells, then try again.
-                    if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.single), bridgePairs))
+                    for (int y = 0; y < islandCount() - 1; y++)
                     {
-                        bridgePairs[pair] = new Vector2(i, rand);
-                    }
-                    else
-                    {
-                        for (int y = 0; y < islandCount() - 1; y++)
+                        if (!countDuplicates(y + 1, countIslandCells(y + 1, islandCellCountType.single), bridgePairs))
                         {
-                            if (!countDuplicates(y + 1, countIslandCells(y + 1, islandCellCountType.single), bridgePairs))
-                            {
-                                bridgePairs[pair] = new Vector2(i, y + 1);
-                            }
-                        }
-                    }
-                    pair++;
-                }
-
-                bool valid = false;
-                int counter = 0;
-                for(int i = 1; i <= islandCount(); i++)
-                {
-                    for(int x = 0; x < bridgePairs.Length; x++)
-                    {
-                        if(bridgePairs[x].x == i || bridgePairs[x].y == i)
-                        {
-                            counter++;
-                            break;
+                            bridgePairs[pair] = new Vector2(i, y + 1);
                         }
                     }
                 }
+                pair++;
+            }
 
-                if(counter == islandCount())
+            bool valid = false;
+            int counter = 0;
+            for (int i = 1; i <= islandCount(); i++)
+            {
+                for (int x = 0; x < bridgePairs.Length; x++)
                 {
-                    valid = true;
-                }
-
-                counter = 0;
-                for (int i = 1; i <= islandDivision; i++)
-                {
-                    for (int x = 0; x < bridgePairs.Length; x++)
+                    if (bridgePairs[x].x == i || bridgePairs[x].y == i)
                     {
-                        if (bridgePairs[x].x == i || bridgePairs[x].y == i)
-                        {
-                            counter++;
-                        }
+                        counter++;
+                        break;
                     }
-
-                    //Ensure to keep last run.
-                    if(i != 1)
-                    {
-                        counter--;
-                    }
-
-                }
-
-                if(counter == islandCount() - 1)
-                {
-                    valid = true;
-                }
-
-                if (!valid)
-                {
-                    Debug.Log(valid);
-                }
-
-
-                //Decide how many teleporters are needed.
-                for (int i = 0; i < bridgePairs.Length; i++)
-                {
-                    List<Vector2> firstArr = new List<Vector2>();
-                    List<Vector2> secondArr = new List<Vector2>();
-                    //First, create two arrays pf interactable cell types that are linked to each island.
-                    for (int x = 0; x < islands.Count; x++)
-                    {
-                        if(islands[x].x == (int)bridgePairs[i].x)
-                        {
-                            //If the cell is not null AND has available slots, add to list.
-                            if(GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null && 
-                              !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
-                            {
-                                firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
-                            }
-                        }
-                    }
-
-                    for(int x = 0; x < islands.Count; x++)
-                    {
-                        if (islands[x].x == (int)bridgePairs[i].y)
-                        {
-                            if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
-                              !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
-                            {
-                                secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
-                            }
-                        }
-                    }
-
-                    int randNum = UnityEngine.Random.Range(0, firstArr.Count);
-                    GameObject objt1 = createObject(obj.GetComponent<MapObject>(), GetCell(firstArr[randNum]).GetComponent<CellClass>());
-                    randNum = UnityEngine.Random.Range(0, secondArr.Count);
-                    GameObject objt2 = createObject(obj.GetComponent<MapObject>(), GetCell(secondArr[randNum]).GetComponent<CellClass>());
-
-                    //Now, try and place a pair point on another island.
-                    objt1.GetComponent<TeleporterScript>().setPartner(objt2, (int)bridgePairs[i].y);
-                    objt2.GetComponent<TeleporterScript>().setPartner(objt1, (int)bridgePairs[i].x);
-
                 }
             }
 
+            if (counter == islandCount())
+            {
+                valid = true;
+            }
+
+            counter = 0;
+            for (int i = 1; i <= islandDivision; i++)
+            {
+                for (int x = 0; x < bridgePairs.Length; x++)
+                {
+                    if (bridgePairs[x].x == i || bridgePairs[x].y == i)
+                    {
+                        counter++;
+                    }
+                }
+
+                //Ensure to keep last run.
+                if (i != 1)
+                {
+                    counter--;
+                }
+
+            }
+
+            if (counter == islandCount() - 1)
+            {
+                valid = true;
+            }
+
+            if (!valid)
+            {
+                Debug.Log(valid);
+            }
         }
     }
     private void createObjectZones(GameObject[] objs, int cellAmount)
@@ -440,7 +462,7 @@ public class LevelGeneration : MonoBehaviour
                     {
                         for(int b = 0; b < cellAmount; b++)
                         {
-                            GameObject instance = createObject(objs[UnityEngine.Random.Range(0, objs.Length)].GetComponent<MapObject>(), c);
+                            GameObject instance = createObject(objs[UnityEngine.Random.Range(0, objs.Length)].GetComponent<MapObject>(), c, false);
 
                             if(instance == null)
                             {
@@ -466,7 +488,7 @@ public class LevelGeneration : MonoBehaviour
             //Find that island and create the zone on that island.
             if(cells[(int)islands[pos].y, (int)islands[pos].z] != null)
             {
-                objt = createObject(obj.GetComponent<MapObject>(), GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>());
+                objt = createObject(obj.GetComponent<MapObject>(), GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>(), false);
             }
         } else if (type == 1)
         {
@@ -477,7 +499,7 @@ public class LevelGeneration : MonoBehaviour
             //Find that island and create the zone on that island.
             if (cells[(int)islands[pos].y, (int)islands[pos].z] != null)
             {
-                objt = createObject(obj.GetComponent<MapObject>(), GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>());
+                objt = createObject(obj.GetComponent<MapObject>(), GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>(), false);
             }
         }
         return objt;
