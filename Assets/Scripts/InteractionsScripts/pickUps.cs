@@ -6,6 +6,8 @@ public class pickUps : Interactable
 {
     public int amount;
 
+    public float probability;
+
     public int Inventorytype;
 
     /*

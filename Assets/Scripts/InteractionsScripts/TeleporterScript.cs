@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeleporterScript : MonoBehaviour
+public class TeleporterScript : Interactable
 {
     public GameObject pair;
 
-    private GameObject player_;
+    private GameObject playerObj;
 
     private bool interacting = false;
 
@@ -32,7 +32,7 @@ public class TeleporterScript : MonoBehaviour
         //Unsure player is in. If player is in and keycode is pressed, 
         if(other.gameObject.CompareTag("Player"))
         {
-            player_ = other.gameObject;
+            playerObj = other.gameObject;
             interacting = true;
         }
     }
@@ -51,6 +51,6 @@ public class TeleporterScript : MonoBehaviour
     private void teleport()
     {
         //Get the pair and teleport.
-        player_.transform.position = pair.transform.position;
+        playerObj.transform.position = pair.transform.position;
     }
 }

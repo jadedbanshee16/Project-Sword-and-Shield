@@ -11,6 +11,7 @@ TagManager:
   - GhostInteractable
   - Enemy
   - Weapon Slot
+  - Zone
   layers:
   - Default
   - TransparentFX

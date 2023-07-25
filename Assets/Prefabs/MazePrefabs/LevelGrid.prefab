@@ -48,18 +48,24 @@ MonoBehaviour:
   sizeZ: 10
   maxWalkSize: 40
   cellPrefab: {fileID: 3704418879852127933, guid: b028394cc575cd6418444d1bfb5f0661, type: 3}
-  hWall: {fileID: 2555987736424571479, guid: 78ddcaaa984bf8045bc8dbdb074c735f, type: 3}
-  vWall: {fileID: 583040124895468147, guid: 258a182a70f3dc94c9793371956e2607, type: 3}
-  lvlSpawn: {fileID: 2760410288686877672, guid: bbb4bf8560fe638488995cf6f6399f79, type: 3}
-  lvlExit: {fileID: 5587404323163756932, guid: 9146d8d193cd67446acbcd0dec187f45, type: 3}
-  exitStairs: {fileID: 5941698005275821757, guid: d0127645f3661e94ea7faa68c30aee5e, type: 3}
+  walls:
+  - {fileID: 5625596684142644295, guid: 2248d7446b39b604bafa2fa72fba2a20, type: 3}
+  - {fileID: 177287691178470323, guid: 215424405486ed943a02c877105aafc3, type: 3}
+  - {fileID: 706755240551192951, guid: 47398af4b55601d4d93198fb3063a586, type: 3}
+  - {fileID: 3983949572317737641, guid: 74312c8e428c1e74290da3ca3e2cc6c2, type: 3}
+  lvlAspects:
+  - {fileID: 2760410288686877672, guid: bbb4bf8560fe638488995cf6f6399f79, type: 3}
+  - {fileID: 5587404323163756932, guid: 9146d8d193cd67446acbcd0dec187f45, type: 3}
+  lvlInstances: []
   Player: {fileID: 5555037366337481951, guid: cf13e8e4c0b611449a8e49db7b1647ae, type: 3}
   playerInstance: {fileID: 0}
   lvlInteractableZone: {fileID: 2769002211416262117, guid: 9a215eae7d9473c41855f8f2b94410ce, type: 3}
   lvlBridges:
   - {fileID: 3183084719847282016, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
   lvlAdditions:
-  - {fileID: 8777578047669759797, guid: c8c1ddcd928b1664b8ec887d6cfb74a1, type: 3}
-  - {fileID: 7362562339215550970, guid: 5d7a114d930fccf499b2c6881f602c5d, type: 3}
-  - {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
+  - {fileID: 2194207247066133231, guid: 0d3c116e21424db4d9c1eb443c51b8e4, type: 3}
+  - {fileID: 1460136484917263139, guid: 69326d906fe6aa346b35806a574b0221, type: 3}
+  - {fileID: 1281651700979562212, guid: 6cc4369587f873741b47a0f7d50de063, type: 3}
+  - {fileID: 6328381659662387214, guid: aa023725d2499a0439c06eafff69f9c3, type: 3}
   lvlChests: {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
+  path: {fileID: 1105211102569122420, guid: 2a823de6358ca774d82d3eb8c38d621b, type: 3}

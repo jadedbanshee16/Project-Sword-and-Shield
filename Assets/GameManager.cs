@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     private float difficulty = 25f;
     private bool nextLevel = false;
 
+    private int count;
+
     //An enum for zone types.
     private enum zoneType
     {
@@ -34,6 +36,8 @@ public class GameManager : MonoBehaviour
         {
             beginGame();
         }
+
+        count = 0;
     }
 
     // Update is called once per frame
@@ -48,7 +52,7 @@ public class GameManager : MonoBehaviour
             nextLevel = false;
         }
 
-        /*if(count < 500)
+        /*if(count < 0)
         {
             restartGame();
             nextLevel = false;
