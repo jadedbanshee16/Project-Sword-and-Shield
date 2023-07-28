@@ -173,7 +173,7 @@ public class LevelGeneration : MonoBehaviour
         //Create a new island.
         int isCount = 0;
         bool newIsland = true;
-        //islands = new List<Vector3>();
+        islands = new List<Vector3>();
 
         while (i < walkSize)
         {
