@@ -31,38 +31,6 @@ public class MazeDirection
     }
 }
 
-
-/*
- * A new class that will keep all information on cells.
- */
-public class cellObject
-{
-    public int xPos;
-    public int zPos;
-
-    public int island;
-
-    private GameObject cellObj;
-
-    //Create a cell object using the x and z coordinates in grid.
-    public cellObject(int x, int z)
-    {
-        xPos = x;
-        zPos = z;
-    }
-
-    public GameObject getCellObject()
-    {
-        return cellObj;
-    }
-
-    public void setCellObject(GameObject obj)
-    {
-        cellObj = obj;
-    }
-
-}
-
 public class LevelGeneration : MonoBehaviour
 {
     [Header("Grid Settings")]
@@ -88,15 +56,14 @@ public class LevelGeneration : MonoBehaviour
     public GameObject playerInstance;
 
     [Header("Level objects")]
-    //public GameObject lvlInteractableZone;
+    public GameObject lvlInteractableZone;
     public GameObject[] lvlBridges;
     public GameObject[] lvlAdditions;
     public GameObject lvlChests;
     public GameObject path;
 
-    private cellObject[,] cells;
-    //private List<cellObject> cellsList;
-    //private GameObject[,] interactableCells;
+    private GameObject[,] cells;
+    private GameObject[,] interactableCells;
     private List<Vector3> islands;
     private Vector2[] bridgePairs;
 
@@ -117,6 +84,7 @@ public class LevelGeneration : MonoBehaviour
     {
         single,
         fullcount,
+        interactableCount
     }
 
     //Create and destroy a prefab to get their bounds immediately.
@@ -156,16 +124,7 @@ public class LevelGeneration : MonoBehaviour
         }
 
         //Create a grid and populate cells.
-        cells = new cellObject[sizeX, sizeZ];
-
-        //Populate with empty cells.
-        for(int t = 0; t < sizeX; t++)
-        {
-            for(int m = 0; m < sizeZ; m++)
-            {
-                cells[t, m] = new cellObject(t, m);
-            }
-        }
+        cells = new GameObject[sizeX, sizeZ];
 
         Vector2 randCor = RandomCoordinates(0, 0, sizeX, sizeZ);
         int i = 0;
@@ -173,7 +132,7 @@ public class LevelGeneration : MonoBehaviour
         //Create a new island.
         int isCount = 0;
         bool newIsland = true;
-        //islands = new List<Vector3>();
+        islands = new List<Vector3>();
 
         while (i < walkSize)
         {
@@ -193,7 +152,6 @@ public class LevelGeneration : MonoBehaviour
                 //Find out if the cell has any neighbours within current island.
                 if (!newIsland && findNeighbours(new Vector3(isCount, randCor.x, randCor.y)))
                 {
-                    //Create the cell.
                     CreateCell((int)randCor.x, (int)randCor.y);
 
                     islands.Add(new Vector3(isCount, randCor.x, randCor.y));
@@ -575,7 +533,7 @@ public class LevelGeneration : MonoBehaviour
     {
         //Destroy the cell, then make the cell null, then remove from islands list.
         Destroy(GetCell(new Vector2((int)islands[index].y, (int)islands[index].z)));
-        cells[(int)islands[index].y, (int)islands[index].z].setCellObject(null);
+        cells[(int)islands[index].y, (int)islands[index].z] = null;
         islands.RemoveAt(index);
 
         //Debug.Log("Deleted: " + index);
@@ -625,7 +583,7 @@ public class LevelGeneration : MonoBehaviour
     {
         //Create a new cell and input the cell information into the grid array.
         GameObject newCell = Instantiate(cellPrefab, this.transform);
-        cells[x, z].setCellObject(newCell);
+        cells[x, z] = newCell;
         //Now, set the cell location based on size of cell from bounds.
         newCell.transform.localPosition = new Vector3(x * cellSizeX, 0f, z * cellSizeZ);
     }
@@ -668,7 +626,7 @@ public class LevelGeneration : MonoBehaviour
             }
         }
 
-        CellClass c = cells[(int)cell.y, (int)cell.z].getCellObject().GetComponent<CellClass>();
+        CellClass c = cells[(int)cell.y, (int)cell.z].GetComponent<CellClass>();
 
         int randWall = 0;
 
@@ -696,9 +654,8 @@ public class LevelGeneration : MonoBehaviour
     }
     public GameObject GetCell(Vector2 coordinates)
     {
-        return cells[(int)coordinates.x, (int)coordinates.y].getCellObject();
+        return cells[(int)coordinates.x, (int)coordinates.y];
     }
-
     public Vector2 RandomCoordinates(float minX, float minY, float maxX, float maxY)
     {
         return new Vector2(UnityEngine.Random.Range(minX, maxX), UnityEngine.Random.Range(minY, maxY));
@@ -746,6 +703,21 @@ public class LevelGeneration : MonoBehaviour
                 if (islands[i].x == x)
                 {
                     count++;
+                }
+            //If 't' is type 'interactableCount', then count all interactable cells in the island.
+            } else if (t == islandCellCountType.interactableCount)
+            {
+                //Go through and match all cells in island and count it against interactable counts.
+                for(int b = 0; b < sizeX; b++)
+                {
+                    for(int z = 0; z < sizeZ; z++)
+                    {
+                        //If x,z matches the coordinates of the island cell, then iterate count.
+                        if(interactableCells[b,z] != null && islands[i].x == x && b == (int)islands[i].y && z == (int)islands[i].z)
+                        {
+                            count++;
+                        }
+                    }
                 }
             }
         }
