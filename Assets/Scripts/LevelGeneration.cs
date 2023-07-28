@@ -94,8 +94,8 @@ public class LevelGeneration : MonoBehaviour
     public GameObject lvlChests;
     public GameObject path;
 
-    //private cellObject[,] cells;
-    private List<cellObject> cellsList;
+    private cellObject[,] cells;
+    //private List<cellObject> cellsList;
     //private GameObject[,] interactableCells;
     private List<Vector3> islands;
     private Vector2[] bridgePairs;
@@ -155,8 +155,17 @@ public class LevelGeneration : MonoBehaviour
             walkSize = (int)maxWalkSize;
         }
 
-        //Create a list of possible cells in the 'grid'.
-        cellsList = new List<cellObject>();
+        //Create a grid and populate cells.
+        cells = new cellObject[sizeX, sizeZ];
+
+        //Populate with empty cells.
+        for(int t = 0; t < sizeX; t++)
+        {
+            for(int m = 0; m < sizeZ; m++)
+            {
+                cells[t, m] = new cellObject(t, m);
+            }
+        }
 
         Vector2 randCor = RandomCoordinates(0, 0, sizeX, sizeZ);
         int i = 0;
@@ -179,7 +188,7 @@ public class LevelGeneration : MonoBehaviour
             Vector2 newDir = MazeDirection.RandDir();
 
             //While the coordinate is within the bounds of the grid, create cell at coordinate.
-            if (ContainsCoordinates(randCor) && GetCellObject((int)randCor.x, (int)randCor.y) == null)
+            if (ContainsCoordinates(randCor) && GetCell(randCor) == null)
             {
                 //Find out if the cell has any neighbours within current island.
                 if (!newIsland && findNeighbours(new Vector3(isCount, randCor.x, randCor.y)))
@@ -303,8 +312,8 @@ public class LevelGeneration : MonoBehaviour
                 if (islands[x].x == (int)bridgePairs[b].x)
                 {
                     //If the cell is not null AND has available slots, add to list.
-                    if (GetCellObject((int)islands[x].y, (int)islands[x].z) != null &&
-                      !GetCellObject((int)islands[x].y, (int)islands[x].z).GetComponent<CellClass>().getAllZonesUsed())
+                    if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                      !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
                     {
                         firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
                     }
@@ -315,8 +324,8 @@ public class LevelGeneration : MonoBehaviour
             {
                 if (islands[x].x == (int)bridgePairs[b].y)
                 {
-                    if (GetCellObject((int)islands[x].y, (int)islands[x].z) != null &&
-                      !GetCellObject((int)islands[x].y, (int)islands[x].z).GetComponent<CellClass>().getAllZonesUsed())
+                    if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                      !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
                     {
                         secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
                     }
@@ -334,12 +343,12 @@ public class LevelGeneration : MonoBehaviour
                 if(newPackageObjects.getPairIndex() < v)
                 {
                     randNum = UnityEngine.Random.Range(0, firstArr.Count);
-                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCellObject((int)firstArr[randNum].x, (int)firstArr[randNum].y).GetComponent<CellClass>(), true);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[randNum]).GetComponent<CellClass>(), true);
 
                 } else
                 {
                     randNum = UnityEngine.Random.Range(0, secondArr.Count);
-                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCellObject((int)secondArr[randNum].x, (int)secondArr[randNum].y).GetComponent<CellClass>(), true);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(secondArr[randNum]).GetComponent<CellClass>(), true);
                 }
             }
 
@@ -487,9 +496,9 @@ public class LevelGeneration : MonoBehaviour
         {
             for(int u = 0; u < sizeZ; u++)
             {
-                if(GetCellObject(i,u) != null)
+                if(GetCell(new Vector2(i,u)) != null)
                 {
-                    CellClass c = GetCellObject(i, u).GetComponent<CellClass>();
+                    CellClass c = GetCell(new Vector2(i, u)).GetComponent<CellClass>();
                     //Ensure there are available places in the cell.
                     if (!c.isAllUsed())
                     {
@@ -521,7 +530,7 @@ public class LevelGeneration : MonoBehaviour
             //Find that island and create the zone on that island.
             if(cells[(int)islands[pos].y, (int)islands[pos].z] != null)
             {
-                objt = createObject(obj.GetComponent<MapObject>(), GetCellObject((int)islands[pos].y, (int)islands[pos].z).GetComponent<CellClass>(), false);
+                objt = createObject(obj.GetComponent<MapObject>(), GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>(), false);
             }
         } else if (type == 1)
         {
@@ -532,7 +541,7 @@ public class LevelGeneration : MonoBehaviour
             //Find that island and create the zone on that island.
             if (cells[(int)islands[pos].y, (int)islands[pos].z] != null)
             {
-                objt = createObject(obj.GetComponent<MapObject>(), GetCellObject((int)islands[pos].y, (int)islands[pos].z).GetComponent<CellClass>(), false);
+                objt = createObject(obj.GetComponent<MapObject>(), GetCell(new Vector2(islands[pos].y, islands[pos].z)).GetComponent<CellClass>(), false);
             }
         }
         return objt;
@@ -565,8 +574,8 @@ public class LevelGeneration : MonoBehaviour
     private void removeIsland(int index)
     {
         //Destroy the cell, then make the cell null, then remove from islands list.
-        Destroy(GetCellObject((int)islands[index].y, (int)islands[index].z));
-        cellsList[(int)islands[index].y, (int)islands[index].z].setCellObject(null);
+        Destroy(GetCell(new Vector2((int)islands[index].y, (int)islands[index].z)));
+        cells[(int)islands[index].y, (int)islands[index].z].setCellObject(null);
         islands.RemoveAt(index);
 
         //Debug.Log("Deleted: " + index);
@@ -685,33 +694,9 @@ public class LevelGeneration : MonoBehaviour
             c.addWall(walls[randWall], 4, 270);
         }
     }
-    public cellObject GetCell(int x, int y)
+    public GameObject GetCell(Vector2 coordinates)
     {
-        for (int i = 0; i < cellsList.Count; i++)
-        {
-            if (cellsList[i].xPos == x && cellsList[i].zPos == y)
-            {
-                return cellsList[i];
-            }
-        }
-
-        return null;
-    }
-
-    /*
-     * Goes through and returns a cells with the corresponding grid point.
-     */
-    public GameObject GetCellObject(int x, int y)
-    {
-        for(int i = 0; i < cellsList.Count; i++)
-        {
-            if(cellsList[i].xPos == x && cellsList[i].zPos == y)
-            {
-                return cellsList[i].getCellObject();
-            }
-        }
-
-        return null;
+        return cells[(int)coordinates.x, (int)coordinates.y].getCellObject();
     }
 
     public Vector2 RandomCoordinates(float minX, float minY, float maxX, float maxY)
