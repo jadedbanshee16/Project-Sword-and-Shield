@@ -8,24 +8,7 @@ public class CellClass : MonoBehaviour
     public GameObject[] zones;
     public GameObject[] walls;
 
-    //private GameObject[,] zonesGrid;
-
     private bool allZonesUsed;
-
-    /*public void Awake()
-    {
-        //Populate the zone grid with zone list.
-        zonesGrid = new GameObject[(int)Mathf.Sqrt(zones.Length), (int)Mathf.Sqrt(zones.Length)];
-
-        for(int i = 0; i < (int)Mathf.Sqrt(zones.Length); i++)
-        {
-            for(int v = 0; v < (int)Mathf.Sqrt(zones.Length); v++)
-            {
-                zonesGrid[i, v] = zones[(i * (int)Mathf.Sqrt(zones.Length)) + v];
-                //Debug.Log("Ye: " + (i * (int)Mathf.Sqrt(zones.Length) + v));
-            }
-        }
-    }*/
 
     public void removeZone(int index, int[] spaces, GameObject obj)
     {
@@ -47,10 +30,39 @@ public class CellClass : MonoBehaviour
         allZonesUsed = isAllUsed();
     }
 
+    public void destroyZone(int index, int[] spaces)
+    {
+        for (int i = 0; i < spaces.Length; i++)
+        {
+            if (zones[index + spaces[i]] == null || zones[index + spaces[i]] != null)
+            {
+                Destroy(zones[index + spaces[i]]);
+                zones[index + spaces[i]] = null;
+            }
+
+            //Set the square to not active as well.
+            if (spaces[i] == 0)
+            {
+                zones[index] = null;
+            }
+        }
+
+        allZonesUsed = isAllUsed();
+    }
+
     //Remove a single wall.
     public void removeWalls(int index)
     {
-        walls[index] = null;
+        //Go through zones and find one that matches the wall.
+        for(int i = 0; i < zones.Length; i++)
+        {
+            if(GameObject.ReferenceEquals(zones[i], walls[index]))
+            {
+                int[] sp = { 0 };
+                destroyZone(i, sp);
+                walls[index] = null;
+            }
+        }
     }
 
     //Remove all walls between a min and max number.
@@ -135,14 +147,6 @@ public class CellClass : MonoBehaviour
         }
     }
 
-    /*
-     * Find usable spots, then randomly choose 1 to place the new object.
-     */
-    public void addObject(GameObject obj, int index)
-    {
-
-    }
-
     //Return the transform on one of the zones by index.
     public Transform getZone(int index)
     {
@@ -204,7 +208,7 @@ public class CellClass : MonoBehaviour
             //Go through all the valid zones based on how much space is being taken. Then try to spawn.
             for(int x = 0; x < spaces.Length; x++)
             {
-                if((i + spaces[x]) < 0 || (i + spaces[x]) > zones.Length - 1 || zones[i + spaces[x]] == null || !zones[i + spaces[x]].CompareTag("Zone"))
+                if((i + spaces[x]) < 0 || (i + spaces[x]) > zones.Length - 1 || zones[i + spaces[x]] == null || (zones[i + spaces[x]] != null && !zones[i + spaces[x]].CompareTag("Zone")))
                 {
                     available = false;
                 }

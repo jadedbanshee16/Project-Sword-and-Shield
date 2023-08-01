@@ -9,11 +9,13 @@ public class PlayerControl : MonoBehaviour
     public KynaClass kyna_;
     public GameObject player_;
     public Camera cam_;
+    public float interactionRange;
     private OptionsScript options;
     private Animator kynaAnim_;
 
     //Controls
     private KeyCode onHand;
+    private KeyCode interact;
 
     //Interaction focus.
     public Interactable currentFocus;
@@ -26,6 +28,7 @@ public class PlayerControl : MonoBehaviour
         kynaAnim_ = kyna_.GetComponentInChildren<Animator>();
         player_ = GameObject.FindGameObjectWithTag("Player");
         onHand = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().onHand;
+        interact = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().interact;
         cam_ = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
@@ -51,11 +54,25 @@ public class PlayerControl : MonoBehaviour
             //When pressed, find out if an interactable is pressed.
             Interactable focus = MouseInteractable();
 
-            //If interactable, complete interactable stuff.
-            if(focus != null)
+            //If interactable and a ghost interactable, do stuff.
+            if(focus != null && focus.getType() == Interactable.interactType.ghostInteractable)
             {
                 setFocus(focus);
             } else
+            {
+                deFocus();
+            }
+        } else if (Input.GetKeyDown(interact))
+        {
+            //When pressed, find out if an interactable is pressed.
+            Interactable focus = PlayerInteractable();
+
+            //If interactable and a ghost interactable, do stuff.
+            if (focus != null && focus.getType() == Interactable.interactType.playerInteractable)
+            {
+                setFocus(focus);
+            }
+            else
             {
                 deFocus();
             }
@@ -77,6 +94,10 @@ public class PlayerControl : MonoBehaviour
             if (!currentFocus.isNearby())
             {
                 deFocus();
+            } else
+            {
+                //If nearby when the interaction button is pressed, then do an interaction.
+                currentFocus.Interact();
             }
         } else if (currentFocus.getType() == Interactable.interactType.ghostInteractable)
         {
@@ -137,6 +158,36 @@ public class PlayerControl : MonoBehaviour
         {
             inter = hit.collider.GetComponent<Interactable>();
         }
+
+        return inter;
+    }
+
+    private Interactable PlayerInteractable()
+    {
+        Interactable inter = null;
+
+        //Find possible objects within range, then pick the closest ones.
+        Collider[] allInteractables = Physics.OverlapSphere(player_.transform.position, interactionRange);
+
+        float closestDist = Mathf.Infinity;
+        int closestObject = -1;
+
+        if(allInteractables.Length > 0)
+        {
+            //Find closest.
+            for (int i = 0; i < allInteractables.Length; i++)
+            {
+                float dist = Vector3.Distance(allInteractables[i].transform.position, player_.transform.position);
+                if (dist < closestDist && allInteractables[i].GetComponent<Interactable>() != null)
+                {
+                    closestDist = dist;
+                    closestObject = i;
+                }
+            }
+
+            inter = allInteractables[closestObject].GetComponent<Interactable>();
+        }
+
 
         return inter;
     }

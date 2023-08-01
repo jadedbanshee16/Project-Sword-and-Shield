@@ -7,11 +7,15 @@ public class Inventory : MonoBehaviour
     //Keep information on the ghost weapons.
     public GameObject[] ghostWeapons;
 
+    public int[] resources;
+
 
     // Start is called before the first frame update
     void Start()
     {
         ghostWeapons = new GameObject[10];
+
+        resources = new int[System.Enum.GetValues(typeof(pickUps.resourceTypes)).Length];
     }
 
     /*
@@ -33,6 +37,14 @@ public class Inventory : MonoBehaviour
                     return;
                 }
             }
+        }
+    }
+
+    public void addToResourceInventory(pickUps.resourceTypes index, int amount)
+    {
+        if((int)index < resources.Length && index >= 0)
+        {
+            resources[(int)index] += amount;
         }
     }
 }

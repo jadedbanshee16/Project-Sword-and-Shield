@@ -52,12 +52,13 @@ public class GameManager : MonoBehaviour
             nextLevel = false;
         }
 
-        /*if(count < 0)
+        if(count < 0)
         {
+            Debug.Log(count);
             restartGame();
             nextLevel = false;
             count++;
-        }*/
+        }
     }
 
     private void beginGame()

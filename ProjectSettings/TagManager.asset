@@ -12,6 +12,7 @@ TagManager:
   - Enemy
   - Weapon Slot
   - Zone
+  - PlayerRange
   layers:
   - Default
   - TransparentFX

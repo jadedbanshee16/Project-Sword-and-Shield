@@ -18,7 +18,7 @@ public class Interactable : MonoBehaviour
     private bool isFocus;
     private bool hasInteracted;
 
-    Transform player_;
+    public Transform player_;
     public interactType interactableType;
 
     //Grab the inventory.

@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1f608d25b789fb45b8ee715b0f0d068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObjName: 
+  ObjName: GhostSword
   interactionTransform: {fileID: 8469722857708692344}
   radius: 0.39
   interactableType: 0

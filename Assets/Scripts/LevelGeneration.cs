@@ -252,6 +252,7 @@ public class LevelGeneration : MonoBehaviour
             playerInstance.transform.GetChild(1).transform.position = lvlInstances[0].transform.position;
         }
 
+
         //Create pairs of islands in the pairs list for 'bridges'.
         createIslandPairs(lvlBridges[0]);
 
@@ -290,27 +291,59 @@ public class LevelGeneration : MonoBehaviour
                 }
             }
 
-            //Now, add a package. So far, the teleporter package is all there is.
-            MapObjectPackage newPackageObjects = Instantiate(lvlBridges[0], this.transform).GetComponent<MapObjectPackage>();
+            //Find the closest cells per pair.
+            Vector2 closestCells = findClosestCells(firstArr, secondArr);
 
-            int randNum = 0;
-
-            for(int v = 0; v < newPackageObjects.objectAmount(); v++)
+            //If there is only 1 difference between the zones, remove a single wall.
+            //If not, create teleporter.
+            if(getDistanceBetweenCells(firstArr[(int)closestCells.x], secondArr[(int)closestCells.y]) == 1)
             {
-                //Find the cell position.
-                if(newPackageObjects.getPairIndex() < v)
+                //Find the direction of the walls to be broken.
+                //If vertical to each other and positive, the second sell is above the first.
+                if(firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x == 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y > 0)
                 {
-                    randNum = UnityEngine.Random.Range(0, firstArr.Count);
-                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[randNum]).GetComponent<CellClass>(), true);
+                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(0);
+                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(2);
 
-                } else
+                } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x < 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y == 0)
                 {
-                    randNum = UnityEngine.Random.Range(0, secondArr.Count);
-                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(secondArr[randNum]).GetComponent<CellClass>(), true);
+                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(1);
+                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(3);
+
+                } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x == 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y < 0)
+                {
+                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(2);
+                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(0);
+
+                } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x > 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y == 0)
+                {
+                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(3);
+                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(1);
+
+                }
+            } else
+            {
+                //Now, add a package. So far, the teleporter package is all there is.
+                MapObjectPackage newPackageObjects = Instantiate(lvlBridges[0], this.transform).GetComponent<MapObjectPackage>();
+
+                int randNum = 0;
+
+                for (int v = 0; v < newPackageObjects.objectAmount(); v++)
+                {
+                    //Find the cell position.
+                    if (newPackageObjects.getPairIndex() < v)
+                    {
+                        randNum = UnityEngine.Random.Range(0, firstArr.Count);
+                        createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[randNum]).GetComponent<CellClass>(), true);
+
+                    }
+                    else
+                    {
+                        randNum = UnityEngine.Random.Range(0, secondArr.Count);
+                        createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(secondArr[randNum]).GetComponent<CellClass>(), true);
+                    }
                 }
             }
-
-
         }
 
 
@@ -324,6 +357,8 @@ public class LevelGeneration : MonoBehaviour
         int index = cell.findAvailable(obj.takenSpaces);
 
         GameObject o = null;
+
+        //Debug.Log(index);
 
         if (index > -1)
         {
@@ -348,10 +383,14 @@ public class LevelGeneration : MonoBehaviour
             }
         }
 
+        //Debug.Log("Created object: " + o);
+
         return o;
     }
     private void createIslandPairs(GameObject obj)
     {
+        bridgePairs = new Vector2[0];
+
         if (islandCount() > 1)
         {
             //Create an array to give pair information.
@@ -460,13 +499,17 @@ public class LevelGeneration : MonoBehaviour
                     //Ensure there are available places in the cell.
                     if (!c.isAllUsed())
                     {
+                        int count = 5;
+
                         for(int b = 0; b < cellAmount; b++)
                         {
+
                             GameObject instance = createObject(objs[UnityEngine.Random.Range(0, objs.Length)].GetComponent<MapObject>(), c, false);
 
-                            if(instance == null)
+                            if(instance == null && count > 0)
                             {
                                 b--;
+                                count--;
                             }
                         }
                     }
@@ -684,6 +727,36 @@ public class LevelGeneration : MonoBehaviour
 
         return count;
     }
+
+    private Vector2 findClosestCells(List<Vector2> island1, List<Vector2> island2)
+    {
+        float dist = Mathf.Infinity;
+        Vector2 c = new Vector2(0, 0);
+
+        for(int i = 0; i < island1.Count; i++)
+        {
+            for(int u = 0; u < island2.Count; u++)
+            {
+                //Get the distance between the 2 cells.
+                int newDist = getDistanceBetweenCells(island1[i], island2[u]);
+
+                if(dist > newDist)
+                {
+                    dist = newDist;
+                    c = new Vector2(i, u);
+                }
+            }
+        }
+
+        return c;
+    }
+
+    private int getDistanceBetweenCells(Vector2 cell1, Vector2 cell2)
+    {
+        return Mathf.Abs((int)cell1.x - (int)cell2.x) + Mathf.Abs((int)cell1.y - (int)cell2.y);
+    }
+
+
     private int countIslandCells(int x, islandCellCountType t)
     {
         int count = 0;
