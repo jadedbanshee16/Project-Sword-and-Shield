@@ -254,7 +254,7 @@ public class LevelGeneration : MonoBehaviour
 
 
         //Create pairs of islands in the pairs list for 'bridges'.
-        createIslandPairs(lvlBridges[0]);
+        createIslandPairs();
 
         //Generate puzzles in the world.
         //DEBUG: The only puzzle available is a teleporter. As more are added, have them generate different points.
@@ -298,29 +298,45 @@ public class LevelGeneration : MonoBehaviour
             //If not, create teleporter.
             if(getDistanceBetweenCells(firstArr[(int)closestCells.x], secondArr[(int)closestCells.y]) == 1)
             {
+                int rotation = 0;
                 //Find the direction of the walls to be broken.
                 //If vertical to each other and positive, the second sell is above the first.
                 if(firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x == 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y > 0)
                 {
                     GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(0);
                     GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(2);
+                    rotation = 0;
 
                 } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x < 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y == 0)
                 {
                     GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(1);
                     GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(3);
+                    rotation = 90;
 
                 } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x == 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y < 0)
                 {
                     GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(2);
                     GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(0);
+                    rotation = 180;
 
                 } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x > 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y == 0)
                 {
                     GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(3);
                     GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(1);
+                    rotation = 360;
 
                 }
+
+                //Now, add a package. So far, the teleporter package is all there is.
+                MapObjectPackage newPackageObjects = Instantiate(lvlBridges[1], this.transform).GetComponent<MapObjectPackage>();
+
+                int randNum = 0;
+
+                for (int v = 0; v < newPackageObjects.objectAmount(); v++)
+                {
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>(), true);
+                }
+
             } else
             {
                 //Now, add a package. So far, the teleporter package is all there is.
@@ -387,7 +403,9 @@ public class LevelGeneration : MonoBehaviour
 
         return o;
     }
-    private void createIslandPairs(GameObject obj)
+
+
+    private void createIslandPairs()
     {
         bridgePairs = new Vector2[0];
 
@@ -695,6 +713,7 @@ public class LevelGeneration : MonoBehaviour
             c.addWall(walls[randWall], 4, 270);
         }
     }
+
     public GameObject GetCell(Vector2 coordinates)
     {
         return cells[(int)coordinates.x, (int)coordinates.y];

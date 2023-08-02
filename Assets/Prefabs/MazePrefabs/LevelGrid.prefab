@@ -62,6 +62,7 @@ MonoBehaviour:
   lvlInteractableZone: {fileID: 2769002211416262117, guid: 9a215eae7d9473c41855f8f2b94410ce, type: 3}
   lvlBridges:
   - {fileID: 3054154473825711452, guid: 0249d3e091a3f1a4395a896b884867b3, type: 3}
+  - {fileID: 8429277093517410622, guid: 08dd092cc056e1f4fb6d772893dc9ea0, type: 3}
   lvlAdditions:
   - {fileID: 2194207247066133231, guid: 0d3c116e21424db4d9c1eb443c51b8e4, type: 3}
   - {fileID: 1460136484917263139, guid: 69326d906fe6aa346b35806a574b0221, type: 3}

@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338249450}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.235}
+  m_LocalPosition: {x: 0, y: 0, z: -0.372}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -40,10 +40,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1312036848498212422}
-  - component: {fileID: 1312036848498212416}
-  - component: {fileID: 8561275665407705502}
   - component: {fileID: 2053151864}
   - component: {fileID: 1034702705325680564}
+  - component: {fileID: 724042548}
   m_Layer: 0
   m_Name: Chest 1
   m_TagString: Untagged
@@ -69,34 +68,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1312036848498212416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1312036848498212421}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 749c340d433ac1946a0ec6305e4e1dad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim_: {fileID: 0}
-  interacting: 0
-  interactionButton: 0
---- !u!135 &8561275665407705502
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1312036848498212421}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2053151864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,8 +83,13 @@ MonoBehaviour:
   ObjName: Chest
   interactionTransform: {fileID: 1338249451}
   radius: 0.2
+  player_: {fileID: 0}
   interactableType: 1
   inv: {fileID: 0}
+  anim_: {fileID: 3560883474784218167}
+  throwStrength: 75
+  resourceContents: []
+  mandatoryContents: []
 --- !u!114 &1034702705325680564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,8 +102,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2a7417e1636f994a9d8e8a3353157ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnProbability: 10
+  spawnProbability: 100
   takenSpaces: 00000000
+--- !u!65 &724042548
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312036848498212421}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.42228422, y: 0.6641586, z: 0.2447957}
+  m_Center: {x: -0.0063450434, y: 0.419897, z: -0.010987581}
 --- !u!1 &1312036848706443956
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +142,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312036848706443956}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.069, z: 0.48700002}
+  m_LocalPosition: {x: 0, y: 0.069, z: -0.021}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -255,7 +244,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 66f2be7808ec92943a74076956ec8e5b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.48700002
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 66f2be7808ec92943a74076956ec8e5b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -313,6 +302,11 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.01794697, y: 0.0117501905, z: 0.004030621}
   m_Center: {x: 0, y: 0, z: 0.0020306145}
+--- !u!95 &3560883474784218167 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 66f2be7808ec92943a74076956ec8e5b, type: 3}
+  m_PrefabInstance: {fileID: 6917626946768785830}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7461022521185252941 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 66f2be7808ec92943a74076956ec8e5b, type: 3}

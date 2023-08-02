@@ -67,6 +67,8 @@ public class PlayerControl : MonoBehaviour
             //When pressed, find out if an interactable is pressed.
             Interactable focus = PlayerInteractable();
 
+            Debug.Log(focus.gameObject.name);
+
             //If interactable and a ghost interactable, do stuff.
             if (focus != null && focus.getType() == Interactable.interactType.playerInteractable)
             {
@@ -98,6 +100,7 @@ public class PlayerControl : MonoBehaviour
             {
                 //If nearby when the interaction button is pressed, then do an interaction.
                 currentFocus.Interact();
+                deFocus();
             }
         } else if (currentFocus.getType() == Interactable.interactType.ghostInteractable)
         {

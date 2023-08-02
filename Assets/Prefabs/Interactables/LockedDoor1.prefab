@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 6954527936566434055}
   - component: {fileID: 6954527935920860336}
   - component: {fileID: 1530029693}
+  - component: {fileID: 690054786775199138}
   m_Layer: 0
   m_Name: LockedDoor1
   m_TagString: Untagged
@@ -195,11 +196,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb24f00c72a5d1947a40dcb4143993ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObjName: 
+  ObjName: Door1
   interactionTransform: {fileID: 147017705}
   radius: 0.3
+  player_: {fileID: 0}
   interactableType: 1
   inv: {fileID: 0}
+--- !u!114 &690054786775199138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6954527936566434054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7417e1636f994a9d8e8a3353157ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnProbability: 100
+  takenSpaces: 00000000
 --- !u!1 &7800827872080747676
 GameObject:
   m_ObjectHideFlags: 0
