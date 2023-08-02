@@ -46,8 +46,6 @@ public class Container : Interactable
                     obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
                 }
             }
-
-            Debug.Log("Opened");
         }
 
     }

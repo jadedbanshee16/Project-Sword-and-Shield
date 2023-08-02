@@ -20,9 +20,6 @@ public class pickUps : Interactable
      */
     public override void Interact()
     {
-        //When interacting,
-        Debug.Log("Pickup interact");
-
         //Add to inventory.
         inv.addToResourceInventory(resource, amount);
 

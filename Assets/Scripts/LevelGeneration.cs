@@ -294,72 +294,7 @@ public class LevelGeneration : MonoBehaviour
             //Find the closest cells per pair.
             Vector2 closestCells = findClosestCells(firstArr, secondArr);
 
-            //If there is only 1 difference between the zones, remove a single wall.
-            //If not, create teleporter.
-            if(getDistanceBetweenCells(firstArr[(int)closestCells.x], secondArr[(int)closestCells.y]) == 1)
-            {
-                int rotation = 0;
-                //Find the direction of the walls to be broken.
-                //If vertical to each other and positive, the second sell is above the first.
-                if(firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x == 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y > 0)
-                {
-                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(0);
-                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(2);
-                    rotation = 0;
-
-                } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x < 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y == 0)
-                {
-                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(1);
-                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(3);
-                    rotation = 90;
-
-                } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x == 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y < 0)
-                {
-                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(2);
-                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(0);
-                    rotation = 180;
-
-                } else if (firstArr[(int)closestCells.x].x - secondArr[(int)closestCells.y].x > 0 && firstArr[(int)closestCells.x].y - secondArr[(int)closestCells.y].y == 0)
-                {
-                    GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>().removeWalls(3);
-                    GetCell(secondArr[(int)closestCells.y]).GetComponent<CellClass>().removeWalls(1);
-                    rotation = 360;
-
-                }
-
-                //Now, add a package. So far, the teleporter package is all there is.
-                MapObjectPackage newPackageObjects = Instantiate(lvlBridges[1], this.transform).GetComponent<MapObjectPackage>();
-
-                int randNum = 0;
-
-                for (int v = 0; v < newPackageObjects.objectAmount(); v++)
-                {
-                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[(int)closestCells.x]).GetComponent<CellClass>(), true);
-                }
-
-            } else
-            {
-                //Now, add a package. So far, the teleporter package is all there is.
-                MapObjectPackage newPackageObjects = Instantiate(lvlBridges[0], this.transform).GetComponent<MapObjectPackage>();
-
-                int randNum = 0;
-
-                for (int v = 0; v < newPackageObjects.objectAmount(); v++)
-                {
-                    //Find the cell position.
-                    if (newPackageObjects.getPairIndex() < v)
-                    {
-                        randNum = UnityEngine.Random.Range(0, firstArr.Count);
-                        createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(firstArr[randNum]).GetComponent<CellClass>(), true);
-
-                    }
-                    else
-                    {
-                        randNum = UnityEngine.Random.Range(0, secondArr.Count);
-                        createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(secondArr[randNum]).GetComponent<CellClass>(), true);
-                    }
-                }
-            }
+            createBridge(firstArr, secondArr, closestCells);
         }
 
 
@@ -385,7 +320,8 @@ public class LevelGeneration : MonoBehaviour
                 o.transform.rotation = Quaternion.identity;
                 o.transform.SetParent(cell.gameObject.transform);
                 cell.removeZone(index, obj.takenSpaces, o);
-            } else
+            }
+            else
             {
                 float prob = obj.getSpawnProbability();
 
@@ -441,7 +377,14 @@ public class LevelGeneration : MonoBehaviour
                 //If you go through all the counts and there is more in the count than island cells, then try again.
                 if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.single), bridgePairs))
                 {
-                    bridgePairs[pair] = new Vector2(i, rand);
+                    //Ensure the smallest number is on the left.
+                    if(i > rand) 
+                    {
+                        bridgePairs[pair] = new Vector2(rand, i);
+                    } else
+                    {
+                        bridgePairs[pair] = new Vector2(i, rand);
+                    }
                 }
                 else
                 {
@@ -502,6 +445,91 @@ public class LevelGeneration : MonoBehaviour
             if (!valid)
             {
                 Debug.Log(valid);
+            }
+        }
+    }
+
+    private void createBridge(List<Vector2> Arr1, List<Vector2> Arr2, Vector2 cells)
+    {
+        //If there is only 1 difference between the zones, remove a single wall.
+        //If not, create teleporter.
+        if (getDistanceBetweenCells(Arr1[(int)cells.x], Arr2[(int)cells.y]) == 1)
+        {
+            int rotation = 0;
+            int index = 0;
+            //Find the direction of the walls to be broken.
+            //If vertical to each other and positive, the second sell is above the first.
+            if (Arr1[(int)cells.x].x - Arr2[(int)cells.y].x == 0 && Arr1[(int)cells.x].y - Arr2[(int)cells.y].y > 0)
+            {
+                GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().removeWalls(0);
+                GetCell(Arr2[(int)cells.y]).GetComponent<CellClass>().removeWalls(2);
+                rotation = 0;
+                index = 1;
+
+
+            }
+            else if (Arr1[(int)cells.x].x - Arr2[(int)cells.y].x < 0 && Arr1[(int)cells.x].y - Arr2[(int)cells.y].y == 0)
+            {
+                GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().removeWalls(1);
+                GetCell(Arr2[(int)cells.y]).GetComponent<CellClass>().removeWalls(3);
+                rotation = 90;
+                index = 2;
+
+            }
+            else if (Arr1[(int)cells.x].x - Arr2[(int)cells.y].x == 0 && Arr1[(int)cells.x].y - Arr2[(int)cells.y].y < 0)
+            {
+                GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().removeWalls(2);
+                GetCell(Arr2[(int)cells.y]).GetComponent<CellClass>().removeWalls(0);
+                rotation = 180;
+                index = 3;
+
+            }
+            else if (Arr1[(int)cells.x].x - Arr2[(int)cells.y].x > 0 && Arr1[(int)cells.x].y - Arr2[(int)cells.y].y == 0)
+            {
+                GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().removeWalls(3);
+                GetCell(Arr2[(int)cells.y]).GetComponent<CellClass>().removeWalls(1);
+                rotation = 270;
+                index = 4;
+
+            }
+
+            //Now, add a package. So far, the teleporter package is all there is.
+            MapObjectPackage newPackageObjects = Instantiate(lvlBridges[1], this.transform).GetComponent<MapObjectPackage>();
+
+            for (int v = 0; v < newPackageObjects.objectAmount(); v++)
+            {
+                if (v == 0)
+                {
+                    GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().addWall(newPackageObjects.getObject(v).gameObject, index, rotation);
+                }
+                else
+                {
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>(), false);
+                }
+            }
+
+        }
+        else
+        {
+            //Now, add a package. So far, the teleporter package is all there is.
+            MapObjectPackage newPackageObjects = Instantiate(lvlBridges[0], this.transform).GetComponent<MapObjectPackage>();
+
+            int randNum = 0;
+
+            for (int v = 0; v < newPackageObjects.objectAmount(); v++)
+            {
+                //Find the cell position.
+                if (newPackageObjects.getPairIndex() < v)
+                {
+                    randNum = UnityEngine.Random.Range(0, Arr1.Count);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(Arr1[randNum]).GetComponent<CellClass>(), true);
+
+                }
+                else
+                {
+                    randNum = UnityEngine.Random.Range(0, Arr2.Count);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(Arr2[randNum]).GetComponent<CellClass>(), true);
+                }
             }
         }
     }
