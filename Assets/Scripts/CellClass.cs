@@ -76,9 +76,18 @@ public class CellClass : MonoBehaviour
     }
 
     //Add wall to the walls list and instantiate the wall.
-    public void addWall(GameObject obj, int index, int angle)
+    public void addWall(GameObject obj, int index, int angle, bool instantiated)
     {
-        walls[index - 1] = Instantiate(obj, transform.position, Quaternion.Euler(0, angle, 0), transform);
+        if (instantiated)
+        {
+            walls[index - 1] = obj;
+            obj.transform.parent = transform;
+            obj.transform.position = transform.position;
+            obj.transform.rotation = Quaternion.Euler(0, angle, 0);
+        } else
+        {
+            walls[index - 1] = Instantiate(obj, transform.position, Quaternion.Euler(0, angle, 0), transform);
+        }
 
         int ind = 0;
         //Now remove all zones of that wall.

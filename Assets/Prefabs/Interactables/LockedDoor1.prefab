@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147017704}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.201, z: 0.838}
+  m_LocalPosition: {x: 0, y: 0.085, z: 0.994}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -126,8 +126,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.01, y: 0.020000018, z: 0.019999998}
-  m_Center: {x: -0.005064643, y: -1.4196753e-16, z: -3.598646e-17}
+  m_Size: {x: 0.01, y: 0.100828074, z: 0.019999998}
+  m_Center: {x: -0.005064643, y: -0.0030014967, z: -2.1152929e-17}
 --- !u!1 &6954527936566434054
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,14 +138,15 @@ GameObject:
   m_Component:
   - component: {fileID: 6954527936566434055}
   - component: {fileID: 6954527935920860336}
-  - component: {fileID: 1530029693}
   - component: {fileID: 690054786775199138}
+  - component: {fileID: 96516469590872111}
+  - component: {fileID: 4071758835991396333}
   m_Layer: 0
   m_Name: LockedDoor1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6954527936566434055
 Transform:
@@ -184,24 +185,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1530029693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6954527936566434054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb24f00c72a5d1947a40dcb4143993ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjName: Door1
-  interactionTransform: {fileID: 147017705}
-  radius: 0.3
-  player_: {fileID: 0}
-  interactableType: 1
-  inv: {fileID: 0}
 --- !u!114 &690054786775199138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +199,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnProbability: 100
   takenSpaces: 00000000
+--- !u!114 &96516469590872111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6954527936566434054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43e7bcea84b65ef4686a83f29038a287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjName: Door1
+  interactionTransform: {fileID: 147017705}
+  radius: 0.2
+  player_: {fileID: 0}
+  interactableType: 1
+  inv: {fileID: 0}
+  anim_: {fileID: 6954527935920860336}
+--- !u!65 &4071758835991396333
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6954527936566434054}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.39325783, y: 0.1453411, z: 0.049572706}
+  m_Center: {x: -0.0055386573, y: 0.4299579, z: 0.99198306}
 --- !u!1 &7800827872080747676
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,5 +472,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.01, y: 0.019999994, z: 0.019999998}
-  m_Center: {x: -0.005064643, y: 4.606267e-15, z: -9.1164065e-17}
+  m_Size: {x: 0.009999999, y: 0.08784128, z: 0.019999998}
+  m_Center: {x: -0.0050646416, y: 0.0010893617, z: -3.6348906e-19}

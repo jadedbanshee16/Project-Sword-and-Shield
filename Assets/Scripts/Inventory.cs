@@ -47,4 +47,14 @@ public class Inventory : MonoBehaviour
             resources[(int)index] += amount;
         }
     }
+
+    public int getInventory(pickUps.resourceTypes ind)
+    {
+        return resources[(int)ind];
+    }
+
+    public void removeResource(pickUps.resourceTypes ind, int amount)
+    {
+        resources[(int)ind] -= amount;
+    }
 }

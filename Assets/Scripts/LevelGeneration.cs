@@ -258,6 +258,8 @@ public class LevelGeneration : MonoBehaviour
 
         //Generate puzzles in the world.
         //DEBUG: The only puzzle available is a teleporter. As more are added, have them generate different points.
+        //Set up an array that would keep all possible connections.
+        int[][] connections = new int[bridgePairs.Length][];
 
         //Bridge objects. These are created objects that specifically deal with travelling across islands, and use island pairs.
         //Decide how many teleporters are needed.
@@ -265,6 +267,11 @@ public class LevelGeneration : MonoBehaviour
         {
             List<Vector2> firstArr = new List<Vector2>();
             List<Vector2> secondArr = new List<Vector2>();
+
+            //This is an array that would work through possible connections to find as many collections that
+            //do NOT relate to the current pair.
+            List<Vector2> collectedArr = new List<Vector2>();
+
             //First, create two arrays pf interactable cell types that are linked to each island.
             for (int x = 0; x < islands.Count; x++)
             {
@@ -291,10 +298,107 @@ public class LevelGeneration : MonoBehaviour
                 }
             }
 
+            List<int> connectedNodeIndex = new List<int>();
+
+            int currentIsland = (int)bridgePairs[b].x;
+            int markedIsland = (int)bridgePairs[b].y;
+
+            int v = 0;
+
+            //Go through the pairs and add every pair that has the listed number and NOT the marked number.
+            for (int x = 0; x < bridgePairs.Length; x++)
+            {
+                if((bridgePairs[x].x == currentIsland && bridgePairs[x].y != markedIsland) ||
+                   (bridgePairs[x].y == currentIsland && bridgePairs[x].x != markedIsland))
+                {
+                    if(bridgePairs[x].x == currentIsland)
+                    {
+                        connectedNodeIndex.Add((int)bridgePairs[x].y);
+                    } else
+                    {
+                        connectedNodeIndex.Add((int)bridgePairs[x].x);
+                    }
+                }
+            }
+
+            //Add the first island in the node index.
+            connectedNodeIndex.Add(currentIsland);
+
+            /*do
+            {
+                //Go through the pairs and add every pair that has the listed number and NOT the marked number.
+                for (int x = 0; x < bridgePairs.Length; x++)
+                {
+                    //If the node number appears and not the marked number, then add to list
+                    if (bridgePairs[x].x == connectedNodeIndex[v] && bridgePairs[x].y != markedIsland)
+                    {
+                        bool found = false;
+                        //Go through the list and see if number is already taken.
+                        for (int m = 0; m < connectedNodeIndex.Count(); m++)
+                        {
+                            if (bridgePairs[x].y == connectedNodeIndex[m])
+                            {
+                                found = true;
+                            }
+                        }
+
+                        if (!found)
+                        {
+                            connectedNodeIndex.Add((int)bridgePairs[x].y);
+                        }
+                    }
+
+                    if (bridgePairs[x].y == connectedNodeIndex[v] && bridgePairs[x].x != markedIsland)
+                    {
+                        bool found = false;
+                        //Go through the list and see if number is already taken.
+                        for (int m = 0; m < connectedNodeIndex.Count(); m++)
+                        {
+                            if (bridgePairs[x].x == connectedNodeIndex[m])
+                            {
+                                found = true;
+                            }
+                        }
+
+                        if (!found)
+                        {
+                            connectedNodeIndex.Add((int)bridgePairs[x].x);
+                        }
+                    }
+                }
+
+                //After that, iterate v to select the next current island on the list.
+                //This should continue until nothing else could be added to the list.
+                v++;
+            } while (v < connectedNodeIndex.Count());*/
+
+            for (int x = 0; x < connectedNodeIndex.Count(); x++)
+            {
+                Debug.Log(bridgePairs[b] + ": " + connectedNodeIndex[x]);
+            }
+
+            //Now that we have all of our connections for the first bridge node, now we can go through the connectionBridges.
+            //First, create two arrays pf interactable cell types that are linked to each island.
+            for (int x = 0; x < islands.Count; x++)
+            {
+                for(int n = 0; n < connectedNodeIndex.Count(); n++)
+                {
+                    if (islands[x].x == connectedNodeIndex[n])
+                    {
+                        //If the cell is not null AND has available slots, add to list.
+                        if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                          !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                        {
+                            collectedArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                        }
+                    }
+                }
+            }
+
             //Find the closest cells per pair.
             Vector2 closestCells = findClosestCells(firstArr, secondArr);
 
-            createBridge(firstArr, secondArr, closestCells);
+            createBridge(firstArr, secondArr, closestCells, collectedArr);
         }
 
 
@@ -449,7 +553,7 @@ public class LevelGeneration : MonoBehaviour
         }
     }
 
-    private void createBridge(List<Vector2> Arr1, List<Vector2> Arr2, Vector2 cells)
+    private void createBridge(List<Vector2> Arr1, List<Vector2> Arr2, Vector2 cells, List<Vector2> Arr3)
     {
         //If there is only 1 difference between the zones, remove a single wall.
         //If not, create teleporter.
@@ -500,11 +604,12 @@ public class LevelGeneration : MonoBehaviour
             {
                 if (v == 0)
                 {
-                    GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().addWall(newPackageObjects.getObject(v).gameObject, index, rotation);
+                    GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>().addWall(newPackageObjects.getObject(v).gameObject, index, rotation, true);
                 }
                 else
                 {
-                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(Arr1[(int)cells.x]).GetComponent<CellClass>(), false);
+                    int randNum = UnityEngine.Random.Range(0, Arr1.Count);
+                    createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(Arr1[randNum]).GetComponent<CellClass>(), true);
                 }
             }
 
@@ -723,22 +828,22 @@ public class LevelGeneration : MonoBehaviour
         if (!isUp)
         {
             randWall = (UnityEngine.Random.Range(0, walls.Length));
-            c.addWall(walls[randWall], 1, 0);
+            c.addWall(walls[randWall], 1, 0, false);
         }
         if (!isRight)
         {
             randWall = (UnityEngine.Random.Range(0, walls.Length));
-            c.addWall(walls[randWall], 2, 90);
+            c.addWall(walls[randWall], 2, 90, false);
         }
         if (!isDown)
         {
             randWall = (UnityEngine.Random.Range(0, walls.Length));
-            c.addWall(walls[randWall], 3, 180);
+            c.addWall(walls[randWall], 3, 180, false);
         }
         if (!isLeft)
         {
             randWall = (UnityEngine.Random.Range(0, walls.Length));
-            c.addWall(walls[randWall], 4, 270);
+            c.addWall(walls[randWall], 4, 270, false);
         }
     }
 
