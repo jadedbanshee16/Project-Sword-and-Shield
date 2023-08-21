@@ -120,7 +120,7 @@ public class LevelGeneration : MonoBehaviour
 
         if(walkSize > maxWalkSize)
         {
-            walkSize = (int)maxWalkSize;
+            //walkSize = (int)maxWalkSize;
         }
 
         //Create a grid and populate cells.
@@ -256,14 +256,212 @@ public class LevelGeneration : MonoBehaviour
         //Create pairs of islands in the pairs list for 'bridges'.
         createIslandPairs();
 
+        //A function to generate a path between two
+        int[] spawn_endPath = new int[islandCount() / 2];
+
+        for(int x = 0; x < islandCount() / 2; x++)
+        {
+            spawn_endPath[x] = x + 1;
+
+            //Debug.Log("Spawn Path: " + spawn_endPath[x]);
+        }
+
+        //Now, go through and get the distance between each pair.
+        int[] bridgeType = new int[bridgePairs.Length];
+        List<int>[] bridgeconnections = new List<int>[bridgePairs.Length];
+
+        //Initiate all the lists.
+        for(int x = 0; x < bridgeconnections.Length; x++)
+        {
+            bridgeconnections[x] = new List<int>();
+            bridgeconnections[x].Add((int)bridgePairs[x].x);
+        }
+
+
+        //Find the bridge type of all the pairs based on distance.
+        for(int x = 0; x < bridgeType.Length; x++)
+        {
+            //If the islands are close together AND not on the main path...
+             if (findIslandDistance((int)bridgePairs[x].x, (int)bridgePairs[x].y) == 1)
+             {
+                bool onPath = false;
+                for(int z = 0; z < spawn_endPath.Length; z++)
+                {
+                    if(z < spawn_endPath.Length - 1 && (bridgePairs[x].x == spawn_endPath[z] && bridgePairs[x].y == spawn_endPath[z + 1]))
+                    {
+                        onPath = true;
+                    }
+                }
+
+                if (onPath)
+                {
+                    //Teleporters.
+                    bridgeType[x] = 0;
+                } else
+                {
+                    bridgeType[x] = 1;
+                }
+            } else
+             {
+                //Teleporters.
+                bridgeType[x] = 0;
+             }
+        }
+
+        //Find the possible connected connections for every door type.
+        for(int x = 0; x < bridgePairs.Length; x++)
+        {
+            //First, only do this for ones that are bridge types.
+            if(bridgeType[x] == 1)
+            {
+                //Iterate through again to find all points starting with the same start as this loop.
+                for(int currentLoop = 0; currentLoop < bridgePairs.Length; currentLoop++)
+                {
+                    if(bridgePairs[x].x == bridgePairs[currentLoop].x)
+                    {
+                        if (!ContainsInt((int)bridgePairs[currentLoop].y, bridgeconnections[x]) && bridgeType[currentLoop] != 1)
+                        {
+                            //If NOT a door, add the second point.
+                            bridgeconnections[x].Add((int)bridgePairs[currentLoop].y);
+                        }
+                    }
+                }
+            }
+        }
+
+        //Debug the list.
+        /*for(int x = 0; x < bridgeconnections.Length; x++)
+        {
+            Debug.Log("Bridge: " + bridgePairs[x] + ", type: " + bridgeType[x]);
+
+            for(int m = 0; m < bridgeconnections[x].Count; m++)
+            {
+                Debug.Log("    " + bridgeconnections[x][m]);
+            }
+        }*/
+
+        //Generate the bridge for all pairs.
+        for (int b = 0; b < bridgePairs.Length; b++)
+        {
+            //Create the possible arrays.
+            List<Vector2> firstArr = new List<Vector2>();
+            List<Vector2> secondArr = new List<Vector2>();
+
+            //Go through and populate the array based on the cells of each section.
+            //Iterate through all islands listed in the connected bridges.
+            for (int x = 0; x < bridgeconnections[b].Count; x++)
+            {
+                //Go through all islands cells.
+                for (int n = 0; n < islands.Count; n++)
+                {
+                    //Match the island cell to a cell in the bridge connection.
+                    if (islands[n].x == bridgeconnections[b][x])
+                    {
+                        //If the cell is not null AND has available slots, add to list.
+                        if (GetCell(new Vector2((int)islands[n].y, (int)islands[n].z)) != null &&
+                          !GetCell(new Vector2((int)islands[n].y, (int)islands[n].z)).GetComponent<CellClass>().getAllZonesUsed())
+                        {
+                            //Add cell to the array.
+                            firstArr.Add(new Vector2((int)islands[n].y, (int)islands[n].z));
+                        }
+                    }
+                }
+            }
+
+            //Do the same, but with the second array. This is stuck as just the only island.
+            for (int x = 0; x < islands.Count; x++)
+            {
+                if (islands[x].x == (int)bridgePairs[b].y)
+                {
+                    if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                      !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                    {
+                        secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                    }
+                }
+            }
+
+            createBridge(firstArr, secondArr, findClosestCells(firstArr, secondArr), bridgeType[b]);
+
+        }
+            //Algorithm to spawn a free portal.
+            /*if (bridgeType[b] == 0)
+            {
+                List<Vector2> firstArr = new List<Vector2>();
+                List<Vector2> secondArr = new List<Vector2>();
+
+                //First, create two arrays pf interactable cell types that are linked to each island.
+                for (int x = 0; x < islands.Count; x++)
+                {
+                    if (islands[x].x == (int)bridgePairs[b].x)
+                    {
+                        //If the cell is not null AND has available slots, add to list.
+                        if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                          !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                        {
+                            firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                        }
+                    }
+                }
+
+                for (int x = 0; x < islands.Count; x++)
+                {
+                    if (islands[x].x == (int)bridgePairs[b].y)
+                    {
+                        if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                          !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                        {
+                            secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                        }
+                    }
+                }
+
+                //MUST CHANGE FOR NEW VERSION.
+                //createBridge(firstArr, secondArr, findClosestCells(firstArr, secondArr), collectedArr);
+
+            //Generate a door that has a valid chest or terminal to work with.
+            } else if (bridgeType[b] == 1)
+            {
+                List<Vector2> firstArr = new List<Vector2>();
+                List<Vector2> secondArr = new List<Vector2>();
+
+                //First, create two arrays pf interactable cell types that are linked to each island.
+                for (int x = 0; x < islands.Count; x++)
+                {
+                    if (islands[x].x == (int)bridgePairs[b].x)
+                    {
+                        //If the cell is not null AND has available slots, add to list.
+                        if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                          !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                        {
+                            firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                        }
+                    }
+                }
+
+                for (int x = 0; x < islands.Count; x++)
+                {
+                    if (islands[x].x == (int)bridgePairs[b].y)
+                    {
+                        if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                          !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                        {
+                            secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                        }
+                    }
+                }
+
+                //createBridge(firstArr, secondArr, findClosestCells(firstArr, secondArr), collectedArr);
+            }*/
+
+        createObjectZones(lvlAdditions, 3);
+
         //Generate puzzles in the world.
         //DEBUG: The only puzzle available is a teleporter. As more are added, have them generate different points.
-        //Set up an array that would keep all possible connections.
-        int[][] connections = new int[bridgePairs.Length][];
 
         //Bridge objects. These are created objects that specifically deal with travelling across islands, and use island pairs.
         //Decide how many teleporters are needed.
-        for (int b = 0; b < bridgePairs.Length; b++)
+        /*for (int b = 0; b < bridgePairs.Length; b++)
         {
             List<Vector2> firstArr = new List<Vector2>();
             List<Vector2> secondArr = new List<Vector2>();
@@ -324,7 +522,7 @@ public class LevelGeneration : MonoBehaviour
             //Add the first island in the node index.
             connectedNodeIndex.Add(currentIsland);
 
-            /*do
+            do
             {
                 //Go through the pairs and add every pair that has the listed number and NOT the marked number.
                 for (int x = 0; x < bridgePairs.Length; x++)
@@ -372,38 +570,36 @@ public class LevelGeneration : MonoBehaviour
                 v++;
             } while (v < connectedNodeIndex.Count());*/
 
-            for (int x = 0; x < connectedNodeIndex.Count(); x++)
-            {
-                Debug.Log(bridgePairs[b] + ": " + connectedNodeIndex[x]);
-            }
+        /*for (int x = 0; x < connectedNodeIndex.Count(); x++)
+        {
+            Debug.Log(bridgePairs[b] + ": " + connectedNodeIndex[x]);
+        }*/
 
-            //Now that we have all of our connections for the first bridge node, now we can go through the connectionBridges.
-            //First, create two arrays pf interactable cell types that are linked to each island.
-            for (int x = 0; x < islands.Count; x++)
+        //Now that we have all of our connections for the first bridge node, now we can go through the connectionBridges.
+        //First, create two arrays pf interactable cell types that are linked to each island.
+        /*for (int x = 0; x < islands.Count; x++)
+        {
+            for(int n = 0; n < connectedNodeIndex.Count(); n++)
             {
-                for(int n = 0; n < connectedNodeIndex.Count(); n++)
+                if (islands[x].x == connectedNodeIndex[n])
                 {
-                    if (islands[x].x == connectedNodeIndex[n])
+                    //If the cell is not null AND has available slots, add to list.
+                    if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                      !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
                     {
-                        //If the cell is not null AND has available slots, add to list.
-                        if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
-                          !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
-                        {
-                            collectedArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
-                        }
+                        collectedArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
                     }
                 }
             }
-
-            //Find the closest cells per pair.
-            Vector2 closestCells = findClosestCells(firstArr, secondArr);
-
-            createBridge(firstArr, secondArr, closestCells, collectedArr);
         }
 
+        //Find the closest cells per pair.
+        Vector2 closestCells = findClosestCells(firstArr, secondArr);
 
-        createObjectZones(lvlAdditions, 3);
+        createBridge(firstArr, secondArr, closestCells, collectedArr);
+    }*/
     }
+
     /*
      * Spawn an object in the world, if there is space for it.
      */
@@ -468,7 +664,7 @@ public class LevelGeneration : MonoBehaviour
 
             int pair = 0;
 
-            //Get the amount of islands and if it's even, then half. If not, add one, halve, then remove the last.
+            //Get the first half, then generate the pair using the island, then 1 above the island.
             for (int i = 1; i < islandDivision; i++)
             {
                 bridgePairs[pair] = new Vector2(i, i + 1);
@@ -477,18 +673,20 @@ public class LevelGeneration : MonoBehaviour
 
             for (int i = islandDivision + 1; i <= islandCount(); i++)
             {
-                int rand = UnityEngine.Random.Range(1, islandDivision);
-                //If you go through all the counts and there is more in the count than island cells, then try again.
-                if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.single), bridgePairs))
+                int rand = UnityEngine.Random.Range(1, i);
+
+                //Ensure the smallest number is on the left.
+                if (i > rand)
                 {
-                    //Ensure the smallest number is on the left.
-                    if(i > rand) 
-                    {
-                        bridgePairs[pair] = new Vector2(rand, i);
-                    } else
-                    {
-                        bridgePairs[pair] = new Vector2(i, rand);
-                    }
+                    bridgePairs[pair] = new Vector2(rand, i);
+                }
+                else
+                {
+                    bridgePairs[pair] = new Vector2(i, rand);
+                }
+                //count duplicates to see if 
+                /*if (!countDuplicates(rand, countIslandCells(rand, islandCellCountType.single), bridgePairs))
+                {
                 }
                 else
                 {
@@ -499,7 +697,7 @@ public class LevelGeneration : MonoBehaviour
                             bridgePairs[pair] = new Vector2(i, y + 1);
                         }
                     }
-                }
+                }*/
                 pair++;
             }
 
@@ -553,11 +751,11 @@ public class LevelGeneration : MonoBehaviour
         }
     }
 
-    private void createBridge(List<Vector2> Arr1, List<Vector2> Arr2, Vector2 cells, List<Vector2> Arr3)
+    private void createBridge(List<Vector2> Arr1, List<Vector2> Arr2, Vector2 cells, int type)
     {
         //If there is only 1 difference between the zones, remove a single wall.
         //If not, create teleporter.
-        if (getDistanceBetweenCells(Arr1[(int)cells.x], Arr2[(int)cells.y]) == 1)
+        if (type == 1)
         {
             int rotation = 0;
             int index = 0;
@@ -861,6 +1059,21 @@ public class LevelGeneration : MonoBehaviour
         return coordinate.x >= 0 && coordinate.x < sizeX && coordinate.y >= 0 && coordinate.y < sizeZ;
     }
 
+    public bool ContainsInt(int num, List<int> list)
+    {
+        bool contain = false;
+
+        for(int i = 0; i < list.Count; i++)
+        {
+            if(num == list[i])
+            {
+                contain = true;
+            }
+        }
+
+        return contain;
+    }
+
     /*
      * ISLAND FUNCTIONS
      */
@@ -901,6 +1114,60 @@ public class LevelGeneration : MonoBehaviour
         }
 
         return c;
+    }
+
+    private int findIslandDistance(int island1, int island2)
+    {
+        List<Vector2> firstArr = new List<Vector2>();
+        List<Vector2> secondArr = new List<Vector2>();
+
+        //This is an array that would work through possible connections to find as many collections that
+        //do NOT relate to the current pair.
+        List<Vector2> collectedArr = new List<Vector2>();
+
+        //First, create two arrays pf interactable cell types that are linked to each island.
+        for (int x = 0; x < islands.Count; x++)
+        {
+            if (islands[x].x == (int)island1)
+            {
+                //If the cell is not null AND has available slots, add to list.
+                if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                  !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                {
+                    firstArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                }
+            }
+        }
+
+        for (int x = 0; x < islands.Count; x++)
+        {
+            if (islands[x].x == (int)island2)
+            {
+                if (GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)) != null &&
+                  !GetCell(new Vector2((int)islands[x].y, (int)islands[x].z)).GetComponent<CellClass>().getAllZonesUsed())
+                {
+                    secondArr.Add(new Vector2((int)islands[x].y, (int)islands[x].z));
+                }
+            }
+        }
+
+        float dist = Mathf.Infinity;
+
+        for (int i = 0; i < firstArr.Count; i++)
+        {
+            for (int u = 0; u < secondArr.Count; u++)
+            {
+                //Get the distance between the 2 cells.
+                int newDist = getDistanceBetweenCells(firstArr[i], secondArr[u]);
+
+                if (dist > newDist)
+                {
+                    dist = newDist;
+                }
+            }
+        }
+
+        return (int)dist;
     }
 
     private int getDistanceBetweenCells(Vector2 cell1, Vector2 cell2)

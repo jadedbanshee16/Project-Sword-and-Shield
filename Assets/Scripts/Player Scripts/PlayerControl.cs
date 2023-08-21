@@ -67,7 +67,7 @@ public class PlayerControl : MonoBehaviour
             //When pressed, find out if an interactable is pressed.
             Interactable focus = PlayerInteractable();
 
-            Debug.Log(focus);
+            //Debug.Log(focus);
             //If interactable and a ghost interactable, do stuff.
             if (focus != null && focus.getType() == Interactable.interactType.playerInteractable)
             {
@@ -187,7 +187,10 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            inter = allInteractables[closestObject].GetComponent<Interactable>();
+            if (closestObject > -1 && allInteractables[closestObject] != null && allInteractables[closestObject].GetComponent<Interactable>() != null)
+            {
+                inter = allInteractables[closestObject].GetComponent<Interactable>();
+            }
         }
 
 

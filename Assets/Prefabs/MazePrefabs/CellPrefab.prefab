@@ -1649,8 +1649,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  cellGrid: []
-  pathLength: 7
 --- !u!1 &3714179583782131459
 GameObject:
   m_ObjectHideFlags: 0

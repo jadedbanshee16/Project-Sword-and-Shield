@@ -41,7 +41,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1312036848498212422}
   - component: {fileID: 2053151864}
-  - component: {fileID: 1034702705325680564}
   - component: {fileID: 724042548}
   m_Layer: 0
   m_Name: Chest 1
@@ -90,20 +89,6 @@ MonoBehaviour:
   throwStrength: 75
   resourceContents: []
   mandatoryContents: []
---- !u!114 &1034702705325680564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1312036848498212421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2a7417e1636f994a9d8e8a3353157ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnProbability: 100
-  takenSpaces: 00000000
 --- !u!65 &724042548
 BoxCollider:
   m_ObjectHideFlags: 0
