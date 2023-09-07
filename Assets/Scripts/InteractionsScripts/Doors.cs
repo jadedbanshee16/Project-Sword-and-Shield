@@ -6,26 +6,28 @@ public class Doors : Interactable
 {
     public Animator anim_;
 
+    private DoorOpeningScript doorScript;
+
     private bool opened = false;
 
     public override void Interact()
     {
         Debug.Log("Door interaction");
 
+        //Get the doorscript.
+        if(doorScript == null)
+        {
+            doorScript = GetComponent<DoorOpeningScript>();
+        }
+
         if (!opened)
         {
-            //If a key is the inventory, then open door.
-            if (inv.getInventory(pickUps.resourceTypes.keys) > 0)
+            if (doorScript.testLock())
             {
-                //Remove the resource when done.
-                inv.removeResource(pickUps.resourceTypes.keys, 1);
-
                 anim_.SetBool("Key", true);
 
                 opened = true;
             }
         }
-
-
     }
 }

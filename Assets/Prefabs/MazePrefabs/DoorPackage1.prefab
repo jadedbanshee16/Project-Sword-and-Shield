@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objs:
+  - {fileID: 3955601145253375621, guid: ff96474f22ccc69439de8e06d6ad4b12, type: 3}
   - {fileID: 1276894403674626090, guid: 3236b62ac2c3edc44b6b0dd273857ca6, type: 3}
   door: {fileID: 8429277094213712523}
 --- !u!114 &4147648715164529900
