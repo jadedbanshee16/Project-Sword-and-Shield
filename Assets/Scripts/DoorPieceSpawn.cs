@@ -5,26 +5,54 @@ using UnityEngine;
 public class DoorPieceSpawn : MonoBehaviour
 {
 
+    public enum doorType
+    {
+        key,
+        terminal,
+        ghostTerm,
+        terminal3,
+    }
+
     public GameObject[] objs;
 
-    private GameObject currentInstance;
+    private GameObject[] currentInstance;
 
     public GameObject door;
+
+    public doorType type;
     // Start is called before the first frame update
     void Start()
     {
         //Choose one of the objects and spawn it.
-        int rand = Random.Range(0, objs.Length);
+        int rand = Random.Range(0, 2);
 
-        //create the new object.
-        currentInstance = Instantiate(objs[rand], transform);
+        type = (doorType)rand;
 
-        //Now link the door to the possible terminal.
-        Terminal terminal = currentInstance.GetComponent<Terminal>();
-        if(terminal != null)
+        Debug.Log(type + " | " + (doorType)rand);
+
+        if(type == doorType.key)
         {
-            terminal.setDoor(door);
-            door.GetComponent<DoorOpeningScript>().setDoorType(DoorOpeningScript.doorType.terminal);
+            currentInstance = new GameObject[] { Instantiate(objs[1], transform) };
+        } else if (type == doorType.terminal)
+        {
+            currentInstance = new GameObject[] { Instantiate(objs[0], transform) };
+
+        } else if (type == doorType.terminal3)
+        {
+            currentInstance = new GameObject[] { Instantiate(objs[0], transform), 
+                                                 Instantiate(objs[0], transform), 
+                                                 Instantiate(objs[0], transform) };
+        }
+
+        for (int i = 0; i < currentInstance.Length; i++)
+        {
+            //Now link the door to the possible terminal.
+            Terminal terminal = currentInstance[i].GetComponent<Terminal>();
+            if (terminal != null)
+            {
+                terminal.setDoor(door);
+                door.GetComponent<DoorOpeningScript>().setDoorType(DoorOpeningScript.doorType.terminal);
+            }
         }
     }
 }
