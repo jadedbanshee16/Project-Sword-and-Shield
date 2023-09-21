@@ -8,22 +8,33 @@ using UnityEngine;
  */
 public class MapObjectPackage : MonoBehaviour
 {
-    public GameObject[] objects;
+    public List<GameObject> objects;
 
     public int endFirstIsland;
 
-    public GameObject getObject(int ind)
-    {
-        return objects[ind];
-    }
-
     public int objectAmount()
     {
-        return objects.Length;
+        return objects.Count;
     }
 
     public int getPairIndex()
     {
         return endFirstIsland;
+    }
+
+    //A function to get all objects in the package.
+    public void collectObjects()
+    {
+        objects = new List<GameObject>();
+
+        foreach(Transform child in transform)
+        {
+            objects.Add(child.gameObject);
+        }
+    }
+
+    public GameObject getObject(int ind)
+    {
+        return objects[ind];
     }
 }

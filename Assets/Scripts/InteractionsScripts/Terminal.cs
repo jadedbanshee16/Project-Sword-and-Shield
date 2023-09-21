@@ -47,6 +47,9 @@ public class Terminal : Interactable
         //When set, go to door script and see if a match has occured.
         door.updateLock(openable);
 
+        //Now, open the door.
+        door.GetComponent<Interactable>().Interact();
+
         //Change Light to indicate the correctness.
         if (currentPlane == 0)
         {
