@@ -14,7 +14,7 @@ public class DoorOpeningScript : MonoBehaviour
     {
         key,
         terminal,
-        combination
+        terminal3
     }
 
     private doorType type;
@@ -57,5 +57,10 @@ public class DoorOpeningScript : MonoBehaviour
     public void setDoorType(doorType t)
     {
         type = t;
+    }
+
+    public doorType getDoorType()
+    {
+        return type;
     }
 }
