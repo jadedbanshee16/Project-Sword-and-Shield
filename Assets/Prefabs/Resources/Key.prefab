@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3732602778929166726}
   - component: {fileID: 3732602778929166725}
   - component: {fileID: 3732602778929166724}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 3732602779192621550}
   - component: {fileID: 3732602779192621545}
   - component: {fileID: 3732602779192621544}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 3732602780197963722}
   - component: {fileID: 3732602780197963720}
   - component: {fileID: 3732602780197963723}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4991,7 +4991,7 @@ GameObject:
   - component: {fileID: 1103280399184011009}
   - component: {fileID: 1103280399184011008}
   - component: {fileID: 6451766530241658155}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Key
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5088,7 +5088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 871417670934644860}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

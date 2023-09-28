@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4378214888484553698}
   - component: {fileID: 4378214888484553699}
   - component: {fileID: 4644154298577669291}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SpringsResource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 18567315992124201}
   - component: {fileID: 18567315992124203}
   - component: {fileID: 18567315992124200}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4924,7 +4924,7 @@ GameObject:
   - component: {fileID: 18567317132158221}
   - component: {fileID: 18567317132158218}
   - component: {fileID: 18567317132158219}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5007,7 +5007,7 @@ GameObject:
   - component: {fileID: 18567317411865957}
   - component: {fileID: 18567317411865958}
   - component: {fileID: 18567317411865959}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5088,7 +5088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5096504849283423359}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

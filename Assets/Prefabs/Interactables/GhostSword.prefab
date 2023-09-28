@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8469722857708692344}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionPoint (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 8469722857986672214}
   - component: {fileID: 8469722857986672211}
   - component: {fileID: 8469722857986672208}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ItemUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 8469722858192982507}
   - component: {fileID: 8469722858192982501}
   - component: {fileID: 8469722858192982506}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BackgroundShard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 8469722859524391635}
   - component: {fileID: 8469722859524391634}
   - component: {fileID: 1663622269793021777}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GhostSword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,6 +335,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4036914658791228662, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8231314256071995211, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
       propertyPath: ShapeModule.type
       value: 17
@@ -422,6 +426,10 @@ PrefabInstance:
     - target: {fileID: 8387742392266127525, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
       propertyPath: m_Name
       value: ItemParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387742392266127525, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9195955367116556652, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
       propertyPath: m_Mesh

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3054154473825711453}
   - component: {fileID: 3054154473825711450}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Teleporters
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,13 +57,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3054154473825711453}
     m_Modifications:
+    - target: {fileID: 559182371, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1042350092438111836, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: pair
       value: 
       objectReference: {fileID: 6556227424735978605}
+    - target: {fileID: 3183084719805957854, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3183084719847282016, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: m_Name
       value: Teleporter (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183084719847282016, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3183084719847282019, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: m_RootOrder
@@ -108,6 +120,14 @@ PrefabInstance:
     - target: {fileID: 3183084719847282019, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183084720150952089, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183084720723163635, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
@@ -128,13 +148,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3054154473825711453}
     m_Modifications:
+    - target: {fileID: 559182371, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1042350092438111836, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: pair
       value: 
       objectReference: {fileID: 755556984848365755}
+    - target: {fileID: 3183084719805957854, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3183084719847282016, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: m_Name
       value: Teleporter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183084719847282016, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3183084719847282019, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: m_RootOrder
@@ -179,6 +211,14 @@ PrefabInstance:
     - target: {fileID: 3183084719847282019, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183084720150952089, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183084720723163635, guid: 856f900068abc594db7ead8b34cba02f, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 856f900068abc594db7ead8b34cba02f, type: 3}

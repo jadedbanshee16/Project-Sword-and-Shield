@@ -63,9 +63,9 @@ public class LevelGeneration : MonoBehaviour
     public GameObject path;
 
     private GameObject[,] cells;
-    private GameObject[,] interactableCells;
     private List<Vector3> islands;
     private Vector2[] bridgePairs;
+    private List<Vector2>[] paths;
 
     //The bounding sizes of a cell.
     private float cellSizeX;
@@ -998,7 +998,7 @@ public class LevelGeneration : MonoBehaviour
                     for(int z = 0; z < sizeZ; z++)
                     {
                         //If x,z matches the coordinates of the island cell, then iterate count.
-                        if(interactableCells[b,z] != null && islands[i].x == x && b == (int)islands[i].y && z == (int)islands[i].z)
+                        if(islands[i].x == x && b == (int)islands[i].y && z == (int)islands[i].z)
                         {
                             count++;
                         }

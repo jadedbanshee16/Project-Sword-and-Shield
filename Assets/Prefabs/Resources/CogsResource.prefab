@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4360467259082796350}
   - component: {fileID: 4360467259082796348}
   - component: {fileID: 4360467259082796351}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4825,7 +4825,7 @@ GameObject:
   - component: {fileID: 940553717}
   - component: {fileID: 940553716}
   - component: {fileID: -5910322731524934530}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CogsResource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4924,7 +4924,7 @@ GameObject:
   - component: {fileID: 4360467259961463666}
   - component: {fileID: 4360467259961463665}
   - component: {fileID: 4360467259961463664}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5007,7 +5007,7 @@ GameObject:
   - component: {fileID: 4360467260224394010}
   - component: {fileID: 4360467260224394013}
   - component: {fileID: 4360467260224394012}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5088,7 +5088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 684135636976855605}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

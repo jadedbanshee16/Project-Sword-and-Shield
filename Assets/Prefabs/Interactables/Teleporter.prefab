@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 559182372}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 3183084719805957849}
   - component: {fileID: 3183084719805957851}
   - component: {fileID: 3183084719805957848}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4855,7 +4855,7 @@ GameObject:
   - component: {fileID: 1042350092438111836}
   - component: {fileID: -8147602876563430233}
   - component: {fileID: 8271402091198859428}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Teleporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4937,7 +4937,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3183084720150952088}
   - component: {fileID: 3183084720150952091}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5034,7 +5034,7 @@ GameObject:
   - component: {fileID: 3183084720723163532}
   - component: {fileID: 3183084720723163533}
   - component: {fileID: 3183084720723163534}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
