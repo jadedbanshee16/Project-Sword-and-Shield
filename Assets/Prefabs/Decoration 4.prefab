@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1281651700979562213}
   - component: {fileID: 2634720707076589981}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Decoration 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,6 +111,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WoodCrate1 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 734305177754710988, guid: 55c8b80433f61db499c8eac160c855ef, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55c8b80433f61db499c8eac160c855ef, type: 3}
 --- !u!4 &1203095972864572541 stripped
@@ -172,6 +176,10 @@ PrefabInstance:
     - target: {fileID: 686478256989087381, guid: 7f157195b933a42449b3375ec045b304, type: 3}
       propertyPath: m_Name
       value: WoodCrate2 Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 686478256989087381, guid: 7f157195b933a42449b3375ec045b304, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f157195b933a42449b3375ec045b304, type: 3}

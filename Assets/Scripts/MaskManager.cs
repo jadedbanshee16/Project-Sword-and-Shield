@@ -31,12 +31,16 @@ public class MaskManager : MonoBehaviour
                 if (alpha > 0)
                 {
                     alpha -= Time.deltaTime;
+                } else
+                {
+                    mat.gameObject.SetActive(false);
                 }
             }
             else
             {
                 if(alpha < 1)
                 {
+                    mat.gameObject.SetActive(true);
                     alpha += Time.deltaTime;
                 }
             }
