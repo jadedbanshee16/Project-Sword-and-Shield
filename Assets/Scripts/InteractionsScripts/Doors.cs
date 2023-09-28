@@ -25,8 +25,14 @@ public class Doors : Interactable
             if (doorScript.testLock())
             {
                 anim_.SetBool("Key", true);
-
                 opened = true;
+            }
+        } else
+        {
+            if (!doorScript.testLock())
+            {
+                anim_.SetBool("Key", false);
+                opened = false;
             }
         }
     }

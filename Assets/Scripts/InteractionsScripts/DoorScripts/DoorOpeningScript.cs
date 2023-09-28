@@ -20,7 +20,7 @@ public class DoorOpeningScript : MonoBehaviour
     private doorType type;
     public bool testLock()
     {
-        if(type == doorType.key)
+        if(type == doorType.key && !canBeOpened)
         {
             //Get the inventory.
             Inventory _inv = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Inventory>();

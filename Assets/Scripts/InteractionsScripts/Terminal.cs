@@ -44,6 +44,8 @@ public class Terminal : Interactable
             openable = true;
         }
 
+        Debug.Log(openable);
+
         //When set, go to door script and see if a match has occured.
         door.updateLock(openable);
 
