@@ -806,6 +806,7 @@ public class LevelGeneration : MonoBehaviour
                 }
                 else
                 {
+                    //Change here to go through the 'piece' and spawn it's stuff into each section.
                     int randNum = UnityEngine.Random.Range(0, Arr1.Count);
                     createObject(newPackageObjects.getObject(v).GetComponent<MapObject>(), GetCell(Arr1[randNum]).GetComponent<CellClass>(), true);
                 }

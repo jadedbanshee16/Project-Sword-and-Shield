@@ -49,6 +49,7 @@ MonoBehaviour:
   - {fileID: 3955601145253375621, guid: ff96474f22ccc69439de8e06d6ad4b12, type: 3}
   - {fileID: 1276894403674626090, guid: 3236b62ac2c3edc44b6b0dd273857ca6, type: 3}
   door: {fileID: 8429277094213712523}
+  type: 0
 --- !u!114 &4147648715164529900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,6 +74,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8429277093517410621}
   - component: {fileID: 3481078735100650358}
+  - component: {fileID: 7766570270512105049}
   m_Layer: 0
   m_Name: DoorPackage1
   m_TagString: Untagged
@@ -113,6 +115,23 @@ MonoBehaviour:
   - {fileID: 8429277094213712523}
   - {fileID: 5727948678215181956}
   endFirstIsland: 1
+--- !u!114 &7766570270512105049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429277093517410622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e44550f7a5ce85349b24cc95f788834a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objs:
+  - {fileID: 3955601145253375621, guid: ff96474f22ccc69439de8e06d6ad4b12, type: 3}
+  - {fileID: 1276894403674626090, guid: 3236b62ac2c3edc44b6b0dd273857ca6, type: 3}
+  door: {fileID: 8429277094213712523}
+  type: 0
 --- !u!1001 &1475417699573261197
 PrefabInstance:
   m_ObjectHideFlags: 0
