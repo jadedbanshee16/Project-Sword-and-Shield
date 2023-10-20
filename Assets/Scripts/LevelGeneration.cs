@@ -62,8 +62,8 @@ public class LevelGeneration : MonoBehaviour
     public GameObject lvlChests;
     public GameObject path;
 
-    private CellClass[,] cells;
-    //private List<Vector3> islands;
+    private GameObject[,] cells;
+    private List<Vector3> islands;
     private Vector2[] bridgePairs;
     private List<Vector2>[] paths;
 
@@ -124,7 +124,7 @@ public class LevelGeneration : MonoBehaviour
         }
 
         //Create a grid and populate cells.
-        cells = new CellClass[sizeX, sizeZ];
+        cells = new GameObject[sizeX, sizeZ];
 
         Vector2 randCor = RandomCoordinates(0, 0, sizeX, sizeZ);
         int i = 0;
@@ -132,7 +132,7 @@ public class LevelGeneration : MonoBehaviour
         //Create a new island.
         int isCount = 0;
         bool newIsland = true;
-        //islands = new List<Vector3>();
+        islands = new List<Vector3>();
 
         while (i < walkSize)
         {
@@ -150,7 +150,7 @@ public class LevelGeneration : MonoBehaviour
             if (ContainsCoordinates(randCor) && GetCell(randCor) == null)
             {
                 //Find out if the cell has any neighbours within current island.
-                if (!newIsland && findNeighbours(isCount, (int)randCor.x, (int)randCor.y))
+                if (!newIsland && findNeighbours(new Vector3(isCount, randCor.x, randCor.y)))
                 {
                     CreateCell((int)randCor.x, (int)randCor.y);
 
@@ -724,38 +724,36 @@ public class LevelGeneration : MonoBehaviour
         //Debug.Log("Deleted: " + index);
     }
 
-    private bool findNeighbours(int island, int posX, int posZ)
+    private bool findNeighbours(Vector3 cell)
     {
         //First, find a matching square.
-        for (int x = 0; x < sizeX; x++)
+        for (int x = 0; x < islands.Count; x++)
         {
-            for(int z = 0; z < sizeZ; z++)
+            if (cell.x == islands[x].x)
             {
-                if(cells[x,z] != null && island == cells[x,z].getIslandNum())
+
+                //Find left.
+                if (cell.y - 1 == islands[x].y && cell.z == islands[x].z)
                 {
-                    //Find left.
-                    if (posX - 1 == x && posZ == z)
-                    {
-                        return true;
-                    }
+                    return true;
+                }
 
-                    //Find right.
-                    if (posX + 1 == x && posZ == z)
-                    {
-                        return true;
-                    }
+                //Find right.
+                if (cell.y + 1 == islands[x].y && cell.z == islands[x].z)
+                {
+                    return true;
+                }
 
-                    //Find up
-                    if (posZ + 1 == z && posX == x)
-                    {
-                        return true;
-                    }
+                //Find up
+                if (cell.z + 1 == islands[x].z && cell.y == islands[x].y)
+                {
+                    return true;
+                }
 
-                    //Find down
-                    if (posZ - 1 == z && posX == x)
-                    {
-                        return true;
-                    }
+                //Find down
+                if (cell.z - 1 == islands[x].z && cell.y == islands[x].y)
+                {
+                    return true;
                 }
             }
         }
