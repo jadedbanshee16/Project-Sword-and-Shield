@@ -10,6 +10,8 @@ public class CellClass : MonoBehaviour
 
     private bool allZonesUsed;
 
+    private int island;
+
     public void removeZone(int index, int[] spaces, GameObject obj)
     {
         for(int i = 0; i < spaces.Length; i++)
@@ -166,6 +168,11 @@ public class CellClass : MonoBehaviour
         }
 
         return trans;
+    }
+
+    public int getIslandNum()
+    {
+        return island;
     }
 
     public int getZoneIndex()
