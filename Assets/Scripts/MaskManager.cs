@@ -24,8 +24,8 @@ public class MaskManager : MonoBehaviour
 
         if(Physics.Raycast(currentCam.transform.position, direction, out hit, 100f))
         {
-            Debug.Log(hit.collider.gameObject.name);
-            Debug.DrawRay(currentCam.transform.position, hit.collider.transform.position, Color.yellow);
+            //Debug.Log(hit.collider.gameObject.name);
+            //Debug.DrawRay(currentCam.transform.position, hit.collider.transform.position, Color.yellow);
             if (hit.collider.tag == "Player")
             {
                 if (alpha > 0)

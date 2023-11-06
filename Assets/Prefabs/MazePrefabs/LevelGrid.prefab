@@ -68,5 +68,6 @@ MonoBehaviour:
   - {fileID: 1460136484917263139, guid: 69326d906fe6aa346b35806a574b0221, type: 3}
   - {fileID: 1281651700979562212, guid: 6cc4369587f873741b47a0f7d50de063, type: 3}
   - {fileID: 6328381659662387214, guid: aa023725d2499a0439c06eafff69f9c3, type: 3}
-  lvlChests: {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
+  lvlChests:
+  - {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
   path: {fileID: 1105211102569122420, guid: 2a823de6358ca774d82d3eb8c38d621b, type: 3}

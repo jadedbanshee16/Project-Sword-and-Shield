@@ -5,10 +5,13 @@ using UnityEngine;
 public class CellClass : MonoBehaviour
 {
     //Fields
+    public GameObject zone;
     public GameObject[] zones;
     public GameObject[] walls;
 
     private bool allZonesUsed;
+
+    private int island;
 
     public void removeZone(int index, int[] spaces, GameObject obj)
     {
@@ -166,6 +169,54 @@ public class CellClass : MonoBehaviour
         }
 
         return trans;
+    }
+
+    public int getZoneSize()
+    {
+        return zones.Length;
+    }
+
+    //Return the island Num
+    public int getIslandNum()
+    {
+        return island;
+    }
+
+    public void setIslandNum(int num)
+    {
+        island = num;
+    }
+
+    public void setZones()
+    {
+        //Get the x and y bounds of the cell.
+        Vector3 min = this.transform.GetChild(0).GetComponent<Collider>().bounds.min;
+        Vector3 max = this.transform.GetChild(0).GetComponent<Collider>().bounds.max;
+
+        //Get size of the grid.
+        Vector3 size = (max - min) / 5;
+
+        zones = new GameObject[25];
+
+        //For every column
+        for (int c = 1; c <= 5; c++)
+        {
+            //For every row.
+            for (int r = 1; r <= 5; r++)
+            {
+                Instantiate(zone, new Vector3((min.x) + (size.x * (r - 1)) + (size.x / 2), 0, min.z + (size.z * ((6 - c) - 1)) + (size.z / 2)), Quaternion.identity, this.transform);
+            }
+        }
+
+        int count = 0;
+        foreach(Transform child in this.transform)
+        {
+            if (child.CompareTag("Zone"))
+            {
+                zones[count] = child.gameObject;
+                count++;
+            }
+        }
     }
 
     public int getZoneIndex()
