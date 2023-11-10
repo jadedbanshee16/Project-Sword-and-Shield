@@ -11,14 +11,52 @@ public class Weapon : MonoBehaviour
         bellonHand
     }
 
-    //Fields
+    [Header("Weapon Info")]
     public weaponType type;
     public string idName;
+    public Sprite inventoryImage;
+
+    [Header("Weapon Stats")]
+    [SerializeField]
+    [Tooltip("How long before weapon can be activated again")]
+    private float cooldown;
+    [SerializeField]
+    [Tooltip("How much manna it takes to activate weapon.")]
+    private float cost;
+    [SerializeField]
+    [Tooltip("How far the object can / will be from the player")]
+    public float ghostRange;
+    [SerializeField]
+    [Tooltip("How fast the weapon is capable of moving")]
+    public float speed;
+    [SerializeField]
+    [Tooltip("How much damage the weapon does on contact with enemy")]
+    public float damage;
+    [SerializeField]
+    [Tooltip("Stun modifier")]
+    private float stun;
+    [SerializeField]
+    [Tooltip("Pushback modifier")]
+    private float pushBack;
+    [SerializeField]
+    [Tooltip("How far the weapon can travel after being activated")]
+    private float weaponRange;
+    [SerializeField]
+    [Tooltip("A modifier that can change aspects of the weapon.")]
+    public float originalHoldModifier;
+
+    private float holdModifier;
 
     //Functions
-    public virtual void use()
+    public virtual void use(Vector3 mousePos, Vector3 player)
     {
         //Something when a generic item is used.
+    }
+
+    public virtual void stopUse()
+    {
+        //To stop using hold button weapons or revert modifiers from holding buttons.
+        holdModifier = originalHoldModifier;
     }
 
     //References
@@ -30,5 +68,25 @@ public class Weapon : MonoBehaviour
     public void setIDName(string s)
     {
         idName = s;
+    }
+
+    public weaponType getWeaponType()
+    {
+        return type;
+    }
+
+    public Sprite getInventoryImage()
+    {
+        return inventoryImage;
+    }
+
+    public float getHoldModifier()
+    {
+        return holdModifier;
+    }
+
+    public void setHoldModifier(float num)
+    {
+        holdModifier = num;
     }
 }

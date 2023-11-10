@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8469722857708692344}
   m_Layer: 7
   m_Name: InteractionPoint (1)
-  m_TagString: Untagged
+  m_TagString: InteractablePoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -291,6 +291,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8469722859524391632}
     m_Modifications:
+    - target: {fileID: 1755349576250696999, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: -1.0894352e+23
+      objectReference: {fileID: 0}
+    - target: {fileID: 1755349576250696999, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 6.61e-43
+      objectReference: {fileID: 0}
+    - target: {fileID: 1755349576250696999, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 7.1e-44
+      objectReference: {fileID: 0}
     - target: {fileID: 3779233572618499073, guid: 7d6739ec7ef403448b6ef15db21a74e7, type: 3}
       propertyPath: m_RootOrder
       value: 1

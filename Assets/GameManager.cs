@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public LevelGeneration lvl;
     private LevelGeneration lvlInstance;
 
+    private Inventory _inv;
+
 
     //Level setting stuff.
     private float levelNum = 0;
@@ -36,6 +38,14 @@ public class GameManager : MonoBehaviour
         {
             beginGame();
         }
+
+        //Other set up stuff.
+        if(_inv == null)
+        {
+            _inv = GetComponent<Inventory>();
+        }
+
+        _inv.setUpInventory();
 
         count = 0;
     }
@@ -78,6 +88,7 @@ public class GameManager : MonoBehaviour
     {
         //Destroy and create the next level.
         Destroy(lvlInstance.gameObject);
+        GetComponent<PoolManager>().resetPool();
         beginGame();
     }
 

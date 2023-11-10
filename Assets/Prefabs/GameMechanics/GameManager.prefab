@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 950568476815626004}
   - component: {fileID: 950568476815626005}
   - component: {fileID: 950568475708247840}
+  - component: {fileID: 2130631635}
+  - component: {fileID: 2130631639}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -28,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -45,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lvl: {fileID: 56639197, guid: eea926870d060a345bef28c4fce1acaf, type: 3}
-  nextLevel: 0
 --- !u!114 &950568475708247840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,4 +61,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interact: 32
-  attack: 323
+  onHand: 323
+  offHand: 324
+--- !u!114 &2130631635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950568476815626007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63c40ffcfd1ec14e9a8a542a1dda85b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostWeapons:
+  - {fileID: 6484002216939632639, guid: ed69662d5a1ac7643b057b2efe4201ca, type: 3}
+  - {fileID: 1726803927103953459, guid: 2c1e6c3f365630741b4861f6fbb6ea8e, type: 3}
+  resources: 
+  onHandInvent: {fileID: 0}
+  offHandInvent: {fileID: 0}
+--- !u!114 &2130631639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950568476815626007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b94a395c638ca4796b13676e5c5b49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefabs:
+  - {fileID: 2053015698810357582, guid: d5a2e244742a3b146b3103783bbcea08, type: 3}
+  resourcePrefabs:
+  - {fileID: 4360467259415583119, guid: 12fe35cb744207941b95d6beb164c986, type: 3}
+  - {fileID: 18567315793817496, guid: 4cf50ef681cec54408c1bf7f1267c1ae, type: 3}
+  specialPrefabs:
+  - {fileID: 3732602780530242427, guid: be8bec97035b3cf48a1fe25c552f94c1, type: 3}
+  - {fileID: 4751224517155922461, guid: 98758d34462a868499456c1ebdc30c71, type: 3}
+  amountToPool: 3

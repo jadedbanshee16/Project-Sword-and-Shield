@@ -8,6 +8,7 @@ public class PlayerControl : MonoBehaviour
     //Set all needed objects for scripts.
     public KynaClass kyna_;
     public GameObject player_;
+    public Inventory _inv;
     public Camera cam_;
     public float interactionRange;
     private OptionsScript options;
@@ -16,9 +17,17 @@ public class PlayerControl : MonoBehaviour
     //Controls
     private KeyCode onHand;
     private KeyCode interact;
+    private KeyCode offHand;
 
     //Interaction focus.
     public Interactable currentFocus;
+
+    public bool isUsingOnHand;
+    public bool isUsingOffHand;
+
+    [SerializeField]
+    private float holdTime;
+    private float holdTimer;
 
 
     // Start is called before the first frame update
@@ -28,8 +37,13 @@ public class PlayerControl : MonoBehaviour
         kynaAnim_ = kyna_.GetComponentInChildren<Animator>();
         player_ = GameObject.FindGameObjectWithTag("Player");
         onHand = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().onHand;
+        offHand = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().offHand;
         interact = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().interact;
         cam_ = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        _inv = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Inventory>();
+
+        isUsingOnHand = false;
+        isUsingOffHand = false;
     }
 
     // Update is called once per frame
@@ -48,21 +62,82 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        //When the onHand button is pressed, do the following.
-        if (Input.GetKeyDown(onHand))
+        //When off hand button is held, do the following....
+        if (Input.GetKey(offHand))
         {
-            //When pressed, find out if an interactable is pressed.
-            Interactable focus = MouseInteractable();
-
-            //If interactable and a ghost interactable, do stuff.
-            if(focus != null && focus.getType() == Interactable.interactType.ghostInteractable)
+            if (!isUsingOnHand)
             {
-                setFocus(focus);
-            } else
-            {
-                deFocus();
+                if (holdTimer < holdTime)
+                {
+                    holdTimer += Time.fixedDeltaTime;
+                }
+                else
+                {
+                    isUsingOffHand = true;
+                    _inv.useOffHand(player_.transform.position, MousePosition());
+                }
             }
-        } else if (Input.GetKeyDown(interact))
+        }
+
+        //When onHand button is held, do the following....
+        if (Input.GetKey(onHand))
+        {
+            if (!isUsingOffHand)
+            {
+                if (holdTimer < holdTime)
+                {
+                    holdTimer += Time.fixedDeltaTime;
+                }
+                else
+                {
+                    isUsingOnHand = true;
+                }
+            }
+        }
+
+        //When offHand button is released, do the following.....
+        if (Input.GetKeyUp(offHand))
+        {
+            //Button is no longer held, so turn off.
+            _inv.stopUseOffHand();
+
+            isUsingOffHand = false;
+            holdTimer = 0;
+        }
+
+        //When onHand button is released, do the following....
+        if (Input.GetKeyUp(onHand))
+        {
+            if (!isUsingOnHand && !isUsingOffHand)
+            {
+                isUsingOnHand = true;
+                //When pressed, find out if an interactable is pressed.
+                Interactable focus = MouseInteractable();
+
+                //If interactable and a ghost interactable, do stuff.
+                if (focus != null && focus.getType() == Interactable.interactType.ghostInteractable)
+                {
+                    setFocus(focus);
+                }
+                else
+                {
+                    //If not, use the current onhand weapon.
+                    _inv.useOnHand(player_.transform.position, MousePosition());
+                    //Now, stop the use of the onHand.
+                    _inv.stopUseOnHand();
+                    deFocus();
+                }
+            }
+
+            if (!isUsingOffHand)
+            {
+                isUsingOnHand = false;
+                holdTimer = 0;
+            }
+        }
+
+        //When using a Bellon interaction, do the following.
+        if (Input.GetKeyDown(interact))
         {
             //When pressed, find out if an interactable is pressed.
             Interactable focus = PlayerInteractable();
@@ -169,7 +244,7 @@ public class PlayerControl : MonoBehaviour
         Interactable inter = null;
 
         //Find possible objects within range, then pick the closest ones.
-        Collider[] allInteractables = Physics.OverlapSphere(player_.transform.position, interactionRange);
+        GameObject[] allInteractables = GameObject.FindGameObjectsWithTag("InteractablePoint");
 
         float closestDist = Mathf.Infinity;
         int closestObject = -1;
@@ -180,16 +255,17 @@ public class PlayerControl : MonoBehaviour
             for (int i = 0; i < allInteractables.Length; i++)
             {
                 float dist = Vector3.Distance(allInteractables[i].transform.position, player_.transform.position);
-                if (dist < closestDist && allInteractables[i].GetComponent<Interactable>() != null)
+
+                if (dist < interactionRange && dist < closestDist)
                 {
                     closestDist = dist;
                     closestObject = i;
                 }
             }
 
-            if (closestObject > -1 && allInteractables[closestObject] != null && allInteractables[closestObject].GetComponent<Interactable>() != null)
+            if (closestObject > -1 && allInteractables[closestObject] != null && allInteractables[closestObject].GetComponentInParent<Interactable>() != null)
             {
-                inter = allInteractables[closestObject].GetComponent<Interactable>();
+                inter = allInteractables[closestObject].GetComponentInParent<Interactable>();
             }
         }
 

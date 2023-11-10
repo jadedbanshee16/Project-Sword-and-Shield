@@ -13,6 +13,9 @@ TagManager:
   - Weapon Slot
   - Zone
   - PlayerRange
+  - OnHandUI
+  - OffHandUI
+  - InteractablePoint
   layers:
   - Default
   - TransparentFX

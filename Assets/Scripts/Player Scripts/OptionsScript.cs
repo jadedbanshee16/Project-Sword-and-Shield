@@ -10,4 +10,5 @@ public class OptionsScript : MonoBehaviour
     [Header("Controls")]
     public KeyCode interact;
     public KeyCode onHand;
+    public KeyCode offHand;
 }

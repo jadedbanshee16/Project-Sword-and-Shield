@@ -5,15 +5,25 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     //Keep information on the ghost weapons.
-    public GameObject[] ghostWeapons;
+    public Weapon[] ghostWeapons;
 
     public int[] resources;
 
+    public Weapon currentOnHand;
+    public Weapon currentOffHand;
 
-    // Start is called before the first frame update
-    void Start()
+    public GameObject onHandInvent;
+    public GameObject offHandInvent;
+
+    public void setUpInventory()
     {
-        ghostWeapons = new GameObject[10];
+        onHandInvent = GameObject.FindGameObjectWithTag("OnHandUI");
+        offHandInvent = GameObject.FindGameObjectWithTag("OffHandUI");
+
+        //Set the first and second weapons.
+        switchWeapons(0);
+        switchWeapons(1);
+        //offHandInvent = GameObject.Find("ActiveOffHand");
 
         resources = new int[System.Enum.GetValues(typeof(pickUps.resourceTypes)).Length];
     }
@@ -26,16 +36,12 @@ public class Inventory : MonoBehaviour
         //Get the weapon script to work with.
         Weapon weap = obj.GetComponent<Weapon>();
 
-        //If the weapon type is onHand OR offHand, add them to ghost list.
-        if(weap.type == Weapon.weaponType.onHand)
+        for (int i = 0; i < ghostWeapons.Length; i++)
         {
-            for(int i = 0; i < ghostWeapons.Length; i++)
+            if (ghostWeapons[i] == null)
             {
-                if(ghostWeapons[i] == null)
-                {
-                    ghostWeapons[i] = obj;
-                    return;
-                }
+                ghostWeapons[i] = obj.GetComponent<Weapon>();
+                return;
             }
         }
     }
@@ -48,6 +54,19 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public void switchWeapons(int index)
+    {
+        if(ghostWeapons[index].getWeaponType() == Weapon.weaponType.onHand)
+        {
+            currentOnHand = ghostWeapons[index];
+            onHandInvent.GetComponent<SetInventoryImage>().setImage(currentOnHand.getInventoryImage());
+        } else if (ghostWeapons[index].getWeaponType() == Weapon.weaponType.offHand)
+        {
+            currentOffHand = ghostWeapons[index];
+            offHandInvent.GetComponent<SetInventoryImage>().setImage(currentOffHand.getInventoryImage());
+        }
+    }
+
     public int getInventory(pickUps.resourceTypes ind)
     {
         return resources[(int)ind];
@@ -57,4 +76,25 @@ public class Inventory : MonoBehaviour
     {
         resources[(int)ind] -= amount;
     }
+
+    public void useOnHand(Vector3 pPos, Vector3 mPos)
+    {
+        currentOnHand.GetComponent<Weapon>().use(mPos, pPos);
+    }
+
+    public void stopUseOnHand()
+    {
+        currentOnHand.GetComponent<Weapon>().stopUse();
+    }
+
+    public void useOffHand(Vector3 pPos, Vector3 mPos)
+    {
+        currentOffHand.GetComponent<Weapon>().use(mPos, pPos);
+    }
+
+    public void stopUseOffHand()
+    {
+        currentOffHand.GetComponent<Weapon>().stopUse();
+    }
+
 }

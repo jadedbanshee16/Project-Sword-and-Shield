@@ -70,4 +70,5 @@ MonoBehaviour:
   - {fileID: 6328381659662387214, guid: aa023725d2499a0439c06eafff69f9c3, type: 3}
   lvlChests:
   - {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
+  - {fileID: 2566960191107427637, guid: 75bc4e8b957ba794a9106e542c0aa862, type: 3}
   path: {fileID: 1105211102569122420, guid: 2a823de6358ca774d82d3eb8c38d621b, type: 3}

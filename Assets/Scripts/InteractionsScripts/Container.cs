@@ -9,10 +9,16 @@ public class Container : Interactable
     public float throwStrength;
 
     public GameObject[] resourceContents;
-
     public GameObject[] mandatoryContents;
 
     private bool opened = false;
+
+    private PoolManager _manager;
+
+    public void Start()
+    {
+        _manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>();
+    }
 
     public override void Interact()
     {
@@ -27,9 +33,12 @@ public class Container : Interactable
             {
                 Vector3 direction = randDirection();
 
-                GameObject obj = Instantiate(mandatoryContents[i], direction, Quaternion.identity, transform.parent);
 
-                //Throw object in the direction.
+                GameObject obj = _manager.GetPooledObject(objectType.key);
+
+                obj.SetActive(true);
+                obj.transform.position = direction;
+                obj.transform.rotation = Quaternion.identity;
                 obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
             }
 
@@ -41,8 +50,11 @@ public class Container : Interactable
                 {
                     Vector3 direction = randDirection();
 
-                    GameObject obj = Instantiate(resourceContents[x], direction, Quaternion.identity, transform.parent);
+                    GameObject obj = _manager.GetPooledObject(objectType.resource);
 
+                    obj.SetActive(true);
+                    obj.transform.position = direction;
+                    obj.transform.rotation = Quaternion.identity;
                     obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
                 }
             }

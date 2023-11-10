@@ -23,8 +23,7 @@ public class pickUps : Interactable
         //Add to inventory.
         inv.addToResourceInventory(resource, amount);
 
-        //Then drestroy this object.
-        Destroy(this.gameObject);
+        this.gameObject.SetActive(false);
     }
 
 }
