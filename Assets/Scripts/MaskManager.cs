@@ -13,7 +13,7 @@ public class MaskManager : MonoBehaviour
     public GameObject _player;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         RaycastHit hit;
 
