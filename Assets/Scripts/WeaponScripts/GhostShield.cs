@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GhostShield : Weapon
+public class GhostShield : GhostItem
 {
     [Header("Shield Options")]
     [SerializeField]
@@ -24,15 +24,13 @@ public class GhostShield : Weapon
         if (shieldInstance == null)
         {
             //Spawn the object.
-            shieldInstance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>().GetPooledObject(objectType.shield);
+            shieldInstance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>().GetPooledObject(PoolManager.objectType.shield);
 
             //Set position of the sword.
             shieldInstance.SetActive(true);
-            shieldInstance.transform.position = newPos;
-            shieldInstance.transform.LookAt(newDirection);
         }
 
-        shieldInstance.GetComponent<ShieldClass>().useBlock(newDirection, newPos);
+        shieldInstance.GetComponent<WeaponClass>().setWeapon(newDirection, newPos, getDamage(), getpushBack(), getStun());
     }
 
     public override void stopUse()
@@ -41,7 +39,7 @@ public class GhostShield : Weapon
         
         if(shieldInstance != null)
         {
-            shieldInstance.GetComponent<ShieldClass>().stopBlock();
+            shieldInstance.GetComponent<ShieldClass>().stopWeapon();
             shieldInstance = null;
         }
     }

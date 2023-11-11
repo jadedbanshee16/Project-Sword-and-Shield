@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class GhostItem : MonoBehaviour
 {
     public enum weaponType
     {
@@ -27,11 +27,8 @@ public class Weapon : MonoBehaviour
     [Tooltip("How far the object can / will be from the player")]
     public float ghostRange;
     [SerializeField]
-    [Tooltip("How fast the weapon is capable of moving")]
-    public float speed;
-    [SerializeField]
     [Tooltip("How much damage the weapon does on contact with enemy")]
-    public float damage;
+    private float damage;
     [SerializeField]
     [Tooltip("Stun modifier")]
     private float stun;
@@ -83,6 +80,21 @@ public class Weapon : MonoBehaviour
     public float getHoldModifier()
     {
         return holdModifier;
+    }
+
+    public float getpushBack()
+    {
+        return pushBack;
+    }
+
+    public float getStun()
+    {
+        return stun;
+    }
+
+    public float getDamage()
+    {
+        return damage;
     }
 
     public void setHoldModifier(float num)

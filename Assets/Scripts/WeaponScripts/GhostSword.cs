@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GhostSword : Weapon
+public class GhostSword : GhostItem
 {
     [Header("Sword Options")]
     [SerializeField]
@@ -10,7 +10,10 @@ public class GhostSword : Weapon
 
     [SerializeField]
     [Tooltip("How long the weapon will remain")]
-    public float length;
+    private float length;
+    [SerializeField]
+    [Tooltip("How fast the weapon is capable of moving")]
+    private float speed;
 
     public override void use(Vector3 mPos, Vector3 pPos)
     {
@@ -29,13 +32,11 @@ public class GhostSword : Weapon
         Vector3 newDirection = (newPos - randomSpawn).normalized;
 
         //Spawn the object.
-        GameObject swordInstance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>().GetPooledObject(objectType.sword);
+        GameObject swordInstance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>().GetPooledObject(PoolManager.objectType.sword);
 
         //Set position of the sword.
         swordInstance.SetActive(true);
-        swordInstance.transform.position = randomSpawn;
-        swordInstance.transform.rotation = Quaternion.identity;
-        swordInstance.GetComponent<SwordClass>().swipe(newDirection, speed, length, damage);
+        swordInstance.GetComponent<WeaponClass>().setWeapon(newDirection, randomSpawn, getDamage(), getpushBack(), getStun(), length, speed);
     }
 
     public override void stopUse()

@@ -2,34 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShieldClass : MonoBehaviour
+public class ShieldClass : WeaponClass
 {
-    private Vector3 direction;
-    private Vector3 pos;
-    private bool action = true;
-
     // Update is called once per frame
-    void Update()
+    public override void useWeapon()
     {
-        if (action)
+        if (getisAction())
         {
-            transform.position = pos;
-            transform.LookAt(direction);
+            transform.position = getPos();
+            transform.LookAt(getDir());
         } else
         {
             this.gameObject.SetActive(false);
         }
     }
 
-    public void useBlock(Vector3 d, Vector3 p)
+    public override void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st)
     {
-        direction = d;
-        pos = p;
-        action = true;
+        base.setWeapon(d, p, dmg, psh, st);
+
+        this.transform.LookAt(getDir());
     }
 
-    public void stopBlock()
+    public override void stopWeapon()
     {
-        action = false;
+        base.stopWeapon();
+    }
+
+    //If the object hits an enemy.
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Vector3 dmgMetric = getDamageMetrics();
+            //ALWAYS put the collider object as child.
+            other.transform.parent.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir());
+        }
     }
 }

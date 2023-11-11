@@ -5,12 +5,12 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     //Keep information on the ghost weapons.
-    public Weapon[] ghostWeapons;
+    public GhostItem[] ghostWeapons;
 
     public int[] resources;
 
-    public Weapon currentOnHand;
-    public Weapon currentOffHand;
+    public GhostItem currentOnHand;
+    public GhostItem currentOffHand;
 
     public GameObject onHandInvent;
     public GameObject offHandInvent;
@@ -34,13 +34,13 @@ public class Inventory : MonoBehaviour
     public void addToWeaponsInventory(GameObject obj)
     {
         //Get the weapon script to work with.
-        Weapon weap = obj.GetComponent<Weapon>();
+        GhostItem weap = obj.GetComponent<GhostItem>();
 
         for (int i = 0; i < ghostWeapons.Length; i++)
         {
             if (ghostWeapons[i] == null)
             {
-                ghostWeapons[i] = obj.GetComponent<Weapon>();
+                ghostWeapons[i] = obj.GetComponent<GhostItem>();
                 return;
             }
         }
@@ -56,11 +56,11 @@ public class Inventory : MonoBehaviour
 
     public void switchWeapons(int index)
     {
-        if(ghostWeapons[index].getWeaponType() == Weapon.weaponType.onHand)
+        if(ghostWeapons[index].getWeaponType() == GhostItem.weaponType.onHand)
         {
             currentOnHand = ghostWeapons[index];
             onHandInvent.GetComponent<SetInventoryImage>().setImage(currentOnHand.getInventoryImage());
-        } else if (ghostWeapons[index].getWeaponType() == Weapon.weaponType.offHand)
+        } else if (ghostWeapons[index].getWeaponType() == GhostItem.weaponType.offHand)
         {
             currentOffHand = ghostWeapons[index];
             offHandInvent.GetComponent<SetInventoryImage>().setImage(currentOffHand.getInventoryImage());
@@ -79,22 +79,22 @@ public class Inventory : MonoBehaviour
 
     public void useOnHand(Vector3 pPos, Vector3 mPos)
     {
-        currentOnHand.GetComponent<Weapon>().use(mPos, pPos);
+        currentOnHand.GetComponent<GhostItem>().use(mPos, pPos);
     }
 
     public void stopUseOnHand()
     {
-        currentOnHand.GetComponent<Weapon>().stopUse();
+        currentOnHand.GetComponent<GhostItem>().stopUse();
     }
 
     public void useOffHand(Vector3 pPos, Vector3 mPos)
     {
-        currentOffHand.GetComponent<Weapon>().use(mPos, pPos);
+        currentOffHand.GetComponent<GhostItem>().use(mPos, pPos);
     }
 
     public void stopUseOffHand()
     {
-        currentOffHand.GetComponent<Weapon>().stopUse();
+        currentOffHand.GetComponent<GhostItem>().stopUse();
     }
 
 }

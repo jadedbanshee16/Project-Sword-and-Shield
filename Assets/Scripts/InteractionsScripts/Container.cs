@@ -34,7 +34,7 @@ public class Container : Interactable
                 Vector3 direction = randDirection();
 
 
-                GameObject obj = _manager.GetPooledObject(objectType.key);
+                GameObject obj = _manager.GetPooledObject(PoolManager.objectType.key);
 
                 obj.SetActive(true);
                 obj.transform.position = direction;
@@ -50,7 +50,7 @@ public class Container : Interactable
                 {
                     Vector3 direction = randDirection();
 
-                    GameObject obj = _manager.GetPooledObject(objectType.resource);
+                    GameObject obj = _manager.GetPooledObject(PoolManager.objectType.resource);
 
                     obj.SetActive(true);
                     obj.transform.position = direction;

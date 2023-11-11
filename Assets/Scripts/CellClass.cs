@@ -11,7 +11,7 @@ public class CellClass : MonoBehaviour
 
     private bool allZonesUsed;
 
-    private int island;
+    public int island;
 
     public void removeZone(int index, int[] spaces, GameObject obj)
     {

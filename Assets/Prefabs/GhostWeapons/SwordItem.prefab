@@ -52,6 +52,9 @@ MonoBehaviour:
   ghostRange: 0.4
   speed: 2
   damage: 25
+  stun: 0
+  pushBack: 0
   weaponRange: 0.5
+  originalHoldModifier: 0
   _sword: {fileID: 2053015698810357582, guid: d5a2e244742a3b146b3103783bbcea08, type: 3}
-  length: 0.3
+  length: 0.2

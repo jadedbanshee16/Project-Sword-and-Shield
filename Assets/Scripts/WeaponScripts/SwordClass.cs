@@ -2,25 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwordClass : MonoBehaviour
+public class SwordClass : WeaponClass
 {
-
-    private Vector3 direction;
-    private bool action;
     private float time;
     private float timer;
     private float speed;
-    private float damage;
 
     // Update is called once per frame
-    void Update()
+    public override void useWeapon()
     {
-        if (action)
+        if (getisAction())
         {
             if(timer > 0)
             {
                 //Move in given direction.
-                this.transform.position += direction * Time.deltaTime * speed;
+                this.transform.position += getDir() * Time.deltaTime * speed;
 
                 //Change the rotation of the swinged object over time.
                 transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(Vector3.left, Vector3.up), Quaternion.LookRotation(Vector3.right, Vector3.up), (timer / time));
@@ -29,21 +25,26 @@ public class SwordClass : MonoBehaviour
                 timer -= Time.deltaTime;
             } else
             {
-                action = false;
+                setAction(false);
                 this.gameObject.SetActive(false);
             }
         }
     }
 
-    public void swipe(Vector3 d, float s, float t, float dmg)
+    public override void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float t, float sp)
     {
-        direction = d;
-        speed = s;
+        setDir(d);
+        setPos(p);
+
+        setDamageMetrics(dmg, psh, st);
+
         time = t;
         timer = time;
-        damage = dmg;
+        speed = sp;
+        this.transform.localPosition = getPos();
+        this.transform.rotation = Quaternion.identity;
 
-        action = true;
+        setAction(true);
     }
 
     //If the object hits an enemy.
@@ -51,8 +52,9 @@ public class SwordClass : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
+            Vector3 dmgMetric = getDamageMetrics();
             //ALWAYS put the collider object as child.
-            other.transform.parent.GetComponent<EnemyClass>().takeDamage(damage);
+            other.transform.parent.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir());
         }
     }
 }

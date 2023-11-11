@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum objectType
-{
-    sword,
-    resource,
-    key,
-    shield
-}
-
 public class PoolManager : MonoBehaviour
 {
+    public enum objectType
+    {
+        sword,
+        resource,
+        key,
+        shield
+    }
+
     public static PoolManager sharedInstance;
     private List<GameObject> swordObjects;
     private List<GameObject> resourceObjects;
