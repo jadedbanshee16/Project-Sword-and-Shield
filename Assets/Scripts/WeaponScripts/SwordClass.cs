@@ -9,14 +9,14 @@ public class SwordClass : WeaponClass
     private float speed;
 
     // Update is called once per frame
-    public override void useWeapon()
+    public override void useWeapon(Vector3 dir, Vector3 pos)
     {
         if (getisAction())
         {
             if(timer > 0)
             {
                 //Move in given direction.
-                this.transform.position += getDir() * Time.deltaTime * speed;
+                this.transform.position += pos * Time.deltaTime * speed;
 
                 //Change the rotation of the swinged object over time.
                 transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(Vector3.left, Vector3.up), Quaternion.LookRotation(Vector3.right, Vector3.up), (timer / time));
@@ -31,12 +31,9 @@ public class SwordClass : WeaponClass
         }
     }
 
-    public override void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float t, float sp)
+    public override void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float ct, float t, float sp)
     {
-        setDir(d);
-        setPos(p);
-
-        setDamageMetrics(dmg, psh, st);
+        base.setWeapon(d, p, dmg, psh, st, ct);
 
         time = t;
         timer = time;
@@ -48,13 +45,8 @@ public class SwordClass : WeaponClass
     }
 
     //If the object hits an enemy.
-    public void OnTriggerEnter(Collider other)
+    public override void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            Vector3 dmgMetric = getDamageMetrics();
-            //ALWAYS put the collider object as child.
-            other.transform.parent.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir());
-        }
+        base.OnTriggerEnter(other);
     }
 }

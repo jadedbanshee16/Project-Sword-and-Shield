@@ -9,6 +9,7 @@ public class PlayerControl : MonoBehaviour
     public KynaClass kyna_;
     public GameObject player_;
     public Inventory _inv;
+    public PlayerClass _stats;
     public Camera cam_;
     public float interactionRange;
     private OptionsScript options;
@@ -41,6 +42,7 @@ public class PlayerControl : MonoBehaviour
         interact = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OptionsScript>().interact;
         cam_ = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         _inv = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Inventory>();
+        _stats = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PlayerClass>();
 
         isUsingOnHand = false;
         isUsingOffHand = false;
@@ -73,8 +75,11 @@ public class PlayerControl : MonoBehaviour
                 }
                 else
                 {
-                    isUsingOffHand = true;
-                    _inv.useOffHand(player_.transform.position, MousePosition());
+                    if (_stats.getStamina() >= _inv.getOffHandCost())
+                    {
+                        isUsingOffHand = true;
+                        _inv.useOffHand(player_.transform.position, MousePosition());
+                    }
                 }
             }
         }
@@ -90,7 +95,10 @@ public class PlayerControl : MonoBehaviour
                 }
                 else
                 {
-                    isUsingOnHand = true;
+                    if(_stats.getStamina() >= _inv.getOnHandCost())
+                    {
+                        isUsingOnHand = true;
+                    }
                 }
             }
         }
@@ -121,11 +129,14 @@ public class PlayerControl : MonoBehaviour
                 }
                 else
                 {
-                    //If not, use the current onhand weapon.
-                    _inv.useOnHand(player_.transform.position, MousePosition());
-                    //Now, stop the use of the onHand.
-                    _inv.stopUseOnHand();
-                    deFocus();
+                    if (_stats.getStamina() >= _inv.getOnHandCost())
+                    {
+                        //If not, use the current onhand weapon.
+                        _inv.useOnHand(player_.transform.position, MousePosition());
+                        //Now, stop the use of the onHand.
+                        _inv.stopUseOnHand();
+                        deFocus();
+                    }
                 }
             }
 

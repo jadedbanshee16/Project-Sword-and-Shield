@@ -12,19 +12,20 @@ public class WeaponClass : MonoBehaviour
     private float pushback;
     private float stun;
 
+    private float cost;
+
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        Debug.Log("Using the update");
-        useWeapon();
+        useWeapon(pos, direction);
     }
 
-    public virtual void useWeapon()
+    public virtual void useWeapon(Vector3 d, Vector3 p)
     {
         //Use this weapon is working.
     }
 
-    public virtual void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st)
+    public virtual void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float ct)
     {
         direction = d;
         pos = p;
@@ -32,6 +33,8 @@ public class WeaponClass : MonoBehaviour
         damage = dmg;
         pushback = psh;
         stun = st;
+
+        cost = ct;
 
         this.transform.position = pos;
         this.transform.rotation = Quaternion.identity;
@@ -40,7 +43,7 @@ public class WeaponClass : MonoBehaviour
     }
 
     //An override for projectile based weapons.
-    public virtual void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float time, float speed)
+    public virtual void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float ct, float time, float speed)
     {
         direction = d;
         pos = p;
@@ -49,10 +52,18 @@ public class WeaponClass : MonoBehaviour
         pushback = psh;
         stun = st;
 
+        cost = ct;
+
         this.transform.position = pos;
         this.transform.rotation = Quaternion.identity;
 
         action = true;
+    }
+
+    public void changePositions(Vector3 dir, Vector3 ps)
+    {
+        direction = dir;
+        pos = ps;
     }
 
     public virtual void stopWeapon()
@@ -65,19 +76,14 @@ public class WeaponClass : MonoBehaviour
         return direction;
     }
 
-    public void setDir(Vector3 d)
-    {
-        direction = d;
-    }
-
     public Vector3 getPos()
     {
         return pos;
     }
 
-    public void setPos(Vector3 p)
+    public float getCost()
     {
-        pos = p;
+        return cost;
     }
 
     public bool getisAction()
@@ -100,5 +106,15 @@ public class WeaponClass : MonoBehaviour
         damage = d;
         pushback = p;
         stun = s;
+    }
+
+    public virtual void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Vector3 dmgMetric = getDamageMetrics();
+            //ALWAYS put the collider object as child.
+            other.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir(), cost);
+        }
     }
 }

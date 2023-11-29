@@ -4882,6 +4882,7 @@ GameObject:
   - component: {fileID: 4751224517155922460}
   - component: {fileID: 4751224517155922463}
   - component: {fileID: 4751224517155922462}
+  - component: {fileID: 9117481195970406492}
   m_Layer: 0
   m_Name: Shield_Lvl1Prefab
   m_TagString: Untagged
@@ -4930,6 +4931,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf735620bf54dac4580c386a565e3cb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &9117481195970406492
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751224517155922461}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18016036, y: 0.29163003, z: 0.056802902}
+  m_Center: {x: -0.00067643076, y: 0.020456024, z: 0.019669997}
 --- !u!1001 &4751224515417661608
 PrefabInstance:
   m_ObjectHideFlags: 0

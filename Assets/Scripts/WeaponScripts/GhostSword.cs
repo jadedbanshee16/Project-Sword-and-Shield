@@ -36,7 +36,7 @@ public class GhostSword : GhostItem
 
         //Set position of the sword.
         swordInstance.SetActive(true);
-        swordInstance.GetComponent<WeaponClass>().setWeapon(newDirection, randomSpawn, getDamage(), getpushBack(), getStun(), length, speed);
+        swordInstance.GetComponent<WeaponClass>().setWeapon(newDirection, randomSpawn, getDamage(), getpushBack(), getStun(), getCost(), length, speed);
     }
 
     public override void stopUse()

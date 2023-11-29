@@ -5,21 +5,21 @@ using UnityEngine;
 public class ShieldClass : WeaponClass
 {
     // Update is called once per frame
-    public override void useWeapon()
+    public override void useWeapon(Vector3 pos, Vector3 dir)
     {
         if (getisAction())
         {
-            transform.position = getPos();
-            transform.LookAt(getDir());
+            transform.position = pos;
+            transform.LookAt(dir);
         } else
         {
             this.gameObject.SetActive(false);
         }
     }
 
-    public override void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st)
+    public override void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float ct)
     {
-        base.setWeapon(d, p, dmg, psh, st);
+        base.setWeapon(d, p, dmg, psh, st, ct);
 
         this.transform.LookAt(getDir());
     }
@@ -30,13 +30,15 @@ public class ShieldClass : WeaponClass
     }
 
     //If the object hits an enemy.
-    public void OnTriggerEnter(Collider other)
+    public override void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
             Vector3 dmgMetric = getDamageMetrics();
             //ALWAYS put the collider object as child.
-            other.transform.parent.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir());
+            other.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir(), getCost());
+
+            stopWeapon();
         }
     }
 }

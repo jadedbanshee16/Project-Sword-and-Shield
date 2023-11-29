@@ -101,4 +101,9 @@ public class GhostItem : MonoBehaviour
     {
         holdModifier = num;
     }
+
+    public float getCost()
+    {
+        return cost;
+    }
 }

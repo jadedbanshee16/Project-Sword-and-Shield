@@ -8,7 +8,7 @@ public class GhostShield : GhostItem
     [SerializeField]
     private GameObject _shield;
 
-    private GameObject shieldInstance;
+    private WeaponClass shieldInstance;
 
     public override void use(Vector3 mPos, Vector3 pPos)
     {
@@ -24,13 +24,16 @@ public class GhostShield : GhostItem
         if (shieldInstance == null)
         {
             //Spawn the object.
-            shieldInstance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>().GetPooledObject(PoolManager.objectType.shield);
+            shieldInstance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>().GetPooledObject(PoolManager.objectType.shield).GetComponent<WeaponClass>();
+
+            shieldInstance.setWeapon(newDirection, newPos, getDamage(), getpushBack(), getStun(), getCost());
 
             //Set position of the sword.
-            shieldInstance.SetActive(true);
+            shieldInstance.gameObject.SetActive(true);
+        } else
+        {
+            shieldInstance.changePositions(newDirection, newPos);
         }
-
-        shieldInstance.GetComponent<WeaponClass>().setWeapon(newDirection, newPos, getDamage(), getpushBack(), getStun());
     }
 
     public override void stopUse()

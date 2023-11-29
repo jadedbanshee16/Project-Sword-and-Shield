@@ -12,13 +12,17 @@ public class Inventory : MonoBehaviour
     public GhostItem currentOnHand;
     public GhostItem currentOffHand;
 
-    public GameObject onHandInvent;
-    public GameObject offHandInvent;
+    public SetInventoryImage onHandInvent;
+    public SetInventoryImage offHandInvent;
+    public SetInventoryImage staminaInvent;
 
     public void setUpInventory()
     {
-        onHandInvent = GameObject.FindGameObjectWithTag("OnHandUI");
-        offHandInvent = GameObject.FindGameObjectWithTag("OffHandUI");
+        GameObject uis = GameObject.FindGameObjectWithTag("UIComponents");
+
+        onHandInvent = uis.transform.GetChild(0).GetComponent<SetInventoryImage>();
+        offHandInvent = uis.transform.GetChild(1).GetComponent<SetInventoryImage>();
+        staminaInvent = uis.transform.GetChild(2).GetComponent<SetInventoryImage>();
 
         //Set the first and second weapons.
         switchWeapons(0);
@@ -59,11 +63,11 @@ public class Inventory : MonoBehaviour
         if(ghostWeapons[index].getWeaponType() == GhostItem.weaponType.onHand)
         {
             currentOnHand = ghostWeapons[index];
-            onHandInvent.GetComponent<SetInventoryImage>().setImage(currentOnHand.getInventoryImage());
+            onHandInvent.setImage(currentOnHand.getInventoryImage());
         } else if (ghostWeapons[index].getWeaponType() == GhostItem.weaponType.offHand)
         {
             currentOffHand = ghostWeapons[index];
-            offHandInvent.GetComponent<SetInventoryImage>().setImage(currentOffHand.getInventoryImage());
+            offHandInvent.setImage(currentOffHand.getInventoryImage());
         }
     }
 
@@ -80,6 +84,8 @@ public class Inventory : MonoBehaviour
     public void useOnHand(Vector3 pPos, Vector3 mPos)
     {
         currentOnHand.GetComponent<GhostItem>().use(mPos, pPos);
+
+        //deductStamina(getOnHandCost());
     }
 
     public void stopUseOnHand()
@@ -90,11 +96,29 @@ public class Inventory : MonoBehaviour
     public void useOffHand(Vector3 pPos, Vector3 mPos)
     {
         currentOffHand.GetComponent<GhostItem>().use(mPos, pPos);
+
+        //deductStamina(getOffHandCost());
     }
 
     public void stopUseOffHand()
     {
         currentOffHand.GetComponent<GhostItem>().stopUse();
+    }
+
+    //Get the cost of the current onHand weapon.
+    public float getOnHandCost()
+    {
+        return currentOnHand.GetComponent<GhostItem>().getCost();
+    }
+
+    public float getOffHandCost()
+    {
+        return currentOffHand.GetComponent<GhostItem>().getCost();
+    }
+
+    public void updateStamina(float curr, float max)
+    {
+        staminaInvent.setBarScale(curr, max);
     }
 
 }
