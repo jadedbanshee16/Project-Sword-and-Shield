@@ -116,6 +116,7 @@ public class LevelGeneration : MonoBehaviour
     public GameObject[] lvlBridges;
     public GameObject[] lvlAdditions;
     public GameObject[] lvlChests;
+    public GameObject[] lvlEnemies;
     public GameObject path;
 
     private CellClass[,] cells;
@@ -460,6 +461,7 @@ public class LevelGeneration : MonoBehaviour
 
         }
 
+        createObjectZones(lvlEnemies, 2);
         createObjectZones(lvlChests, 2);
         createObjectZones(lvlAdditions, 3);
 

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CellClass : MonoBehaviour
 {
@@ -8,10 +10,16 @@ public class CellClass : MonoBehaviour
     public GameObject zone;
     public GameObject[] zones;
     public GameObject[] walls;
+    public NavMeshSurface surface;
 
     private bool allZonesUsed;
 
     public int island;
+
+    public void Start()
+    {
+        surface.BuildNavMesh();
+    }
 
     public void removeZone(int index, int[] spaces, GameObject obj)
     {

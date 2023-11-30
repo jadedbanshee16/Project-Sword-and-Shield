@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6328381659662387215}
   - component: {fileID: -2122371354555189385}
+  - component: {fileID: -6459768447676225587}
   m_Layer: 7
   m_Name: Decoration 3
   m_TagString: Untagged
@@ -48,6 +49,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnProbability: 100
   takenSpaces: fbffffff0000000005000000
+--- !u!208 &-6459768447676225587
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6328381659662387214}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.165, y: 0.285, z: 0.405}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.25, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &6328381660997364705
 PrefabInstance:
   m_ObjectHideFlags: 0
