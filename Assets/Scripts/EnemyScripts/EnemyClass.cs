@@ -12,6 +12,7 @@ public class EnemyClass : MonoBehaviour
     private PlayerClass _playerStats;
 
     private NavMeshAgent _agent;
+    private NavMeshPath path;
 
     private int currentIsland;
     private Transform[] validPos;
@@ -23,11 +24,20 @@ public class EnemyClass : MonoBehaviour
         _rig = transform.GetComponent<Rigidbody>();
         _playerStats = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PlayerClass>();
         _agent = transform.GetComponent<NavMeshAgent>();
+
+        Vector3 randomDirection = Random.insideUnitSphere * 5;
+
+        randomDirection += transform.position;
+        NavMeshHit hit;
+        NavMesh.SamplePosition(randomDirection, out hit, 5, 1);
+        currentPos = hit.position;
+
+        _agent.SetDestination(currentPos);
     }
 
     private void FixedUpdate()
     {
-        if(Vector3.Distance(currentPos, transform.position) > 0.1)
+        if(Vector3.Distance(currentPos, transform.position) < 1)
         {
             Vector3 randomDirection = Random.insideUnitSphere * 5;
 

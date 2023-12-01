@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2950778844125782446}
   - component: {fileID: 56639197}
+  - component: {fileID: -6392192788639382789}
   m_Layer: 0
   m_Name: LevelGrid
   m_TagString: Untagged
@@ -70,6 +71,35 @@ MonoBehaviour:
   - {fileID: 6328381659662387214, guid: aa023725d2499a0439c06eafff69f9c3, type: 3}
   lvlChests:
   - {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
-  lvlEnemies:
-  - {fileID: 7381902783854036333, guid: a2c9f26e74b025248a6ab9868996a4e3, type: 3}
-  path: {fileID: 1105211102569122420, guid: 2a823de6358ca774d82d3eb8c38d621b, type: 3}
+  lvlEnemiesPoints:
+  - {fileID: 4021747243621167826, guid: d8fe096e058416743a32a20550bd6e24, type: 3}
+--- !u!114 &-6392192788639382789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950778844125782447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.02
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0

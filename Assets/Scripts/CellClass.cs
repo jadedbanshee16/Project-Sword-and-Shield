@@ -16,11 +16,6 @@ public class CellClass : MonoBehaviour
 
     public int island;
 
-    public void Start()
-    {
-        surface.BuildNavMesh();
-    }
-
     public void removeZone(int index, int[] spaces, GameObject obj)
     {
         for(int i = 0; i < spaces.Length; i++)

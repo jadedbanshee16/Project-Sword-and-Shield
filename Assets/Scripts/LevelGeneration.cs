@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Unity.AI.Navigation;
 
 public class MazeDirection
 {
@@ -116,8 +117,7 @@ public class LevelGeneration : MonoBehaviour
     public GameObject[] lvlBridges;
     public GameObject[] lvlAdditions;
     public GameObject[] lvlChests;
-    public GameObject[] lvlEnemies;
-    public GameObject path;
+    public GameObject[] lvlEnemiesPoints;
 
     private CellClass[,] cells;
     private BridgeClass[] bridges;
@@ -284,6 +284,8 @@ public class LevelGeneration : MonoBehaviour
 
         //Reorder.
         reorderIslandsNumbers();
+
+        GetComponent<NavMeshSurface>().BuildNavMesh();
 
 
         /*for (int x = 0; x < sizeX; x++)
@@ -461,7 +463,7 @@ public class LevelGeneration : MonoBehaviour
 
         }
 
-        createObjectZones(lvlEnemies, 2);
+        createObjectZones(lvlEnemiesPoints, 2);
         createObjectZones(lvlChests, 2);
         createObjectZones(lvlAdditions, 3);
 
@@ -766,6 +768,12 @@ public class LevelGeneration : MonoBehaviour
                             {
                                 b--;
                                 count--;
+                            }
+
+                            //If an enemy spawn, set the enemy spawn.
+                            if(instance != null && instance.GetComponent<EnemySpawn>())
+                            {
+                                instance.GetComponent<EnemySpawn>().setIsland(cells[i,u].getIslandNum());
                             }
                         }
                     }

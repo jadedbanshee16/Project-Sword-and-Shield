@@ -8,9 +8,8 @@ public class EnemyMovement : MonoBehaviour
     public NavMeshAgent navMeshAgent;
     private Animator m_animator;
 
-    [Header("Checkpoints")]
     //Keep an array of checkpoints.
-    public Transform[] checkPoints;
+    private GameObject[] checkPoints;
 
     [Header("Rotation variables")]
     public float rotationSpeed;
@@ -38,7 +37,13 @@ public class EnemyMovement : MonoBehaviour
     {
         if(checkPoints.Length > 0)
         {
-            navMeshAgent.SetDestination(checkPoints[0].position);
+            navMeshAgent.SetDestination(checkPoints[0].transform.position);
+            originalRot = transform.rotation;
+        } else
+        {
+            //Find all checkpoints
+            checkPoints = GameObject.FindGameObjectsWithTag("Waypoint");
+            navMeshAgent.SetDestination(checkPoints[0].transform.position);
             originalRot = transform.rotation;
         }
 
@@ -65,7 +70,7 @@ public class EnemyMovement : MonoBehaviour
 
 
             //Get the direction of the next position.
-            newPosition = (checkPoints[m_currentCheckPoint].position - transform.position);
+            newPosition = (checkPoints[m_currentCheckPoint].transform.position - transform.position);
 
             rotateTo(newPosition);
 
@@ -75,10 +80,10 @@ public class EnemyMovement : MonoBehaviour
                 m_animator.SetBool("Turning", false);
                 m_animator.SetBool("Idle", false);
                 //Move the destination.
-                navMeshAgent.SetDestination(checkPoints[m_currentCheckPoint].position);
+                navMeshAgent.SetDestination(checkPoints[m_currentCheckPoint].transform.position);
 
                 //Ensure robot is always facing the person / position.
-                this.transform.LookAt(checkPoints[m_currentCheckPoint].position);
+                this.transform.LookAt(checkPoints[m_currentCheckPoint].transform.position);
 
                 changePosition = false;
             }
@@ -163,7 +168,7 @@ public class EnemyMovement : MonoBehaviour
         } else
         {
             searchTimer = 0;
-            navMeshAgent.SetDestination(checkPoints[m_currentCheckPoint].position);
+            navMeshAgent.SetDestination(checkPoints[m_currentCheckPoint].transform.position);
             return true;
         }
     }

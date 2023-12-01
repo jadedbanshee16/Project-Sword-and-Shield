@@ -16,6 +16,8 @@ TagManager:
   - InteractablePoint
   - UIComponents
   - OffHandUI
+  - OnHandUI
+  - Waypoint
   layers:
   - Default
   - TransparentFX
