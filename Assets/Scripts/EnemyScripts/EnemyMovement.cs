@@ -9,7 +9,7 @@ public class EnemyMovement : MonoBehaviour
     private Animator m_animator;
 
     //Keep an array of checkpoints.
-    private GameObject[] checkPoints;
+    public GameObject[] checkPoints;
 
     [Header("Rotation variables")]
     public float rotationSpeed;
@@ -47,7 +47,8 @@ public class EnemyMovement : MonoBehaviour
             originalRot = transform.rotation;
         }
 
-        m_animator = GetComponent<Animator>();
+        m_animator = GetComponentInChildren<Animator>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
         m_animator.SetBool("Idle", false);
     }
 
