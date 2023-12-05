@@ -60,6 +60,12 @@ public class WeaponClass : MonoBehaviour
         action = true;
     }
 
+    //An override for enemy based weapons.
+    public virtual void setWeapon(float dmg)
+    {
+        damage = dmg;
+    }
+
     public void changePositions(Vector3 dir, Vector3 ps)
     {
         direction = dir;

@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7381902783854036335}
   - component: {fileID: 7381902783854036332}
   - component: {fileID: 7381902783854036339}
-  - component: {fileID: 472811163}
   m_Layer: 0
   m_Name: Grunt1
   m_TagString: Enemy
@@ -51,6 +50,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  enemyRange: 5
+  enemyAwareness: 0.5
+  weaponRange: 0.2
+  weaponCooldown: 2
+  damage: 10
+  weapon: {fileID: 8905523111319635679}
+  agentRange: 0.1
+  speed: 0.5
+  angularSpeed: 120
+  attackTimer: 0
 --- !u!114 &7381902783854036334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,7 +86,7 @@ Rigidbody:
   m_Drag: 1
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 1
@@ -117,24 +126,64 @@ NavMeshAgent:
   m_BaseOffset: -0.024
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &472811163
+--- !u!1 &8905523111319635679
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7328794887901644487}
+  - component: {fileID: 2951248781520340603}
+  - component: {fileID: 191775112461687193}
+  m_Layer: 0
+  m_Name: SwordItem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7328794887901644487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8905523111319635679}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1804139825425562662}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2951248781520340603
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7381902783854036333}
+  m_GameObject: {fileID: 8905523111319635679}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d00cf04a14d85f4ab578b5be08b65c0, type: 3}
+  m_Script: {fileID: 11500000, guid: 57b2c45872e9c194aae8eb806a75026b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  navMeshAgent: {fileID: 0}
-  checkPoints: []
-  rotationSpeed: 0
-  angleTo: 0
-  patrolSpeed: 3.5
-  attackSpeed: 4.5
+--- !u!65 &191775112461687193
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8905523111319635679}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.011940017, y: 0.022918906, z: 0.0036859831}
+  m_Center: {x: -0.00047605246, y: 0.010706692, z: -0.0016564168}
 --- !u!1001 &1251680209
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -210,10 +259,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: GuardBot1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: ad63d1b2ccf553b45b0cbb994d5db71b, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: badec00a8027ece4ebfb66c15a451a2f, type: 2}
+    - target: {fileID: 5866666021909216657, guid: ad63d1b2ccf553b45b0cbb994d5db71b, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad63d1b2ccf553b45b0cbb994d5db71b, type: 3}
 --- !u!4 &543450652448553018 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ad63d1b2ccf553b45b0cbb994d5db71b, type: 3}
+  m_PrefabInstance: {fileID: 1251680209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1804139825425562662 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7419232212677352457, guid: ad63d1b2ccf553b45b0cbb994d5db71b, type: 3}
   m_PrefabInstance: {fileID: 1251680209}
   m_PrefabAsset: {fileID: 0}

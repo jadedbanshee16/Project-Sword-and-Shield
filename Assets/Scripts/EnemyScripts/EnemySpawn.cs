@@ -64,7 +64,7 @@ public class EnemySpawn : MonoBehaviour
         }
 
         //Spawn the type of enemy on this exact spot.
-        Instantiate(enemies[rand], this.transform.position, Quaternion.identity);
+        Instantiate(enemies[rand], this.transform.position, Quaternion.identity, this.transform);
 
     }
 }

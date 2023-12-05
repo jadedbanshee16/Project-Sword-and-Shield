@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         lvlInstance.GenerateMap(difficulty);
     }
 
-    private void restartGame() 
+    public void restartGame() 
     {
         //Destroy and create the next level.
         Destroy(lvlInstance.gameObject);
