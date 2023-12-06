@@ -15,6 +15,7 @@ public class Inventory : MonoBehaviour
     public SetInventoryImage onHandInvent;
     public SetInventoryImage offHandInvent;
     public SetInventoryImage staminaInvent;
+    public SetInventoryImage healthInvent;
 
     public void setUpInventory()
     {
@@ -23,6 +24,7 @@ public class Inventory : MonoBehaviour
         onHandInvent = uis.transform.GetChild(0).GetComponent<SetInventoryImage>();
         offHandInvent = uis.transform.GetChild(1).GetComponent<SetInventoryImage>();
         staminaInvent = uis.transform.GetChild(2).GetComponent<SetInventoryImage>();
+        healthInvent = uis.transform.GetChild(3).GetComponent<SetInventoryImage>();
 
         //Set the first and second weapons.
         switchWeapons(0);
@@ -119,6 +121,11 @@ public class Inventory : MonoBehaviour
     public void updateStamina(float curr, float max)
     {
         staminaInvent.setBarScale(curr, max);
+    }
+
+    public void updateHealth(float curr, float max)
+    {
+        healthInvent.setBarScale(curr, max);
     }
 
 }

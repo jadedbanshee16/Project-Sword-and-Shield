@@ -7,12 +7,7 @@ public class EnemySpawn : MonoBehaviour
 {
     public GameObject[] enemies;
 
-    private int island;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    public int island;
 
     public void setIsland(int i)
     {
@@ -64,7 +59,9 @@ public class EnemySpawn : MonoBehaviour
         }
 
         //Spawn the type of enemy on this exact spot.
-        Instantiate(enemies[rand], this.transform.position, Quaternion.identity, this.transform);
+        GameObject enemyInstance = Instantiate(enemies[rand], this.transform.position, Quaternion.identity, this.transform);
+
+        enemyInstance.GetComponent<EnemyClass>().setIsland(island);
 
     }
 }

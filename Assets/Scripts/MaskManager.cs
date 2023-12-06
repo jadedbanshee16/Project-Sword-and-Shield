@@ -26,7 +26,7 @@ public class MaskManager : MonoBehaviour
         {
             //Debug.Log(hit.collider.gameObject.name);
             //Debug.DrawRay(currentCam.transform.position, hit.collider.transform.position, Color.yellow);
-            if (hit.collider.tag == "Player")
+            if (hit.collider.tag == "Player" || hit.collider.name == "EnemyEyes")
             {
                 if (alpha > 0)
                 {

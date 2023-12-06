@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,61 +7,67 @@ using UnityEngine.AI;
 public class EnemyClass : MonoBehaviour
 {
     [SerializeField]
-    private float health;
+    protected float health;
 
     [Header("Enemy Detection Variables")]
     [SerializeField]
-    private float enemyRange;
+    protected float enemyRange;
     [SerializeField]
-    private float enemyAwareness;
+    protected float detectionShock;
 
     [Header("Attack Variables")]
     [SerializeField]
-    private float weaponRange;
+    protected float weaponRange;
     [SerializeField]
-    private float weaponCooldown;
+    protected float weaponCooldown;
     [SerializeField]
-    private float damage;
+    protected Vector3 damage;
     [SerializeField]
-    private GameObject weapon;
+    protected GameObject weapon;
 
     [Header("NavAgent Variables")]
     [SerializeField]
-    private float agentRange;
+    protected float agentRange;
     [SerializeField]
-    private float speed;
+    protected float speed;
     [SerializeField]
-    private float angularSpeed;
+    protected float angularSpeed;
+    [SerializeField]
+    private float rotationSpeed;
 
-    private Rigidbody _rig;
-    private PlayerClass _playerStats;
-    private NavMeshAgent _agent;
-    private Transform _player;
-    private Animator _anim;
+    [Header("Other Variables")]
+    [SerializeField]
+    private GameObject[] loot;
 
-    private int currentIsland;
-    private Transform[] validPos;
+    protected Rigidbody _rig;
+    protected PlayerClass _playerStats;
+    protected NavMeshAgent _agent;
+    protected Transform _player;
+    protected Animator _anim;
 
-    private bool chasingPlayer;
-    private bool hasAttacked;
-    private bool isSearching;
+    public int currentIsland;
+    protected Transform[] validPos;
 
-    public float attackTimer;
-    private float searchTimer;
+    protected bool foundPlayer;
+    protected bool chasingPlayer;
+    protected bool hasAttacked;
 
-    private void Start()
+    protected float attackTimer;
+    protected float waitTimer;
+    protected float shockTimer;
+
+    protected void Start()
     {
         _rig = transform.GetComponent<Rigidbody>();
         _playerStats = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PlayerClass>();
         _agent = transform.GetComponent<NavMeshAgent>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _anim = GetComponentInChildren<Animator>();
-        weapon.GetComponent<WeaponClass>().setWeapon(damage);
+        weapon.GetComponent<WeaponClass>().setWeapon(damage.x, damage.y, damage.z);
         weapon.SetActive(false);
 
         chasingPlayer = false;
         hasAttacked = false;
-        isSearching = false;
         _agent.SetDestination(transform.position);
         _agent.speed = speed;
         _agent.angularSpeed = angularSpeed;
@@ -70,29 +77,42 @@ public class EnemyClass : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!chasingPlayer && !hasAttacked)
+        if (foundPlayer)
         {
-            chasingPlayer = findPlayer();
-
-            //Have the moving thing.
+            //Stop the movement and watch the player.
+            if(shockTimer > 0)
+            {
+                _anim.SetBool("Idle", true);
+                _agent.SetDestination(this.transform.position);
+                shockTimer -= Time.deltaTime;
+            } else
+            {
+                chasingPlayer = true;
+            }
+        } else
+        {
             move();
-        } else if (chasingPlayer)
+        }
+
+        if (chasingPlayer)
         {
             chase();
         }
 
         //Make enemy idle when near the position.
-        if(Vector3.Distance(transform.position, _agent.destination) < agentRange)
+        if (Vector3.Distance(transform.position, _agent.destination) < agentRange)
         {
             _agent.isStopped = true;
-            _anim.SetBool("Idle", true);
+            //_anim.SetBool("Idle", true);
+
+  
         } else
         {
             _agent.isStopped = false;
             _anim.SetBool("Idle", false);
         }
 
-        //A cooldown to ensure the attack happens once for a short period of time.
+        /*//A cooldown to ensure the attack happens once for a short period of time.
         if (hasAttacked)
         {
             if(attackTimer > 0)
@@ -101,35 +121,19 @@ public class EnemyClass : MonoBehaviour
             } else
             {
                 hasAttacked = false;
-                weapon.SetActive(false);
-                _anim.ResetTrigger("Attack");
             }
-        }
-
-        //A cooldown to ensure enemy returns to move if no longer chasing the enemy.
-        if (isSearching)
-        {
-            if(searchTimer > 0)
-            {
-                searchTimer -= Time.deltaTime;
-            } else
-            {
-                isSearching = false;
-                chasingPlayer = false;
-            }
-        } else
-        {
-            isSearching = false;
-        }
+        }*/
     }
 
-    public void move()
+    public virtual void move()
     {
         _anim.SetBool("Idle", false);
 
+        _agent.speed = speed;
+
         if (Vector3.Distance(_agent.destination, transform.position) < agentRange)
         {
-            Vector3 randomDirection = Random.insideUnitSphere * 5;
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 5;
 
             randomDirection += transform.position;
             NavMeshHit hit;
@@ -144,14 +148,15 @@ public class EnemyClass : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, _player.position) > weaponRange)
         {
-            Debug.Log("Chasing player: " + Vector3.Distance(transform.position, _player.position));
+            //Debug.Log("Chasing player: " + Vector3.Distance(transform.position, _player.position));
             _agent.SetDestination(_player.position);
+            this.transform.LookAt(new Vector3(_player.position.x, 0, _player.position.z));
         }
         else
         {
             if (!hasAttacked)
             {
-                Debug.Log("Attacked");
+                //Debug.Log("Attacked");
                 attack();
             }
         }
@@ -159,13 +164,83 @@ public class EnemyClass : MonoBehaviour
 
     public void attack()
     {
-        hasAttacked = true;
-        attackTimer = weaponCooldown;
         weapon.SetActive(true);
+        _anim.applyRootMotion = true;
         _anim.SetTrigger("Attack");
     }
 
-    public bool findPlayer()
+    public void stopAttacking()
+    {
+        hasAttacked = true;
+        attackTimer = weaponCooldown;
+        weapon.SetActive(false);
+        _anim.applyRootMotion = false;
+        _anim.ResetTrigger("Attack");
+    }
+
+    public void takeDamage(float dmg, float pushBack, float stun, Vector3 direction, float cost)
+    {
+        //Do Pushback.
+
+        _rig.velocity = direction * pushBack;
+
+        //Do damage.
+        health -= dmg;
+
+        if (health <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+
+        _playerStats.deductStamina(cost);
+
+        //Set the chase.
+        chasingPlayer = true;
+    }
+
+    public void getValidPositions(Transform[] pos, int isl)
+    {
+        validPos = new Transform[pos.Length];
+
+        for (int i = 0; i < validPos.Length; i++)
+        {
+            validPos[i] = pos[i];
+        }
+
+        currentIsland = isl;
+    }
+
+    public void setPlayerFound(bool b)
+    {
+        foundPlayer = b;
+    }
+
+    public void setIsland(int i)
+    {
+        currentIsland = i;
+    }
+
+    public float getEnemyRange()
+    {
+        return enemyRange;
+    }
+
+    public void OnAnimatorMove()
+    {
+        this.transform.position += _anim.deltaPosition;
+    }
+
+    public void rotateTo(Vector3 pos)
+    {
+        //Turn the creature around until it is facing that direction.
+        pos.y = 0;
+
+        Quaternion rot = Quaternion.LookRotation(pos);
+        // slerp to the desired rotation over time
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, rotationSpeed * Time.deltaTime);
+    }
+
+    /*public bool findPlayer()
     {
         bool playerFound = false;
 
@@ -192,34 +267,5 @@ public class EnemyClass : MonoBehaviour
         }
 
         return playerFound;
-    }
-
-    public void takeDamage(float dmg, float pushBack, float stun, Vector3 direction, float cost)
-    {
-        //Do Pushback.
-
-        _rig.velocity = direction * pushBack;
-
-        //Do damage.
-        health -= dmg;
-
-        if(health <= 0)
-        {
-            Destroy(this.gameObject);
-        }
-
-        _playerStats.deductStamina(cost);
-    }
-
-    public void getValidPositions(Transform[] pos, int isl)
-    {
-        validPos = new Transform[pos.Length];
-
-        for(int i = 0; i < validPos.Length; i++)
-        {
-            validPos[i] = pos[i];
-        }
-
-        currentIsland = isl;
-    }
+    }*/
 }

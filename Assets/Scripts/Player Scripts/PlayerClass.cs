@@ -24,6 +24,12 @@ public class PlayerClass : MonoBehaviour
     [Header("Health variable")]
     [SerializeField]
     private float maximumHealth;
+    [SerializeField]
+    private float invincibilityLength;
+
+    private bool invincible;
+    private float invincibleTimer;
+
 
 
     // Start is called before the first frame update
@@ -32,6 +38,7 @@ public class PlayerClass : MonoBehaviour
         _inv = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Inventory>();
         currentStamina = maximumStamina;
         currentHealth = maximumHealth;
+        invincibleTimer = 0;
     }
 
     // Update is called once per frame
@@ -40,6 +47,7 @@ public class PlayerClass : MonoBehaviour
         //Now, update the stamina if needed.
         if (currentStamina < maximumStamina)
         {
+            //If stamina is lower than max, reginerate stamina.
             if (staminaTimer < staminaRegenPace)
             {
                 staminaTimer += Time.deltaTime;
@@ -54,7 +62,16 @@ public class PlayerClass : MonoBehaviour
             currentStamina = maximumStamina;
         }
 
+        if(invincible && invincibleTimer > 0)
+        {
+            invincibleTimer -= Time.deltaTime;
+        } else
+        {
+            invincible = false;
+        }
+
         _inv.updateStamina(currentStamina, maximumStamina);
+        _inv.updateHealth(currentHealth, maximumHealth);
     }
 
     public float getStamina()
@@ -80,7 +97,13 @@ public class PlayerClass : MonoBehaviour
 
     public void deductHealth(float rm)
     {
-        currentHealth -= rm;
+        if (!invincible)
+        {
+            currentHealth -= rm;
+
+            invincible = true;
+            invincibleTimer = invincibilityLength;
+        }
 
         if(currentHealth <= 0)
         {

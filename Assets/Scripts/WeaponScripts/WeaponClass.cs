@@ -25,6 +25,7 @@ public class WeaponClass : MonoBehaviour
         //Use this weapon is working.
     }
 
+    //Set weapon at certain pos (p) and interacting with direction (d).
     public virtual void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float ct)
     {
         direction = d;
@@ -42,7 +43,7 @@ public class WeaponClass : MonoBehaviour
         action = true;
     }
 
-    //An override for projectile based weapons.
+    //An override for projectile based weapons. At position (p), direction (d), time it flies and speed it goes.
     public virtual void setWeapon(Vector3 d, Vector3 p, float dmg, float psh, float st, float ct, float time, float speed)
     {
         direction = d;
@@ -60,10 +61,12 @@ public class WeaponClass : MonoBehaviour
         action = true;
     }
 
-    //An override for enemy based weapons.
-    public virtual void setWeapon(float dmg)
+    //An override for premade weapons (don't have to be instantiated on the field). This requires only the damage statistics.
+    public virtual void setWeapon(float dmg, float psh, float st)
     {
         damage = dmg;
+        pushback = psh;
+        stun = st;
     }
 
     public void changePositions(Vector3 dir, Vector3 ps)
