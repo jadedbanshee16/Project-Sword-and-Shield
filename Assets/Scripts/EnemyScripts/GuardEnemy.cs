@@ -24,8 +24,6 @@ public class GuardEnemy : EnemyClass
     [Header("Patrol Variables")]
     [SerializeField]
     private float patrolSpeed;
-    [SerializeField]
-    private float angleTo;
 
     private bool changePosition = false;
     private Vector3 newPosition;
@@ -93,8 +91,10 @@ public class GuardEnemy : EnemyClass
             {
                 //animator.SetBool("Turning", false);
                 _anim.SetBool("Idle", false);
+
+                currentTargetLocation = checkPoints[currentCheckPoint].transform.position;
                 //Move the destination.
-                _agent.SetDestination(checkPoints[currentCheckPoint].transform.position);
+                _agent.SetDestination(currentTargetLocation);
 
                 //Ensure robot is always facing the person / position.
                 this.transform.LookAt(checkPoints[currentCheckPoint].transform.position);
