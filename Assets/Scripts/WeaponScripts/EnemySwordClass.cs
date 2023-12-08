@@ -12,11 +12,11 @@ public class EnemySwordClass : WeaponClass
             //ALWAYS put the collider object as child.
             GameObject.FindGameObjectWithTag("GameManager").GetComponent<PlayerClass>().deductHealth(getDamageMetrics().x);
 
-            Vector3 dir = other.transform.position - this.transform.position;
+            Vector3 dir = this.transform.position - other.transform.position;
 
             dir.y = 0;
 
-            other.GetComponent<Rigidbody>().velocity = dir * getDamageMetrics().y;
+            other.GetComponent<Rigidbody>().velocity = dir * getDamageMetrics().y * 1000;
 
 
             //this.gameObject.SetActive(false);

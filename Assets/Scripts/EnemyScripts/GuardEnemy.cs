@@ -48,17 +48,18 @@ public class GuardEnemy : EnemyClass
 
         if (checkPoints.Count > 0)
         {
-            _agent.SetDestination(checkPoints[0].transform.position);
+            changedTargetLocation = checkPoints[0].transform.position;
             originalRot = transform.rotation;
         }
     }
 
     public override void move()
     {
-        _agent.speed = patrolSpeed;
+        speed = patrolSpeed;
 
+        //Debug.Log(_currentPath.corners.Length + " | " + currentCorner);
         //If near a waypoint...
-        if (_agent.remainingDistance < agentRange && checkPoints.Count > 1)
+        if (Vector3.Distance(transform.position, currentTargetLocation) < agentRange && checkPoints.Count > 1)
         {
 
             //_anim.SetBool("Turning", true);
@@ -92,9 +93,9 @@ public class GuardEnemy : EnemyClass
                 //animator.SetBool("Turning", false);
                 _anim.SetBool("Idle", false);
 
-                currentTargetLocation = checkPoints[currentCheckPoint].transform.position;
+                changedTargetLocation = checkPoints[currentCheckPoint].transform.position;
                 //Move the destination.
-                _agent.SetDestination(currentTargetLocation);
+                //_agent.SetDestination(currentTargetLocation);
 
                 //Ensure robot is always facing the person / position.
                 this.transform.LookAt(checkPoints[currentCheckPoint].transform.position);
@@ -103,7 +104,7 @@ public class GuardEnemy : EnemyClass
             }
 
         }
-        else if (_agent.remainingDistance < _agent.stoppingDistance && checkPoints.Count <= 1)
+        else if (Vector3.Distance(transform.position, currentTargetLocation) < agentRange && checkPoints.Count <= 1)
         {
             //If there is only ONE checkpoint. Set to idle.
             /*

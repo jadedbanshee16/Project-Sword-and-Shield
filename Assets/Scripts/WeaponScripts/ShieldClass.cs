@@ -36,7 +36,7 @@ public class ShieldClass : WeaponClass
         {
             Vector3 dmgMetric = getDamageMetrics();
             //ALWAYS put the collider object as child.
-            other.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, getDir(), getCost());
+            other.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, (getDir() - transform.position).normalized, getCost());
 
             stopWeapon();
         }

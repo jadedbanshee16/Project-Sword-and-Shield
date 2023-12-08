@@ -9,6 +9,14 @@ public class EnemySpawn : MonoBehaviour
 
     public int island;
 
+    private void Start()
+    {
+        if (isFirst())
+        {
+            spawnEnemy();
+        }
+    }
+
     public void setIsland(int i)
     {
         island = i;
@@ -26,7 +34,7 @@ public class EnemySpawn : MonoBehaviour
 
     private bool isFirst()
     {
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("Waypoint");
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Enemy");
 
         int count = 0;
 
@@ -58,8 +66,10 @@ public class EnemySpawn : MonoBehaviour
             rand = enemies.Length - 1;
         }
 
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
         //Spawn the type of enemy on this exact spot.
-        GameObject enemyInstance = Instantiate(enemies[rand], this.transform.position, Quaternion.identity, this.transform);
+        GameObject enemyInstance = Instantiate(enemies[rand], pos, Quaternion.identity, this.transform);
 
         enemyInstance.GetComponent<EnemyClass>().setIsland(island);
 

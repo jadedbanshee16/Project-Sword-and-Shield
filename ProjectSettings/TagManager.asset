@@ -18,6 +18,7 @@ TagManager:
   - OffHandUI
   - OnHandUI
   - Waypoint
+  - Obstacle
   layers:
   - Default
   - TransparentFX

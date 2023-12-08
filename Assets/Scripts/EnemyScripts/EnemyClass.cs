@@ -37,7 +37,7 @@ public class EnemyClass : MonoBehaviour
     [SerializeField]
     protected GameObject weapon;
 
-    [Header("NavAgent Variables")]
+    [Header("Navigation Variables")]
     [SerializeField]
     protected float agentRange;
     [SerializeField]
@@ -50,6 +50,9 @@ public class EnemyClass : MonoBehaviour
     protected float angleTo;
     [SerializeField]
     protected Vector3 rotatedPosition;
+    [SerializeField]
+    protected float pathFindingDistance;
+    protected GameObject[] objts;
 
     [Header("Other Variables")]
     [SerializeField]
@@ -69,19 +72,18 @@ public class EnemyClass : MonoBehaviour
     protected Transform _player;
     protected Animator _anim;
 
-    public int currentIsland;
-    protected Vector3 currentTargetLocation;
-
-
     public enemyStates currentState;
+    protected int currentIsland;
 
-    //protected bool foundPlayer;
-    //protected bool chasingPlayer;
-    protected bool hasAttacked;
+    protected NavMeshPath _currentPath;
+    protected Vector3 currentTargetLocation;
+    protected Vector3 changedTargetLocation;
+    protected int currentCorner;
 
     protected float attackTimer;
     protected float waitTimer;
     protected float shockTimer;
+    protected float changeDirectionTimer;
 
     protected void Start()
     {
@@ -90,13 +92,19 @@ public class EnemyClass : MonoBehaviour
         _agent = transform.GetComponent<NavMeshAgent>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _anim = GetComponentInChildren<Animator>();
+        _anim.applyRootMotion = false;
         weapon.GetComponent<WeaponClass>().setWeapon(damage.x, damage.y, damage.z);
         weapon.SetActive(false);
 
-        hasAttacked = false;
-        _agent.SetDestination(transform.position);
-        _agent.speed = speed;
-        _agent.angularSpeed = angularSpeed;
+        objts = GameObject.FindGameObjectsWithTag("Obstacle");
+
+        changedTargetLocation = transform.position;
+        currentTargetLocation = Vector3.zero;
+        _currentPath = new NavMeshPath();
+        currentCorner = 0;
+        //_agent.SetDestination(transform.position);
+        //_agent.speed = speed;
+        //_agent.angularSpeed = angularSpeed;
 
         _anim.SetBool("Idle", true);
 
@@ -107,6 +115,50 @@ public class EnemyClass : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (changedTargetLocation != currentTargetLocation)
+        {
+            currentTargetLocation = changedTargetLocation;
+            currentCorner = 1;
+            NavMesh.CalculatePath(transform.position, currentTargetLocation, NavMesh.AllAreas, _currentPath);
+
+            for (int i = 0; i < _currentPath.corners.Length; i++)
+            {
+                Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
+            }
+
+            //Find the first current 
+            _agent.SetDestination(currentTargetLocation);
+        }
+
+        /*if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
+        {
+            //If not on current corner, then add another path to work it.
+            if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange)
+            {
+                //Get direction.
+                Vector3 dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
+
+                //dir = distanceFromClosestObject(dir);
+
+                dir = transform.position + (dir * Time.deltaTime * speed);
+                dir.y = 0;
+
+                transform.position = dir;
+
+                rotateTo(_currentPath.corners[currentCorner] - transform.position);
+            }
+            else
+            {
+                if (currentCorner < _currentPath.corners.Length - 1)
+                {
+                    currentCorner++;
+                }
+            }
+        } else
+        {
+            currentCorner--;
+        }*/
+
         //If player was spotted but currently not chasing, then go through shock timer.
         if (currentState == enemyStates.spottedPlayer)
         {
@@ -115,23 +167,27 @@ public class EnemyClass : MonoBehaviour
             if(shockTimer > 0)
             {
                 _anim.SetBool("Idle", true);
-                _agent.SetDestination(this.transform.position);
+                changedTargetLocation = transform.position;
+                //_agent.SetDestination(this.transform.position);
                 rotateTo(new Vector3(_player.position.x, 0, _player.position.z) - transform.position);
                 shockTimer -= Time.deltaTime;
             } else
             {
-                currentTargetLocation = _player.position;
+                changedTargetLocation = _player.position;
                 currentState = enemyStates.chasingPlayer;
+                _anim.SetBool("Idle", false);
             }
         //When not spotting player, then just complete move.
         } else if(currentState == enemyStates.patroling)
         {
             detectLight.color = normalCol;
+            _anim.SetBool("Idle", false);
             move();
         //When player spotted and time is up, start chasing player.
         } else if(currentState == enemyStates.chasingPlayer)
         {
             detectLight.color = attackCol;
+            waitTimer = UnityEngine.Random.Range(5, 10);
             chase();
         //If enemy has attacked someone, then do this.
         } else if(currentState == enemyStates.attackedPlayer)
@@ -139,10 +195,14 @@ public class EnemyClass : MonoBehaviour
             if(attackTimer > 0)
             {
                 attackTimer -= Time.deltaTime;
+                changedTargetLocation = transform.position;
+                //_agent.SetDestination(transform.position);
+                rotateTo(_player.position - transform.position);
             } else
             {
                 currentState = enemyStates.chasingPlayer;
-                waitTimer = UnityEngine.Random.Range(5, 10);
+                changedTargetLocation = _player.position;
+                _anim.SetBool("Idle", false);
             }
         //If enemy has lost sight or attacked player, then do this.
         } else if (currentState == enemyStates.searchingPlayer)
@@ -164,16 +224,17 @@ public class EnemyClass : MonoBehaviour
             _anim.SetBool("Idle", false);
         }
 
-        /*//A cooldown to ensure the attack happens once for a short period of time.
-        if (hasAttacked)
+        //Make something when there is just 1 point.
+        /*if(_currentPath.corners.Length == 1)
         {
-            if(attackTimer > 0)
-            {
-                attackTimer -= Time.deltaTime;
-            } else
-            {
-                hasAttacked = false;
-            }
+            //Just go to the point.
+            Vector3 dir = (currentTargetLocation - transform.position).normalized;
+            dir = transform.position + (dir * Time.deltaTime * speed);
+            dir.y = 0;
+
+            transform.position = dir;
+
+            rotateTo(currentTargetLocation - transform.position);
         }*/
     }
 
@@ -181,9 +242,9 @@ public class EnemyClass : MonoBehaviour
     {
         _anim.SetBool("Idle", false);
 
-        _agent.speed = speed;
+        //_agent.speed = speed;
 
-        if (Vector3.Distance(_agent.destination, transform.position) < agentRange)
+        if (Vector3.Distance(currentTargetLocation, transform.position) < agentRange)
         {
             Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 5;
 
@@ -192,9 +253,9 @@ public class EnemyClass : MonoBehaviour
             NavMesh.SamplePosition(randomDirection, out hit, 5, 1);
             Vector3 currentPos = hit.position;
 
-            currentTargetLocation = currentPos;
+            changedTargetLocation = currentPos;
 
-            _agent.SetDestination(currentTargetLocation);
+            //_agent.SetDestination(currentTargetLocation);
         }
     }
 
@@ -234,13 +295,13 @@ public class EnemyClass : MonoBehaviour
             {
                 if (hit.collider.tag == "Player")
                 {
-                    currentTargetLocation = _player.position;
+                    changedTargetLocation = _player.position;
                     //Debug.Log("Player not behind object");
                 }
             }
 
             //Debug.Log(currentTargetLocation);
-            _agent.SetDestination(currentTargetLocation);
+            //_agent.SetDestination(currentTargetLocation);
         }
         else
         {
@@ -255,19 +316,13 @@ public class EnemyClass : MonoBehaviour
                     waitTimer = UnityEngine.Random.Range(5, 10);
                 } else
                 {
-                    currentTargetLocation = _player.position;
+                    changedTargetLocation = _player.position;
                 }
             } else
             {
                 //Debug.Log(attackTimer);
-                //Ensure the weapon cooldown isn't hit yet.
-                if(attackTimer > 0)
-                {
-                    attackTimer -= Time.deltaTime;
-                } else
-                {
-                    attack();
-                }
+                //attack();
+                _anim.SetTrigger("Attack");
             }
         }
     }
@@ -275,21 +330,19 @@ public class EnemyClass : MonoBehaviour
     public void attack()
     {
         currentState = enemyStates.attackedPlayer;
+        attackTimer = weaponCooldown;
         weapon.SetActive(true);
+        _anim.SetBool("Idle", true);
+        transform.LookAt(_player);
         _anim.applyRootMotion = true;
-        _anim.SetTrigger("Attack");
     }
 
     public void stopAttacking()
     {
-        hasAttacked = true;
-        attackTimer = weaponCooldown;
+        //Debug.Log("Working...");
         weapon.SetActive(false);
-        _anim.applyRootMotion = false;
         _anim.ResetTrigger("Attack");
-
-        currentState = enemyStates.chasingPlayer;
-        currentTargetLocation = _player.position;
+        _anim.applyRootMotion = false;
     }
 
     public void takeDamage(float dmg, float pushBack, float stun, Vector3 direction, float cost)
@@ -321,10 +374,10 @@ public class EnemyClass : MonoBehaviour
         } else if (currentState == enemyStates.searchingPlayer)
         {
             currentState = enemyStates.chasingPlayer;
-            currentTargetLocation = _player.position;
+            changedTargetLocation = _player.position;
         } else if(currentState == enemyStates.chasingPlayer)
         {
-            currentTargetLocation = _player.position;
+            changedTargetLocation = _player.position;
         }
     }
 
@@ -347,6 +400,23 @@ public class EnemyClass : MonoBehaviour
         // slerp to the desired rotation over time
         transform.rotation = Quaternion.Slerp(transform.rotation, rot, rotationSpeed * Time.deltaTime);
     }
+
+    /*public Vector3 distanceFromClosestObject(Vector3 targetDir)
+    {
+        Vector3 weightedAdditions = Vector3.zero;
+
+        for(int i = 0; i < objts.Length; i++)
+        {
+            //Find objects within the pathfinding distance and in front of the enemy.
+            if(Vector3.Distance(objts[i].transform.position, transform.position) < pathFindingDistance && Vector3.Dot(transform.forward, objts[i].transform.position - transform.position) > 0)
+            {
+                //Based on distance, add a mirrored
+                weightedAdditions += -Vector3.right * Vector3.Dot(Vector3.Cross(transform.forward, objts[i].transform.position - transform.position), transform.up) * (1 - (Vector3.Distance(objts[i].transform.position, transform.position) / pathFindingDistance));
+            }
+        }
+
+        return targetDir + weightedAdditions.normalized;
+    }*/
 
     /*public bool findPlayer()
     {
