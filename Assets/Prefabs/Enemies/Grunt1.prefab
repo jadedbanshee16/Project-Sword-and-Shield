@@ -215,7 +215,7 @@ MonoBehaviour:
   detectionShock: 0.5
   weaponRange: 0.4
   weaponCooldown: 1
-  damage: {x: 25, y: 0.15, z: 0.2}
+  damage: {x: 25, y: 0.05, z: 0.2}
   weapon: {fileID: 8905523111319635679}
   agentRange: 0.05
   speed: 1
@@ -223,7 +223,7 @@ MonoBehaviour:
   rotationSpeed: 5
   angleTo: 1
   rotatedPosition: {x: 0, y: 0, z: 0}
-  pathFindingDistance: 0.3
+  pathFindingDistance: 0.5
   loot: []
   normalCol: {r: 1, g: 1, b: 1, a: 1}
   alarmCol: {r: 1, g: 0.7604933, b: 0, a: 1}

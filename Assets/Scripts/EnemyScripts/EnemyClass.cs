@@ -52,7 +52,7 @@ public class EnemyClass : MonoBehaviour
     protected Vector3 rotatedPosition;
     [SerializeField]
     protected float pathFindingDistance;
-    protected GameObject[] objts;
+    protected List<Transform> objts;
 
     [Header("Other Variables")]
     [SerializeField]
@@ -96,7 +96,22 @@ public class EnemyClass : MonoBehaviour
         weapon.GetComponent<WeaponClass>().setWeapon(damage.x, damage.y, damage.z);
         weapon.SetActive(false);
 
-        objts = GameObject.FindGameObjectsWithTag("Obstacle");
+        objts = new List<Transform>();
+
+        GameObject[] o = GameObject.FindGameObjectsWithTag("Obstacle");
+        GameObject[] e = GameObject.FindGameObjectsWithTag("Enemy");
+
+        for(int i = 0; i < o.Length; i++)
+        {
+            objts.Add(o[i].transform);
+        }
+
+        for(int i = 0; i < e.Length; i++)
+        {
+            objts.Add(e[i].transform);
+        }
+
+
 
         changedTargetLocation = transform.position;
         currentTargetLocation = Vector3.zero;
@@ -121,11 +136,11 @@ public class EnemyClass : MonoBehaviour
             currentCorner = 1;
             NavMesh.CalculatePath(transform.position, currentTargetLocation, NavMesh.AllAreas, _currentPath);
 
-            for (int i = 0; i < _currentPath.corners.Length - 1; i++)
+            /*for (int i = 0; i < _currentPath.corners.Length - 1; i++)
             {
                 //Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
-                Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, true);
-            }
+                //Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, true);
+            }*/
 
             //Find the first current 
             //_agent.SetDestination(currentTargetLocation);
@@ -137,7 +152,7 @@ public class EnemyClass : MonoBehaviour
         if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
         {
             //If not on current corner, then add another path to work it.
-            if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange && currentCorner < _currentPath.corners.Length)
+            if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange)
             {
                 //Get direction.
                 dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
@@ -151,6 +166,13 @@ public class EnemyClass : MonoBehaviour
 
                 rotateTo(dir);
                 //transform.LookAt(_currentPath.corners[currentCorner]);
+
+                Vector3 start = transform.position;
+                Vector3 debugLoc = _currentPath.corners[currentCorner] - transform.position;
+                Vector3 debugDir = dir.normalized * 0.2f;
+                //Draw2 the debug line.
+                Debug.DrawRay(start, debugLoc, Color.white, 0.0f, true);
+                Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);
             }
             else
             {
@@ -164,13 +186,6 @@ public class EnemyClass : MonoBehaviour
         {
             currentCorner--;
         }
-
-        /*Vector3 start = transform.position;
-        Vector3 debugLoc = _currentPath.corners[currentCorner] - transform.position;
-        Vector3 debugDir = dir.normalized * 0.2f;
-        //Draw2 the debug line.
-        Debug.DrawRay(start, debugLoc, Color.white, 0.0f, true);
-        Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);*/
 
         //If player was spotted but currently not chasing, then go through shock timer.
         if (currentState == enemyStates.spottedPlayer)
@@ -399,6 +414,11 @@ public class EnemyClass : MonoBehaviour
         currentIsland = i;
     }
 
+    public int getIsland()
+    {
+        return currentIsland;
+    }
+
     public void OnAnimatorMove()
     {
         this.transform.position += _anim.deltaPosition;
@@ -420,10 +440,11 @@ public class EnemyClass : MonoBehaviour
 
         Vector3 startPos = new Vector3(transform.position.x, 0, transform.position.z);
 
-        for (int i = 0; i < objts.Length; i++)
+        for (int i = 0; i < objts.Count; i++)
         {
             //Find objects within the pathfinding distance and in front of the enemy.
-            if(Vector3.Distance(objts[i].transform.position, transform.position) <= pathFindingDistance &&
+            if(objts[i] != null &&
+               Vector3.Distance(objts[i].transform.position, transform.position) <= pathFindingDistance &&
                Vector3.Distance(_currentPath.corners[currentCorner], transform.position) > Vector3.Distance(objts[i].transform.position, transform.position) &&
                Vector3.Dot(transform.forward, objts[i].transform.position - transform.position) > 0)
             {

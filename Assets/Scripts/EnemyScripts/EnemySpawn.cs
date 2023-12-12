@@ -11,9 +11,9 @@ public class EnemySpawn : MonoBehaviour
 
     private void Start()
     {
+        spawnEnemy();
         if (isFirst())
         {
-            spawnEnemy();
         }
     }
 
@@ -40,7 +40,7 @@ public class EnemySpawn : MonoBehaviour
 
         for(int i = 0; i < objs.Length; i++)
         {
-            if(objs[i].GetComponent<EnemySpawn>().getIsland() == getIsland())
+            if(objs[i].GetComponent<EnemyClass>().getIsland() == getIsland())
             {
                 count++;
             }
