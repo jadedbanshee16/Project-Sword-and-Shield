@@ -61,7 +61,7 @@ public class GuardEnemy : EnemyClass
         //If near a waypoint...
         if (Vector3.Distance(transform.position, currentTargetLocation) < agentRange && checkPoints.Count > 1)
         {
-
+            //Debug.Log("Within location");
             //_anim.SetBool("Turning", true);
             //Turn until position is changed.
             if (!changePosition)
@@ -85,22 +85,22 @@ public class GuardEnemy : EnemyClass
             {
                 _anim.SetBool("Idle", false);
                 rotateTo(newPosition);
-            }
 
-            //When facing the new point, start moving.
-            if (Vector3.Angle(newPosition, transform.forward) <= angleTo)
-            {
-                //animator.SetBool("Turning", false);
-                _anim.SetBool("Idle", false);
+                //When facing the new point, start moving.
+                if (Vector3.Angle(newPosition, transform.forward) <= angleTo)
+                {
+                    //animator.SetBool("Turning", false);
+                    _anim.SetBool("Idle", false);
 
-                changedTargetLocation = checkPoints[currentCheckPoint].transform.position;
-                //Move the destination.
-                //_agent.SetDestination(currentTargetLocation);
+                    changedTargetLocation = checkPoints[currentCheckPoint].transform.position;
+                    //Move the destination.
+                    //_agent.SetDestination(currentTargetLocation);
 
-                //Ensure robot is always facing the person / position.
-                this.transform.LookAt(checkPoints[currentCheckPoint].transform.position);
+                    //Ensure robot is always facing the person / position.
+                    this.transform.LookAt(checkPoints[currentCheckPoint].transform.position);
 
-                changePosition = false;
+                    changePosition = false;
+                }
             }
 
         }

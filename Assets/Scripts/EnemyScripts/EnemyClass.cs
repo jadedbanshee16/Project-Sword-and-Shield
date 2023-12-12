@@ -121,43 +121,56 @@ public class EnemyClass : MonoBehaviour
             currentCorner = 1;
             NavMesh.CalculatePath(transform.position, currentTargetLocation, NavMesh.AllAreas, _currentPath);
 
-            for (int i = 0; i < _currentPath.corners.Length; i++)
+            for (int i = 0; i < _currentPath.corners.Length - 1; i++)
             {
-                Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
+                //Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
+                Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, true);
             }
 
             //Find the first current 
-            _agent.SetDestination(currentTargetLocation);
+            //_agent.SetDestination(currentTargetLocation);
         }
 
-        /*if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
+        Vector3 dir = Vector3.zero;
+
+        //Using the given path and current position, move at 'speed' to that direction.
+        if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
         {
             //If not on current corner, then add another path to work it.
-            if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange)
+            if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange && currentCorner < _currentPath.corners.Length)
             {
                 //Get direction.
-                Vector3 dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
+                dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
 
-                //dir = distanceFromClosestObject(dir);
+                dir = bestDirToCorner(dir).normalized;
 
-                dir = transform.position + (dir * Time.deltaTime * speed);
+                dir = (dir * Time.deltaTime * speed);
                 dir.y = 0;
 
-                transform.position = dir;
+                transform.position += dir;
 
-                rotateTo(_currentPath.corners[currentCorner] - transform.position);
+                rotateTo(dir);
+                //transform.LookAt(_currentPath.corners[currentCorner]);
             }
             else
             {
-                if (currentCorner < _currentPath.corners.Length - 1)
+                if (currentCorner + 1 < _currentPath.corners.Length)
                 {
                     currentCorner++;
                 }
             }
-        } else
+        }
+        else
         {
             currentCorner--;
-        }*/
+        }
+
+        /*Vector3 start = transform.position;
+        Vector3 debugLoc = _currentPath.corners[currentCorner] - transform.position;
+        Vector3 debugDir = dir.normalized * 0.2f;
+        //Draw2 the debug line.
+        Debug.DrawRay(start, debugLoc, Color.white, 0.0f, true);
+        Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);*/
 
         //If player was spotted but currently not chasing, then go through shock timer.
         if (currentState == enemyStates.spottedPlayer)
@@ -181,7 +194,7 @@ public class EnemyClass : MonoBehaviour
         } else if(currentState == enemyStates.patroling)
         {
             detectLight.color = normalCol;
-            _anim.SetBool("Idle", false);
+            //_anim.SetBool("Idle", false);
             move();
         //When player spotted and time is up, start chasing player.
         } else if(currentState == enemyStates.chasingPlayer)
@@ -212,17 +225,17 @@ public class EnemyClass : MonoBehaviour
         }
 
         //Make enemy idle when near the position.
-        if (Vector3.Distance(transform.position, _agent.destination) < agentRange)
+        /*if (Vector3.Distance(transform.position, _agent.destination) < agentRange)
         {
-            _agent.isStopped = true;
+            //_agent.isStopped = true;
             //_anim.SetBool("Idle", true);
 
   
         } else
         {
-            _agent.isStopped = false;
-            _anim.SetBool("Idle", false);
-        }
+            //_agent.isStopped = false;
+            //_anim.SetBool("Idle", false);
+        }*/
 
         //Make something when there is just 1 point.
         /*if(_currentPath.corners.Length == 1)
@@ -401,22 +414,48 @@ public class EnemyClass : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, rot, rotationSpeed * Time.deltaTime);
     }
 
-    /*public Vector3 distanceFromClosestObject(Vector3 targetDir)
+    public Vector3 bestDirToCorner(Vector3 targetDir)
     {
         Vector3 weightedAdditions = Vector3.zero;
 
-        for(int i = 0; i < objts.Length; i++)
+        Vector3 startPos = new Vector3(transform.position.x, 0, transform.position.z);
+
+        for (int i = 0; i < objts.Length; i++)
         {
             //Find objects within the pathfinding distance and in front of the enemy.
-            if(Vector3.Distance(objts[i].transform.position, transform.position) < pathFindingDistance && Vector3.Dot(transform.forward, objts[i].transform.position - transform.position) > 0)
+            if(Vector3.Distance(objts[i].transform.position, transform.position) <= pathFindingDistance &&
+               Vector3.Distance(_currentPath.corners[currentCorner], transform.position) > Vector3.Distance(objts[i].transform.position, transform.position) &&
+               Vector3.Dot(transform.forward, objts[i].transform.position - transform.position) > 0)
             {
-                //Based on distance, add a mirrored
-                weightedAdditions += -Vector3.right * Vector3.Dot(Vector3.Cross(transform.forward, objts[i].transform.position - transform.position), transform.up) * (1 - (Vector3.Distance(objts[i].transform.position, transform.position) / pathFindingDistance));
+                Vector3 pos = new Vector3(objts[i].transform.position.x, 0, objts[i].transform.position.z);
+
+                Vector3 direction = (pos - startPos).normalized;
+                Vector3 up = startPos + Vector3.up;
+
+                Vector3 perpDir = Vector3.Cross(direction.normalized, up.normalized);
+                perpDir.y = 0;
+
+                //Debug.DrawLine(startPos, pos, Color.green, 0f, true);
+                //Debug.DrawLine(startPos, up, Color.blue, 0f, true);
+                //Debug.DrawLine(startPos, startPos - perpDir.normalized, Color.grey, 0f, true);
+                //Debug.DrawLine(startPos, startPos + perpDir.normalized, Color.grey, 0f, true);
+
+
+                if(Vector3.Dot(transform.right, pos) > 0)
+                {
+                    //If within distance and in front of enemy, find the normal direction, and have it weighted based on distance to position, add it all together.
+                    weightedAdditions += (perpDir).normalized * (1 - (Vector3.Distance(pos, startPos) / pathFindingDistance));
+                } else
+                {
+                    //If within distance and in front of enemy, find the normal direction, and have it weighted based on distance to position, add it all together.
+                    weightedAdditions += (startPos - perpDir).normalized * (1 - (Vector3.Distance(pos, startPos) / pathFindingDistance));
+                }
             }
         }
 
-        return targetDir + weightedAdditions.normalized;
-    }*/
+        //Return the target direction, when the closer you get to needed position, the less the weighted additions are used.
+        return targetDir + ((weightedAdditions) * Mathf.Min(1, Vector3.Distance(_currentPath.corners[currentCorner], transform.position) / pathFindingDistance));
+    }
 
     /*public bool findPlayer()
     {
