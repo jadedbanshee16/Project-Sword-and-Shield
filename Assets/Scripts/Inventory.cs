@@ -16,6 +16,9 @@ public class Inventory : MonoBehaviour
     public SetInventoryImage offHandInvent;
     public SetInventoryImage staminaInvent;
     public SetInventoryImage healthInvent;
+    public SetInventoryImage resource1Invent;
+    public SetInventoryImage resource2Invent;
+    public SetInventoryImage resource3Invent;
 
     public void setUpInventory()
     {
@@ -25,6 +28,9 @@ public class Inventory : MonoBehaviour
         offHandInvent = uis.transform.GetChild(1).GetComponent<SetInventoryImage>();
         staminaInvent = uis.transform.GetChild(2).GetComponent<SetInventoryImage>();
         healthInvent = uis.transform.GetChild(3).GetComponent<SetInventoryImage>();
+        resource1Invent = uis.transform.GetChild(4).GetComponent<SetInventoryImage>();
+        resource2Invent = uis.transform.GetChild(5).GetComponent<SetInventoryImage>();
+        resource3Invent = uis.transform.GetChild(6).GetComponent<SetInventoryImage>();
 
         //Set the first and second weapons.
         switchWeapons(0);
@@ -32,6 +38,8 @@ public class Inventory : MonoBehaviour
         //offHandInvent = GameObject.Find("ActiveOffHand");
 
         resources = new int[System.Enum.GetValues(typeof(pickUps.resourceTypes)).Length];
+
+        updateResources();
     }
 
     /*
@@ -57,6 +65,7 @@ public class Inventory : MonoBehaviour
         if((int)index < resources.Length && index >= 0)
         {
             resources[(int)index] += amount;
+            updateResources();
         }
     }
 
@@ -126,6 +135,13 @@ public class Inventory : MonoBehaviour
     public void updateHealth(float curr, float max)
     {
         healthInvent.setBarScale(curr, max);
+    }
+
+    public void updateResources()
+    {
+        resource1Invent.setTex(resources[0].ToString());
+        resource2Invent.setTex(resources[1].ToString());
+        resource3Invent.setTex(resources[2].ToString());
     }
 
 }

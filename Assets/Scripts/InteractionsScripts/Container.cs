@@ -8,8 +8,8 @@ public class Container : Interactable
 
     public float throwStrength;
 
-    public GameObject[] resourceContents;
-    public GameObject[] mandatoryContents;
+    public int resourceContents;
+    public int mandatoryContents;
 
     private bool opened = false;
 
@@ -29,7 +29,7 @@ public class Container : Interactable
             anim_.SetBool("Opened", true);
 
             //Instaniate and spit out the objects on each side.
-            for (int i = 0; i < mandatoryContents.Length; i++)
+            for (int i = 0; i < mandatoryContents; i++)
             {
                 Vector3 direction = randDirection();
 
@@ -42,21 +42,18 @@ public class Container : Interactable
                 obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
             }
 
+            int rand = Random.Range(0, resourceContents + 1);
             //Now instantiate the common resources, ranging from 0 to 3.
-            for(int x = 0; x < resourceContents.Length; x++)
+            for (int x = 0; x < rand; x++)
             {
-                int rand = Random.Range(0, 3);
-                for(int v = 0; v < rand; v++)
-                {
-                    Vector3 direction = randDirection();
+                Vector3 direction = randDirection();
 
-                    GameObject obj = _manager.GetPooledObject(PoolManager.objectType.resource);
+                GameObject obj = _manager.GetPooledObject(PoolManager.objectType.resource);
 
-                    obj.SetActive(true);
-                    obj.transform.position = direction;
-                    obj.transform.rotation = Quaternion.identity;
-                    obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
-                }
+                obj.SetActive(true);
+                obj.transform.position = direction;
+                obj.transform.rotation = Quaternion.identity;
+                obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
             }
         }
 

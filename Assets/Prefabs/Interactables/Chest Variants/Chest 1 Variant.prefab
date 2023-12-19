@@ -8,6 +8,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2053151864, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
+      propertyPath: mandatoryContents
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2053151864, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
       propertyPath: resourceContents.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -29,7 +33,7 @@ PrefabInstance:
       objectReference: {fileID: 3732602780530242427, guid: be8bec97035b3cf48a1fe25c552f94c1, type: 3}
     - target: {fileID: 1312036848498212421, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
       propertyPath: m_Name
-      value: Chest 1
+      value: Chest 1 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 1312036848498212422, guid: 1015cd66d1ee8fd4c9a5b35fd99f5dbd, type: 3}
       propertyPath: m_RootOrder

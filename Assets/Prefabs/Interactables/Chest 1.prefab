@@ -88,10 +88,8 @@ MonoBehaviour:
   inv: {fileID: 0}
   anim_: {fileID: 3560883474784218167}
   throwStrength: 45
-  resourceContents:
-  - {fileID: 4360467259415583119, guid: 12fe35cb744207941b95d6beb164c986, type: 3}
-  - {fileID: 18567315793817496, guid: 4cf50ef681cec54408c1bf7f1267c1ae, type: 3}
-  mandatoryContents: []
+  resourceContents: 3
+  mandatoryContents: 0
 --- !u!65 &724042548
 BoxCollider:
   m_ObjectHideFlags: 0

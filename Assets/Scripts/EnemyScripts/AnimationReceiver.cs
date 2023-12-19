@@ -19,4 +19,9 @@ public class AnimationReceiver : MonoBehaviour
     {
         this.transform.parent.GetComponent<EnemyClass>().stopAttacking();
     }
+
+    private void die()
+    {
+        this.transform.parent.GetComponent<EnemyClass>().die();
+    }
 }

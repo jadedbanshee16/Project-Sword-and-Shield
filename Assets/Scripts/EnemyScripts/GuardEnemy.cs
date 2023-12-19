@@ -26,6 +26,7 @@ public class GuardEnemy : EnemyClass
     private float patrolSpeed;
 
     private bool changePosition = false;
+    private bool withinRange = false;
     private Vector3 newPosition;
 
     // Start is called before the first frame update
@@ -48,7 +49,8 @@ public class GuardEnemy : EnemyClass
 
         if (checkPoints.Count > 0)
         {
-            changedTargetLocation = checkPoints[0].transform.position;
+            //changedTargetLocation = checkPoints[0].transform.position;
+            changedTargetLocation = checkPoints[Random.Range(0, checkPoints.Count)].transform.position;
             originalRot = transform.rotation;
         }
     }
@@ -57,17 +59,24 @@ public class GuardEnemy : EnemyClass
     {
         speed = patrolSpeed;
 
+        if(Vector3.Distance(transform.position, currentTargetLocation) < agentRange)
+        {
+            withinRange = true;
+        }
+
         //Debug.Log(_currentPath.corners.Length + " | " + currentCorner);
         //If near a waypoint...
-        if (Vector3.Distance(transform.position, currentTargetLocation) < agentRange && checkPoints.Count > 1)
+        if (withinRange && checkPoints.Count > 1)
         {
+            //Debug.Log("Flag 3");
             //Debug.Log("Within location");
             //_anim.SetBool("Turning", true);
             //Turn until position is changed.
             if (!changePosition)
             {
                 //Increment to next checkpoint, ensuring that if it was the last checkpoint it will return to checkpoint 0.
-                currentCheckPoint = (currentCheckPoint + 1) % checkPoints.Count;
+                currentCheckPoint = Random.Range(0, checkPoints.Count);
+                //currentCheckPoint = (currentCheckPoint + 1) % checkPoints.Count;
 
                 changePosition = true;
                 waitTimer = Random.Range(5, 10);
@@ -92,6 +101,7 @@ public class GuardEnemy : EnemyClass
                     //animator.SetBool("Turning", false);
                     _anim.SetBool("Idle", false);
 
+                    //Debug.Log("Flag 4");
                     changedTargetLocation = checkPoints[currentCheckPoint].transform.position;
                     //Move the destination.
                     //_agent.SetDestination(currentTargetLocation);
@@ -99,13 +109,15 @@ public class GuardEnemy : EnemyClass
                     //Ensure robot is always facing the person / position.
                     this.transform.LookAt(checkPoints[currentCheckPoint].transform.position);
 
+                    withinRange = false;
                     changePosition = false;
                 }
             }
 
         }
-        else if (Vector3.Distance(transform.position, currentTargetLocation) < agentRange && checkPoints.Count <= 1)
+        else if (withinRange && checkPoints.Count <= 1)
         {
+            //Debug.Log("Flag 3.1");
             //If there is only ONE checkpoint. Set to idle.
             /*
              * NOTE: Always have the bot start at the checkpoint if there is only 1 checkpoint.
@@ -113,6 +125,9 @@ public class GuardEnemy : EnemyClass
             _anim.SetBool("Idle", true);
             //m_animator.SetBool("Turning", false);
             transform.rotation = originalRot;
+        } else
+        {
+            //Debug.Log("Flag 3.1");
         }
     }
 }

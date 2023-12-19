@@ -13,7 +13,8 @@ public class EnemyClass : MonoBehaviour
         spottedPlayer = 1,
         chasingPlayer = 2,
         searchingPlayer = 3,
-        attackedPlayer = 4
+        attackedPlayer = 4,
+        dying = 5
     };
 
     [SerializeField]
@@ -56,7 +57,9 @@ public class EnemyClass : MonoBehaviour
 
     [Header("Other Variables")]
     [SerializeField]
-    private GameObject[] loot;
+    private int lootAmount;
+    [SerializeField]
+    private float throwStrength;
 
     [Header("State Colours")]
     [SerializeField]
@@ -71,9 +74,10 @@ public class EnemyClass : MonoBehaviour
     protected NavMeshAgent _agent;
     protected Transform _player;
     protected Animator _anim;
+    protected PoolManager _manager;
 
-    public enemyStates currentState;
-    protected int currentIsland;
+    protected enemyStates currentState;
+    public int currentIsland;
 
     protected NavMeshPath _currentPath;
     protected Vector3 currentTargetLocation;
@@ -95,6 +99,7 @@ public class EnemyClass : MonoBehaviour
         _anim.applyRootMotion = false;
         weapon.GetComponent<WeaponClass>().setWeapon(damage.x, damage.y, damage.z);
         weapon.SetActive(false);
+        _manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>();
 
         objts = new List<Transform>();
 
@@ -113,7 +118,7 @@ public class EnemyClass : MonoBehaviour
 
 
 
-        changedTargetLocation = transform.position;
+        //changedTargetLocation = transform.position;
         currentTargetLocation = Vector3.zero;
         _currentPath = new NavMeshPath();
         currentCorner = 0;
@@ -130,8 +135,12 @@ public class EnemyClass : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //Debug.Log(changedTargetLocation + " | " + currentTargetLocation + " | " + transform.position);
+
         if (changedTargetLocation != currentTargetLocation)
         {
+            //Debug.Log("Yo?");
+
             currentTargetLocation = changedTargetLocation;
             currentCorner = 1;
             NavMesh.CalculatePath(transform.position, currentTargetLocation, NavMesh.AllAreas, _currentPath);
@@ -139,43 +148,56 @@ public class EnemyClass : MonoBehaviour
             /*for (int i = 0; i < _currentPath.corners.Length - 1; i++)
             {
                 //Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
-                //Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, true);
+                Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, false);
             }*/
 
             //Find the first current 
-            //_agent.SetDestination(currentTargetLocation);
+            _agent.SetDestination(currentTargetLocation);
         }
 
+        rotateTo(currentTargetLocation);
+
         Vector3 dir = Vector3.zero;
+
+        //Debug.Log("Corner: " + currentCorner + " | " + _currentPath.corners.Length);
 
         //Using the given path and current position, move at 'speed' to that direction.
         if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
         {
+            //Debug.Log("Flag 1");
             //If not on current corner, then add another path to work it.
             if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange)
             {
-                //Get direction.
-                dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
+                if(currentState != enemyStates.dying)
+                {
+                    //Debug.Log("Flag 2");
+                    //Get direction.
+                    /*dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
 
-                dir = bestDirToCorner(dir).normalized;
+                    dir = bestDirToCorner(dir).normalized;
 
-                dir = (dir * Time.deltaTime * speed);
-                dir.y = 0;
+                    dir = (dir * Time.deltaTime * speed);
+                    dir.y = 0;
+                    rotateTo(dir);
+                    transform.position += dir;*/
 
-                transform.position += dir;
+                    //_agent.SetDestination(currentTargetLocation);
 
-                rotateTo(dir);
+                    rotateTo(currentTargetLocation);
+                }
+
                 //transform.LookAt(_currentPath.corners[currentCorner]);
 
-                Vector3 start = transform.position;
+                /*Vector3 start = transform.position;
                 Vector3 debugLoc = _currentPath.corners[currentCorner] - transform.position;
                 Vector3 debugDir = dir.normalized * 0.2f;
                 //Draw2 the debug line.
                 Debug.DrawRay(start, debugLoc, Color.white, 0.0f, true);
-                Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);
+                Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);*/
             }
             else
             {
+                //Debug.Log("Flag 2.1");
                 if (currentCorner + 1 < _currentPath.corners.Length)
                 {
                     currentCorner++;
@@ -184,7 +206,10 @@ public class EnemyClass : MonoBehaviour
         }
         else
         {
-            currentCorner--;
+            if(currentCorner > 0)
+            {
+                currentCorner--;
+            }
         }
 
         //If player was spotted but currently not chasing, then go through shock timer.
@@ -237,6 +262,9 @@ public class EnemyClass : MonoBehaviour
         {
             detectLight.color = alarmCol;
             search();
+        } else if (currentState == enemyStates.dying)
+        {
+            changedTargetLocation = transform.position;
         }
 
         //Make enemy idle when near the position.
@@ -373,6 +401,30 @@ public class EnemyClass : MonoBehaviour
         _anim.applyRootMotion = false;
     }
 
+    public void die()
+    {
+        //Create an explosion.
+
+        //Create the loot.
+        //Now instantiate the common resources, ranging from 0 to 3.
+        for (int x = 0; x < lootAmount; x++)
+        {
+            Vector3 direction = randDirection();
+
+            GameObject obj = _manager.GetPooledObject(PoolManager.objectType.resource);
+
+            obj.SetActive(true);
+            obj.transform.position = direction;
+            obj.transform.rotation = Quaternion.identity;
+            obj.GetComponent<Rigidbody>().AddForce(direction.normalized * throwStrength);
+        }
+
+
+
+        //Destroy object.
+        Destroy(this.gameObject);
+    }
+
     public void takeDamage(float dmg, float pushBack, float stun, Vector3 direction, float cost)
     {
         //Do Pushback.
@@ -384,7 +436,11 @@ public class EnemyClass : MonoBehaviour
 
         if (health <= 0)
         {
-            Destroy(this.gameObject);
+            _rig.isKinematic = true;
+            _anim.applyRootMotion = true;
+            currentState = enemyStates.dying;
+            _rig.velocity = Vector3.zero;
+            _anim.SetTrigger("Die");
         }
 
         _playerStats.deductStamina(cost);
@@ -460,22 +516,30 @@ public class EnemyClass : MonoBehaviour
                 //Debug.DrawLine(startPos, up, Color.blue, 0f, true);
                 //Debug.DrawLine(startPos, startPos - perpDir.normalized, Color.grey, 0f, true);
                 //Debug.DrawLine(startPos, startPos + perpDir.normalized, Color.grey, 0f, true);
+                //Debug.DrawLine(startPos, startPos + transform.right, Color.blue, 0f, true);
 
 
-                if(Vector3.Dot(transform.right, pos) > 0)
+                if(Vector3.Dot(pos, transform.right) < 0)
                 {
                     //If within distance and in front of enemy, find the normal direction, and have it weighted based on distance to position, add it all together.
-                    weightedAdditions += (perpDir).normalized * (1 - (Vector3.Distance(pos, startPos) / pathFindingDistance));
+                    weightedAdditions += (perpDir).normalized * ((1 - (Vector3.Distance(pos, startPos) / pathFindingDistance)) / 2);
                 } else
                 {
                     //If within distance and in front of enemy, find the normal direction, and have it weighted based on distance to position, add it all together.
-                    weightedAdditions += (startPos - perpDir).normalized * (1 - (Vector3.Distance(pos, startPos) / pathFindingDistance));
+                    weightedAdditions += (startPos - perpDir).normalized * ((1 - (Vector3.Distance(pos, startPos) / pathFindingDistance)) / 2);
                 }
             }
         }
 
         //Return the target direction, when the closer you get to needed position, the less the weighted additions are used.
         return targetDir + ((weightedAdditions) * Mathf.Min(1, Vector3.Distance(_currentPath.corners[currentCorner], transform.position) / pathFindingDistance));
+    }
+
+    private Vector3 randDirection()
+    {
+        Vector2 dir = UnityEngine.Random.insideUnitCircle.normalized * 0.1f;
+
+        return new Vector3(dir.x + transform.position.x, 0.1f, dir.y + transform.position.z);
     }
 
     /*public bool findPlayer()

@@ -11,9 +11,9 @@ public class EnemySpawn : MonoBehaviour
 
     private void Start()
     {
-        spawnEnemy();
         if (isFirst())
         {
+            spawnEnemy();
         }
     }
 
@@ -46,7 +46,7 @@ public class EnemySpawn : MonoBehaviour
             }
         }
 
-        if(count > 1)
+        if(count > 2)
         {
             return false;
         } else
