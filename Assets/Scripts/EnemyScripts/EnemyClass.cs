@@ -75,6 +75,7 @@ public class EnemyClass : MonoBehaviour
     protected Transform _player;
     protected Animator _anim;
     protected PoolManager _manager;
+    protected GameManager _gameManager;
 
     protected enemyStates currentState;
     public int currentIsland;
@@ -95,6 +96,7 @@ public class EnemyClass : MonoBehaviour
         _playerStats = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PlayerClass>();
         _agent = transform.GetComponent<NavMeshAgent>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         _anim = GetComponentInChildren<Animator>();
         _anim.applyRootMotion = false;
         weapon.GetComponent<WeaponClass>().setWeapon(damage.x, damage.y, damage.z);
@@ -135,137 +137,151 @@ public class EnemyClass : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Debug.Log(changedTargetLocation + " | " + currentTargetLocation + " | " + transform.position);
-
-        if (changedTargetLocation != currentTargetLocation)
+        if(!_gameManager.getplayerStop() && !(currentState == enemyStates.dying))
         {
-            //Debug.Log("Yo?");
+            //Debug.Log(changedTargetLocation + " | " + currentTargetLocation + " | " + transform.position);
 
-            currentTargetLocation = changedTargetLocation;
-            currentCorner = 1;
-            NavMesh.CalculatePath(transform.position, currentTargetLocation, NavMesh.AllAreas, _currentPath);
-
-            /*for (int i = 0; i < _currentPath.corners.Length - 1; i++)
+            if (changedTargetLocation != currentTargetLocation)
             {
-                //Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
-                Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, false);
-            }*/
+                //Debug.Log("Yo?");
 
-            //Find the first current 
-            _agent.SetDestination(currentTargetLocation);
-        }
+                currentTargetLocation = changedTargetLocation;
+                currentCorner = 1;
+                //NavMesh.CalculatePath(transform.position, currentTargetLocation, NavMesh.AllAreas, _currentPath);
 
-        rotateTo(currentTargetLocation);
-
-        Vector3 dir = Vector3.zero;
-
-        //Debug.Log("Corner: " + currentCorner + " | " + _currentPath.corners.Length);
-
-        //Using the given path and current position, move at 'speed' to that direction.
-        if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
-        {
-            //Debug.Log("Flag 1");
-            //If not on current corner, then add another path to work it.
-            if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange)
-            {
-                if(currentState != enemyStates.dying)
+                /*for (int i = 0; i < _currentPath.corners.Length - 1; i++)
                 {
-                    //Debug.Log("Flag 2");
-                    //Get direction.
-                    /*dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
+                    //Debug.Log("Path " + i + ": " + _currentPath.corners[i]);
+                    Debug.DrawLine(_currentPath.corners[i], _currentPath.corners[i + 1], Color.yellow, Mathf.Infinity, false);
+                }*/
 
-                    dir = bestDirToCorner(dir).normalized;
+                //Find the first current 
+                _agent.SetDestination(currentTargetLocation);
+            }
 
-                    dir = (dir * Time.deltaTime * speed);
-                    dir.y = 0;
-                    rotateTo(dir);
-                    transform.position += dir;*/
+            //rotateTo(currentTargetLocation);
 
-                    //_agent.SetDestination(currentTargetLocation);
+            Vector3 dir = Vector3.zero;
 
-                    rotateTo(currentTargetLocation);
+            //Debug.Log("Corner: " + currentCorner + " | " + _currentPath.corners.Length);
+
+            //Using the given path and current position, move at 'speed' to that direction.
+            if (currentCorner < _currentPath.corners.Length && _currentPath.corners.Length > 0)
+            {
+                //Debug.Log("Flag 1");
+                //If not on current corner, then add another path to work it.
+                if (Vector3.Distance(transform.position, _currentPath.corners[currentCorner]) > agentRange)
+                {
+                    if (currentState != enemyStates.dying)
+                    {
+                        //Debug.Log("Flag 2");
+                        //Get direction.
+                        dir = (_currentPath.corners[currentCorner] - transform.position).normalized;
+
+                        //dir = bestDirToCorner(dir).normalized;
+
+                        dir = (dir * Time.deltaTime * speed);
+                        dir.y = 0;
+                        rotateTo(dir);
+                        transform.position += dir;
+
+                        //_agent.SetDestination(currentTargetLocation);
+
+                        rotateTo(currentTargetLocation);
+                    }
+
+                    //transform.LookAt(_currentPath.corners[currentCorner]);
+
+                    /*Vector3 start = transform.position;
+                    Vector3 debugLoc = _currentPath.corners[currentCorner] - transform.position;
+                    Vector3 debugDir = dir.normalized * 0.2f;
+                    //Draw2 the debug line.
+                    Debug.DrawRay(start, debugLoc, Color.white, 0.0f, true);
+                    Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);*/
                 }
-
-                //transform.LookAt(_currentPath.corners[currentCorner]);
-
-                /*Vector3 start = transform.position;
-                Vector3 debugLoc = _currentPath.corners[currentCorner] - transform.position;
-                Vector3 debugDir = dir.normalized * 0.2f;
-                //Draw2 the debug line.
-                Debug.DrawRay(start, debugLoc, Color.white, 0.0f, true);
-                Debug.DrawRay(start, debugDir, Color.red, 0.0f, true);*/
+                else
+                {
+                    //Debug.Log("Flag 2.1");
+                    if (currentCorner + 1 < _currentPath.corners.Length)
+                    {
+                        currentCorner++;
+                    }
+                }
             }
             else
             {
-                //Debug.Log("Flag 2.1");
-                if (currentCorner + 1 < _currentPath.corners.Length)
+                if (currentCorner > 0)
                 {
-                    currentCorner++;
+                    currentCorner--;
                 }
             }
-        }
-        else
-        {
-            if(currentCorner > 0)
+
+            //If player was spotted but currently not chasing, then go through shock timer.
+            if (currentState == enemyStates.spottedPlayer)
             {
-                currentCorner--;
+                detectLight.color = alarmCol;
+                //Stop the movement and watch the player.
+                if (shockTimer > 0)
+                {
+                    _anim.SetBool("Idle", true);
+                    changedTargetLocation = transform.position;
+                    //_agent.SetDestination(this.transform.position);
+                    rotateTo(new Vector3(_player.position.x, 0, _player.position.z) - transform.position);
+                    shockTimer -= Time.deltaTime;
+                }
+                else
+                {
+                    changedTargetLocation = _player.position;
+                    currentState = enemyStates.chasingPlayer;
+                    _anim.SetBool("Idle", false);
+                }
+                //When not spotting player, then just complete move.
             }
+            else if (currentState == enemyStates.patroling)
+            {
+                detectLight.color = normalCol;
+                //_anim.SetBool("Idle", false);
+                move();
+                //When player spotted and time is up, start chasing player.
+            }
+            else if (currentState == enemyStates.chasingPlayer)
+            {
+                detectLight.color = attackCol;
+                waitTimer = UnityEngine.Random.Range(5, 10);
+                chase();
+                //If enemy has attacked someone, then do this.
+            }
+            else if (currentState == enemyStates.attackedPlayer)
+            {
+                if (attackTimer > 0)
+                {
+                    attackTimer -= Time.deltaTime;
+                    changedTargetLocation = transform.position;
+                    //_agent.SetDestination(transform.position);
+                    rotateTo(_player.position - transform.position);
+                }
+                else
+                {
+                    currentState = enemyStates.chasingPlayer;
+                    changedTargetLocation = _player.position;
+                    _anim.SetBool("Idle", false);
+                }
+                //If enemy has lost sight or attacked player, then do this.
+            }
+            else if (currentState == enemyStates.searchingPlayer)
+            {
+                detectLight.color = alarmCol;
+                search();
+            }
+            else if (currentState == enemyStates.dying)
+            {
+                changedTargetLocation = transform.position;
+            }
+        } else
+        {
+            _anim.SetBool("Idle", true);
         }
 
-        //If player was spotted but currently not chasing, then go through shock timer.
-        if (currentState == enemyStates.spottedPlayer)
-        {
-            detectLight.color = alarmCol;
-            //Stop the movement and watch the player.
-            if(shockTimer > 0)
-            {
-                _anim.SetBool("Idle", true);
-                changedTargetLocation = transform.position;
-                //_agent.SetDestination(this.transform.position);
-                rotateTo(new Vector3(_player.position.x, 0, _player.position.z) - transform.position);
-                shockTimer -= Time.deltaTime;
-            } else
-            {
-                changedTargetLocation = _player.position;
-                currentState = enemyStates.chasingPlayer;
-                _anim.SetBool("Idle", false);
-            }
-        //When not spotting player, then just complete move.
-        } else if(currentState == enemyStates.patroling)
-        {
-            detectLight.color = normalCol;
-            //_anim.SetBool("Idle", false);
-            move();
-        //When player spotted and time is up, start chasing player.
-        } else if(currentState == enemyStates.chasingPlayer)
-        {
-            detectLight.color = attackCol;
-            waitTimer = UnityEngine.Random.Range(5, 10);
-            chase();
-        //If enemy has attacked someone, then do this.
-        } else if(currentState == enemyStates.attackedPlayer)
-        {
-            if(attackTimer > 0)
-            {
-                attackTimer -= Time.deltaTime;
-                changedTargetLocation = transform.position;
-                //_agent.SetDestination(transform.position);
-                rotateTo(_player.position - transform.position);
-            } else
-            {
-                currentState = enemyStates.chasingPlayer;
-                changedTargetLocation = _player.position;
-                _anim.SetBool("Idle", false);
-            }
-        //If enemy has lost sight or attacked player, then do this.
-        } else if (currentState == enemyStates.searchingPlayer)
-        {
-            detectLight.color = alarmCol;
-            search();
-        } else if (currentState == enemyStates.dying)
-        {
-            changedTargetLocation = transform.position;
-        }
 
         //Make enemy idle when near the position.
         /*if (Vector3.Distance(transform.position, _agent.destination) < agentRange)

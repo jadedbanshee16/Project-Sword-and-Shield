@@ -90,6 +90,7 @@ public class Inventory : MonoBehaviour
     public void removeResource(pickUps.resourceTypes ind, int amount)
     {
         resources[(int)ind] -= amount;
+        updateResources();
     }
 
     public void useOnHand(Vector3 pPos, Vector3 mPos)

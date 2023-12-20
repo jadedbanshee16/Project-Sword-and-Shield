@@ -167,9 +167,9 @@ public class PoolManager : MonoBehaviour
 
     public void resetPool()
     {
-        foreach(Transform child in this.transform)
+        for(int i = 1; i < this.transform.childCount; i++)
         {
-            child.gameObject.SetActive(false);
+            this.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerClass : MonoBehaviour
 {
     private Inventory _inv;
+    private PlayerMovement _control;
 
     private float currentStamina;
     public float currentHealth;
@@ -108,8 +109,12 @@ public class PlayerClass : MonoBehaviour
         if(currentHealth <= 0)
         {
             //Get the game manager and reset the level.
-            GetComponent<GameManager>().restartGame();
-
+            //GetComponent<GameManager>().restartGame();
+            if(_control == null)
+            {
+                _control = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+            }
+            _control.die();
             //Reset the health.
             currentHealth = maximumHealth;
         }

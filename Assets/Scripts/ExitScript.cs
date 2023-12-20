@@ -29,7 +29,8 @@ public class ExitScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && isOpen)
         {
-            gameManager_.setNextLevel(true);
+            gameManager_.setFading(true, 0.5F);
+            gameManager_.setplayerStop(true);
         }
     }
 }
