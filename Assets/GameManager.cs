@@ -5,6 +5,7 @@ using Unity.AI.Navigation;
 using Cinemachine;
 using System;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class GameManager : MonoBehaviour
     //Level objects
     public LevelGeneration lvl;
     private LevelGeneration lvlInstance;
+    private Transform spawnZone;
+    [SerializeField]
+    private GameObject _player;
+    private GameObject playerInstance;
+    private AudioManager _audio;
 
     private Inventory _inv;
 
@@ -27,10 +33,10 @@ public class GameManager : MonoBehaviour
     //Level setting stuff.
     private float levelNum = 0;
     private float difficulty = 25f;
-    private bool nextLevel = false;
-    public bool playerStop;
+    private bool playerStop;
+    private bool playerDead = false;
 
-    private int count;
+    private string currentlvl;
 
     //An enum for zone types.
     private enum zoneType
@@ -45,25 +51,24 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(lvl != null)
+        currentlvl = SceneManager.GetActiveScene().name;
+
+        if(GameObject.FindGameObjectWithTag("PlayerSpawn") != null)
         {
-            beginGame();
+            spawnZone = GameObject.FindGameObjectWithTag("PlayerSpawn").transform;
         }
 
-        //Other set up stuff.
-        if(_inv == null)
-        {
-            _inv = GetComponent<Inventory>();
-        }
+        _audio = GetComponent<AudioManager>();
 
-        _inv.setUpInventory();
-        count = 0;
+        //If the current level is a level NOT the menu OR the HUBWorld, then complete the lvlset.
+        lvlSet();
 
         fadeimg = GetComponentInChildren<Image>();
         isFaded = true;
-        fading = false;
-        fadeTimer = 0;
-        playerStop = false;
+        fading = true;
+        fadeTimer = 1;
+        setplayerStop_Dead(true, true);
+        setFading(false, 1f);
     }
 
     // Update is called once per frame
@@ -99,7 +104,14 @@ public class GameManager : MonoBehaviour
             } else
             {
                 fading = false;
-                restartGame();
+                fadeTimer = 1;
+                if (!playerDead)
+                {
+                    restartGame();
+                } else
+                {
+                    playerDead = false;
+                }
             }
         } else if (fading && !isFaded)
         {
@@ -114,7 +126,8 @@ public class GameManager : MonoBehaviour
             else
             {
                 fading = false;
-                setplayerStop(false);
+                fadeTimer = 0;
+                setplayerStop_Dead(false, false);
             }
         }
     }
@@ -129,8 +142,9 @@ public class GameManager : MonoBehaviour
         //Generate the level:
         //Ground, walls, islands, etc.
         lvlInstance = Instantiate(lvl);
-        lvlInstance.GenerateMap(difficulty);
-        setFading(false, 1);
+        spawnZone = lvlInstance.GenerateMap(difficulty);
+
+        spawnPlayer(spawnZone.position);
     }
 
     public void resetInventory()
@@ -140,10 +154,22 @@ public class GameManager : MonoBehaviour
 
     public void restartGame() 
     {
-        //Destroy and create the next level.
-        Destroy(lvlInstance.gameObject);
-        GetComponent<PoolManager>().resetPool();
-        beginGame();
+        if(currentlvl.Equals("HUBWorld"))
+        {
+            if(levelNum < 1)
+            {
+                //You're in HUD world. Go to the next world (Level 1).
+                SceneManager.LoadScene("FactoryLevel");
+            }
+        } else if (currentlvl.Equals("FactoryLevel"))
+        {
+            //Destroy and create the next level.
+            Destroy(lvlInstance.gameObject);
+            GetComponent<PoolManager>().resetPool();
+            beginGame();
+        }
+
+        setFading(false, 0.5f);
     }
 
     /*private float setDifficulty(float l)
@@ -151,15 +177,10 @@ public class GameManager : MonoBehaviour
         return (float)(10f * (l / 100));
     }*/
 
-    public void setNextLevel(bool b)
-    {
-        nextLevel = b;
-        restartGame();
-    }
-
-    public void setplayerStop(bool b)
+    public void setplayerStop_Dead(bool b, bool die)
     {
         playerStop = b;
+        playerDead = die;
     }
 
     public bool getplayerStop()
@@ -181,5 +202,61 @@ public class GameManager : MonoBehaviour
             clearSpeed = speed;
             fadeTimer = 1;
         }
+    }
+
+    private void lvlSet()
+    {
+        if(!currentlvl.Equals("HUBWorld"))
+        {
+            if (lvl != null)
+            {
+                beginGame();
+            }
+        } else
+        {
+            //Just spawn the player.
+            if(spawnZone != null)
+            {
+                spawnPlayer(spawnZone.position);
+            }
+
+        }
+
+        if (currentlvl.Equals("HUBWorld"))
+        {
+            _audio.playAmbient(0);
+        } else if (currentlvl.Equals("FactoryLevel"))
+        {
+            _audio.playAmbient(1);
+        }
+
+        //Other set up stuff.
+        if (_inv == null)
+        {
+            _inv = GetComponent<Inventory>();
+        }
+
+        _inv.setUpInventory();
+
+    }
+
+    private void spawnPlayer(Vector3 pos)
+    {
+        //Generate the player.
+        //Ensure that there isn't a player already loaded. If they are loaded, then set position to lvlSpawnInstance.
+        if (GameObject.FindGameObjectWithTag("Player") == null)
+        {
+            playerInstance = Instantiate(_player, pos, Quaternion.identity);
+        }
+        else
+        {
+            playerInstance = GameObject.FindGameObjectWithTag("Player").transform.parent.gameObject;
+            playerInstance.transform.GetChild(1).transform.position = pos;
+        }
+    }
+
+    public void loadHUB()
+    {
+        SceneManager.LoadScene("HUBWorld");
     }
 }

@@ -110,7 +110,7 @@ public class LevelGeneration : MonoBehaviour
 
     [Header("Player")]
     public GameObject Player;
-    public GameObject playerInstance;
+    //public GameObject playerInstance;
 
     [Header("Level objects")]
     public GameObject lvlInteractableZone;
@@ -161,7 +161,7 @@ public class LevelGeneration : MonoBehaviour
     /*
      * Generate a grid by populating the grid array, then generating a new cell for each grid position.
      */
-    public void GenerateMap(float difficulty)
+    public Transform GenerateMap(float difficulty)
     {
         //Make instances as large as aspects.
         lvlInstances = new GameObject[lvlAspects.Length];
@@ -319,16 +319,6 @@ public class LevelGeneration : MonoBehaviour
         lvlInstances[0] = createPersistentZones(lvlAspects[0], (int)zoneType.spawn);
         lvlInstances[1] = createPersistentZones(lvlAspects[1], (int)zoneType.exit);
 
-        //Ensure that there isn't a player already loaded. If they are loaded, then set position to lvlSpawnInstance.
-        if(GameObject.FindGameObjectWithTag("Player") == null)
-        {
-            playerInstance = Instantiate(Player, lvlInstances[0].transform.position, Quaternion.identity);
-        } else
-        {
-            playerInstance = GameObject.FindGameObjectWithTag("Player").transform.parent.gameObject;
-            playerInstance.transform.GetChild(1).transform.position = lvlInstances[0].transform.position;
-        }
-
 
         //Create pairs of islands in the pairs list for 'bridges'.
         createIslandPairs();
@@ -469,6 +459,8 @@ public class LevelGeneration : MonoBehaviour
 
         //Debug section.
         debugSection(islandCount(), doorPairs);
+
+        return lvlInstances[0].transform;
 
         /*for(int z = 0; z < doorPairs.Length; z++)
         {

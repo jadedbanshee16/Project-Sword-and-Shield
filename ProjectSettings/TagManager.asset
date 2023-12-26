@@ -19,6 +19,7 @@ TagManager:
   - OnHandUI
   - Waypoint
   - Obstacle
+  - PlayerSpawn
   layers:
   - Default
   - TransparentFX

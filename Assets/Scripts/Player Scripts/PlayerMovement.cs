@@ -10,6 +10,11 @@ public class PlayerMovement : MonoBehaviour
     Quaternion m_Rotation = Quaternion.identity;
     Rigidbody m_rig;
     GameManager _manager;
+    AudioSource _audio;
+
+    //Walking audio files.
+    [SerializeField]
+    AudioClip[] walkStoneClips;
     
     public float turnSpeed = 20f;
 
@@ -22,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
         m_Animator = gameObject.GetComponent<Animator>();
         m_rig = gameObject.GetComponent<Rigidbody>();
         _manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        _audio = GetComponent<AudioSource>();
 
         dead = false;
     }
@@ -79,11 +85,8 @@ public class PlayerMovement : MonoBehaviour
         dead = true;
         m_Animator.SetTrigger("Die");
         m_rig.isKinematic = true;
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setplayerStop(true);
-        float length = m_Animator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
-
-        length = 1 / length * 1.5f;
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setFading(true, length);
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setplayerStop_Dead(true, true);
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setFading(true, 0.2f);
     }
 
     public void restartWorld()
@@ -95,7 +98,16 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("Made it");
         //Now restart the world.
         //GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().restartGame(true);
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setplayerStop(false);
+        //GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setplayerStop(false);
         GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().resetInventory();
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().loadHUB();
+    }
+
+    public void stepOnce()
+    {
+        //Get a random sound from the list.
+        int rand = Random.Range(0, walkStoneClips.Length - 1);
+        //Player the step once.
+        _audio.PlayOneShot(walkStoneClips[rand]);
     }
 }
