@@ -24,4 +24,9 @@ public class AnimationReceiver : MonoBehaviour
     {
         this.transform.parent.GetComponent<EnemyClass>().die();
     }
+
+    private void takeStep()
+    {
+        this.transform.parent.GetComponent<EnemyClass>().takeStep();
+    }
 }

@@ -95,37 +95,47 @@ public class Inventory : MonoBehaviour
 
     public void useOnHand(Vector3 pPos, Vector3 mPos)
     {
-        currentOnHand.GetComponent<GhostItem>().use(mPos, pPos);
+        currentOnHand.use(mPos, pPos);
 
         //deductStamina(getOnHandCost());
     }
 
     public void stopUseOnHand()
     {
-        currentOnHand.GetComponent<GhostItem>().stopUse();
+        currentOnHand.stopUse();
     }
 
     public void useOffHand(Vector3 pPos, Vector3 mPos)
     {
-        currentOffHand.GetComponent<GhostItem>().use(mPos, pPos);
+        currentOffHand.use(mPos, pPos);
 
         //deductStamina(getOffHandCost());
     }
 
     public void stopUseOffHand()
     {
-        currentOffHand.GetComponent<GhostItem>().stopUse();
+        currentOffHand.stopUse();
     }
 
     //Get the cost of the current onHand weapon.
     public float getOnHandCost()
     {
-        return currentOnHand.GetComponent<GhostItem>().getCost();
+        return currentOnHand.getCost();
+    }
+
+    public float getOnHandCooldown()
+    {
+        return currentOnHand.getCooldown();
+    }
+
+    public float getOffHandCooldown()
+    {
+        return currentOffHand.getCooldown();
     }
 
     public float getOffHandCost()
     {
-        return currentOffHand.GetComponent<GhostItem>().getCost();
+        return currentOffHand.getCost();
     }
 
     public void updateStamina(float curr, float max)

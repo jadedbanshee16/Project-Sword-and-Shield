@@ -120,7 +120,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.235
+  m_Volume: 0.391
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -140,7 +140,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.42105103
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -149,7 +149,7 @@ AudioSource:
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0.99868774
+      value: 0.51140594
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -194,7 +194,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.6236839
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -450,10 +450,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryClips:
   - {fileID: 8300000, guid: 3bd870d9aef0f41dda092f6b7c5ead81, type: 3}
-  - {fileID: 8300000, guid: 3a033a0fb87df48d78b663f02a2fab4a, type: 3}
+  - {fileID: 8300000, guid: fa3606ad74d52f449bc21b3053f22984, type: 3}
+  - {fileID: 8300000, guid: fc720b65073103545a87e155210944a1, type: 3}
+  - {fileID: 8300000, guid: eb2f9f2a39db09245baf52a86d363a0b, type: 3}
   HUBClips:
   - {fileID: 8300000, guid: 1afd1ae47c6af48c08a65b91f3a4adb4, type: 3}
   - {fileID: 8300000, guid: 220628478a05f4db3b8635869f7687c5, type: 3}
+  - {fileID: 8300000, guid: b34de3766d8ab164cb033841e0919ed4, type: 3}
+  factoryFootsteps:
+  - {fileID: 8300000, guid: 1f0199a4c6005ec4abbb302f71bc036d, type: 3}
+  - {fileID: 8300000, guid: 53e2adf2ac488ef46bb2b4074de9e363, type: 3}
+  - {fileID: 8300000, guid: a03a96c5d1e99b4409ddd79098abd9ab, type: 3}
+  - {fileID: 8300000, guid: 7187dc81f98b8be4eb97bfc4dd9a5abf, type: 3}
+  - {fileID: 8300000, guid: e3cfcb32689b274419ac73380ea96888, type: 3}
+  - {fileID: 8300000, guid: 314d37dfb74502a4094b835d0e0d6c23, type: 3}
+  - {fileID: 8300000, guid: f0f794c67e9233d468a38d165590d253, type: 3}
+  - {fileID: 8300000, guid: 1a7741daba5446e46a40f8074aae75dc, type: 3}
+  - {fileID: 8300000, guid: 0bc66974c41ff8c4fa15f46d21ad3548, type: 3}
+  factoryExitClips:
+  - {fileID: 8300000, guid: 89e8056d420998347ae1b5322140db0e, type: 3}
+  - {fileID: 8300000, guid: 0653e3ba1195a2140a1b49cb666a37c0, type: 3}
+  - {fileID: 8300000, guid: 5243ee07390fe234e8920fb83eb5d092, type: 3}
+  - {fileID: 8300000, guid: 5e3ac7de0d0569a4186285a0636b0892, type: 3}
+  - {fileID: 8300000, guid: 5c0e02df3b765c742b2eb5ced81f3d50, type: 3}
+  - {fileID: 8300000, guid: be8639a4171abdd409023f4486fb0394, type: 3}
+  - {fileID: 8300000, guid: 68631a934a90a2e46befbb83e3fa0f5f, type: 3}
+  - {fileID: 8300000, guid: 5479ef3e34cb4d047b80aa96fb848a2c, type: 3}
+  - {fileID: 8300000, guid: f6964af2b6ce87c42b98187724a2a775, type: 3}
+  - {fileID: 8300000, guid: 4fda0507083a3ab45954b322c44cc370, type: 3}
+  - {fileID: 8300000, guid: 9dd211fd2bb3e95469335dfd5ec19761, type: 3}
+  enemyAttacks:
+  - {fileID: 8300000, guid: ab47569cf201e9946acdebe2f689e31f, type: 3}
+  - {fileID: 8300000, guid: f11db4559b3ffff45b62e9327fc5535d, type: 3}
+  - {fileID: 8300000, guid: 4ac21fb4cded46743a37b3cab06ef68a, type: 3}
+  weaponSounds:
+  - {fileID: 8300000, guid: 0ecf18972377e4652ab7377a0993f14a, type: 3}
+  - {fileID: 8300000, guid: f11db4559b3ffff45b62e9327fc5535d, type: 3}
+  - {fileID: 8300000, guid: 662368c20c74f1347bfe72d20c30a417, type: 3}
 --- !u!1 &6360218539520136041
 GameObject:
   m_ObjectHideFlags: 0

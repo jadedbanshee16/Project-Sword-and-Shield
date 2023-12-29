@@ -7,9 +7,7 @@ public class ExitScript : MonoBehaviour
     private Animator anim_;
     private GameManager gameManager_;
     private AudioSource _audio;
-
-    [SerializeField]
-    AudioClip[] doorJingles;
+    private AudioManager _audioManager;
 
     private bool isOpen = true;
 
@@ -19,6 +17,7 @@ public class ExitScript : MonoBehaviour
         anim_ = gameObject.GetComponent<Animator>();
         gameManager_ = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         _audio = GetComponent<AudioSource>();
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
         anim_.SetBool("isOpened", isOpen);
     }
 
@@ -41,8 +40,6 @@ public class ExitScript : MonoBehaviour
 
     private void playDoorAudio()
     {
-        int rand = Random.Range(0, doorJingles.Length - 1);
-
-        _audio.PlayOneShot(doorJingles[rand]);
+        _audioManager.playSound(_audio, AudioManager.audioType.exitAudio);
     }
 }

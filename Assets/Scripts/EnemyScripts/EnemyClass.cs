@@ -76,6 +76,8 @@ public class EnemyClass : MonoBehaviour
     protected Animator _anim;
     protected PoolManager _manager;
     protected GameManager _gameManager;
+    protected AudioSource _audio;
+    protected AudioManager _audioManager;
 
     protected enemyStates currentState;
     public int currentIsland;
@@ -97,6 +99,8 @@ public class EnemyClass : MonoBehaviour
         _agent = transform.GetComponent<NavMeshAgent>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
+        _audio = GetComponent<AudioSource>();
         _anim = GetComponentInChildren<Animator>();
         _anim.applyRootMotion = false;
         weapon.GetComponent<WeaponClass>().setWeapon(damage.x, damage.y, damage.z);
@@ -405,8 +409,9 @@ public class EnemyClass : MonoBehaviour
         attackTimer = weaponCooldown;
         weapon.SetActive(true);
         _anim.SetBool("Idle", true);
-        transform.LookAt(_player);
+        //transform.LookAt(_player);
         _anim.applyRootMotion = true;
+        _audioManager.playSound(_audio, AudioManager.audioType.enemyAudio, 1);
     }
 
     public void stopAttacking()
@@ -441,6 +446,11 @@ public class EnemyClass : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public void takeStep()
+    {
+        _audioManager.playSound(_audio, AudioManager.audioType.enemyAudio, 0);
+    }
+
     public void takeDamage(float dmg, float pushBack, float stun, Vector3 direction, float cost)
     {
         //Do Pushback.
@@ -449,6 +459,8 @@ public class EnemyClass : MonoBehaviour
 
         //Do damage.
         health -= dmg;
+
+        _audioManager.playSound(_audio, AudioManager.audioType.enemyAudio, 1);
 
         if (health <= 0)
         {

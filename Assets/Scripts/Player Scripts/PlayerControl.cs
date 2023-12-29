@@ -25,6 +25,9 @@ public class PlayerControl : MonoBehaviour
 
     public bool isUsingOnHand;
     public bool isUsingOffHand;
+    public float onHandCooldownTimer;
+    public float offHandCooldownTimer;
+
 
     [SerializeField]
     private float holdTime;
@@ -46,6 +49,8 @@ public class PlayerControl : MonoBehaviour
 
         isUsingOnHand = false;
         isUsingOffHand = false;
+        //onHandCooldownTimer = _inv.getOnHandCooldown();
+        //offHandCooldownTimer = _inv.getOffHandCooldown();
     }
 
     // Update is called once per frame
@@ -67,7 +72,7 @@ public class PlayerControl : MonoBehaviour
         //When off hand button is held, do the following....
         if (Input.GetKey(offHand))
         {
-            if (!isUsingOnHand)
+            if ((!isUsingOnHand || onHandCooldownTimer > _inv.getOnHandCooldown() / 2) && offHandCooldownTimer == _inv.getOffHandCooldown())
             {
                 if (holdTimer < holdTime)
                 {
@@ -98,6 +103,7 @@ public class PlayerControl : MonoBehaviour
                     if(_stats.getStamina() >= _inv.getOnHandCost())
                     {
                         isUsingOnHand = true;
+                        onHandCooldownTimer = 0;
                     }
                 }
             }
@@ -109,7 +115,6 @@ public class PlayerControl : MonoBehaviour
             //Button is no longer held, so turn off.
             _inv.stopUseOffHand();
 
-            isUsingOffHand = false;
             holdTimer = 0;
         }
 
@@ -119,6 +124,7 @@ public class PlayerControl : MonoBehaviour
             if (!isUsingOnHand && !isUsingOffHand)
             {
                 isUsingOnHand = true;
+                onHandCooldownTimer = 0;
                 //When pressed, find out if an interactable is pressed.
                 Interactable focus = MouseInteractable();
 
@@ -142,7 +148,6 @@ public class PlayerControl : MonoBehaviour
 
             if (!isUsingOffHand)
             {
-                isUsingOnHand = false;
                 holdTimer = 0;
             }
         }
@@ -163,6 +168,25 @@ public class PlayerControl : MonoBehaviour
             {
                 deFocus();
             }
+        }
+
+        //If the timer is not equal to the current cooldown, then raise until current cooldown.
+        if(onHandCooldownTimer < _inv.getOnHandCooldown())
+        {
+            onHandCooldownTimer += Time.deltaTime;
+        } else
+        {
+            onHandCooldownTimer = _inv.getOnHandCooldown();
+            isUsingOnHand = false;
+        }
+
+        if(offHandCooldownTimer < _inv.getOffHandCooldown())
+        {
+            offHandCooldownTimer += Time.deltaTime;
+        } else
+        {
+            offHandCooldownTimer = _inv.getOffHandCooldown();
+            isUsingOffHand = false;
         }
     }
 
@@ -282,5 +306,18 @@ public class PlayerControl : MonoBehaviour
 
 
         return inter;
+    }
+
+    public void weaponUse(GhostItem.weaponType t)
+    {
+        //Using offand.
+        if(t == GhostItem.weaponType.offHand)
+        {
+            //Reset the offhand.
+            offHandCooldownTimer = 0;
+        } else if (t == GhostItem.weaponType.onHand)
+        {
+            onHandCooldownTimer = 0;
+        }
     }
 }

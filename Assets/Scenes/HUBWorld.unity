@@ -1202,46 +1202,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1130456723, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: HUBClips.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1130456723, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: HUBClips.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: b34de3766d8ab164cb033841e0919ed4, type: 3}
-    - target: {fileID: 1130456723, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: factoryClips.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1130456723, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: factoryClips.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: fa3606ad74d52f449bc21b3053f22984, type: 3}
-    - target: {fileID: 1130456723, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: factoryClips.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: fc720b65073103545a87e155210944a1, type: 3}
-    - target: {fileID: 1130456723, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: factoryClips.Array.data[3]
-      value: 
-      objectReference: {fileID: 8300000, guid: eb2f9f2a39db09245baf52a86d363a0b, type: 3}
-    - target: {fileID: 1433517982, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: m_Volume
-      value: 0.391
-      objectReference: {fileID: 0}
-    - target: {fileID: 1433517982, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].value
-      value: 0.42105103
-      objectReference: {fileID: 0}
-    - target: {fileID: 1433517982, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].value
-      value: 0.51140594
-      objectReference: {fileID: 0}
-    - target: {fileID: 1433517982, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
-      propertyPath: reverbZoneMixCustomCurve.m_Curve.Array.data[0].value
-      value: 0.6236839
-      objectReference: {fileID: 0}
     - target: {fileID: 950568476815626004, guid: e38cd8c3a5d014d4eb8264b825ff2757, type: 3}
       propertyPath: m_RootOrder
       value: 4

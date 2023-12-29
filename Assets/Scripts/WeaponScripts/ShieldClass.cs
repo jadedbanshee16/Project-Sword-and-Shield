@@ -24,11 +24,6 @@ public class ShieldClass : WeaponClass
         this.transform.LookAt(getDir());
     }
 
-    public override void stopWeapon()
-    {
-        base.stopWeapon();
-    }
-
     //If the object hits an enemy.
     public override void OnTriggerEnter(Collider other)
     {
@@ -38,7 +33,9 @@ public class ShieldClass : WeaponClass
             //ALWAYS put the collider object as child.
             other.GetComponent<EnemyClass>().takeDamage(dmgMetric.x, dmgMetric.y, dmgMetric.z, (getDir() - transform.position).normalized, getCost());
 
-            stopWeapon();
+            stopWeapon(true);
+
+            _audioManager.playSound(AudioManager.audioType.weaponAudio, 2);
         }
     }
 }

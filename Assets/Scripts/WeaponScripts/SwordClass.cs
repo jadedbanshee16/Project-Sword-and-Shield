@@ -42,11 +42,15 @@ public class SwordClass : WeaponClass
         this.transform.rotation = Quaternion.identity;
 
         setAction(true);
+
+        _audioManager.playSound(AudioManager.audioType.weaponAudio, 1);
     }
 
     //If the object hits an enemy.
     public override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
+
+        _audioManager.playSound(AudioManager.audioType.weaponAudio, 0);
     }
 }

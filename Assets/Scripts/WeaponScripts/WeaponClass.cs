@@ -14,6 +14,8 @@ public class WeaponClass : MonoBehaviour
 
     private float cost;
 
+    protected AudioManager _audioManager;
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -41,6 +43,8 @@ public class WeaponClass : MonoBehaviour
         this.transform.rotation = Quaternion.identity;
 
         action = true;
+
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
     }
 
     //An override for projectile based weapons. At position (p), direction (d), time it flies and speed it goes.
@@ -59,6 +63,8 @@ public class WeaponClass : MonoBehaviour
         this.transform.rotation = Quaternion.identity;
 
         action = true;
+
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
     }
 
     //An override for premade weapons (don't have to be instantiated on the field). This requires only the damage statistics.
@@ -67,6 +73,8 @@ public class WeaponClass : MonoBehaviour
         damage = dmg;
         pushback = psh;
         stun = st;
+
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
     }
 
     public void changePositions(Vector3 dir, Vector3 ps)
@@ -75,9 +83,16 @@ public class WeaponClass : MonoBehaviour
         pos = ps;
     }
 
-    public virtual void stopWeapon()
+    public virtual void stopWeapon(bool fromAttack)
     {
         action = false;
+
+        if (fromAttack)
+        {
+            //Get player control.
+            GameObject.FindGameObjectWithTag("Player").GetComponentInParent<PlayerControl>().weaponUse(GhostItem.weaponType.offHand);
+        }
+
     }
 
     public Vector3 getDir()

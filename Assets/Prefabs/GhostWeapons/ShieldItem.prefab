@@ -47,7 +47,7 @@ MonoBehaviour:
   type: 1
   idName: GhostShield01
   inventoryImage: {fileID: -1385366038, guid: 8a174ab0c2f56bc40bbb3fa4d789a1e9, type: 3}
-  cooldown: 3
+  cooldown: 2
   cost: 25
   ghostRange: 0.3
   damage: 0

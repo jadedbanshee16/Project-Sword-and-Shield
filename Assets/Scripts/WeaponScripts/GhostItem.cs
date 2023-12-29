@@ -97,6 +97,11 @@ public class GhostItem : MonoBehaviour
         return damage;
     }
 
+    public float getCooldown()
+    {
+        return cooldown;
+    }
+
     public void setHoldModifier(float num)
     {
         holdModifier = num;

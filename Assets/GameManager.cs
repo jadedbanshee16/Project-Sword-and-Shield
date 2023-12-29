@@ -206,7 +206,13 @@ public class GameManager : MonoBehaviour
 
     private void lvlSet()
     {
-        if(!currentlvl.Equals("HUBWorld"))
+        //Other set up stuff.
+        if (_inv == null)
+        {
+            _inv = GetComponent<Inventory>();
+        }
+
+        if (!currentlvl.Equals("HUBWorld"))
         {
             if (lvl != null)
             {
@@ -228,12 +234,6 @@ public class GameManager : MonoBehaviour
         } else if (currentlvl.Equals("FactoryLevel"))
         {
             _audio.playAmbient(1);
-        }
-
-        //Other set up stuff.
-        if (_inv == null)
-        {
-            _inv = GetComponent<Inventory>();
         }
 
         _inv.setUpInventory();

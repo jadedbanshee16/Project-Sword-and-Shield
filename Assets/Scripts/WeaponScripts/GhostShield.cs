@@ -42,7 +42,7 @@ public class GhostShield : GhostItem
         
         if(shieldInstance != null)
         {
-            shieldInstance.GetComponent<ShieldClass>().stopWeapon();
+            shieldInstance.GetComponent<ShieldClass>().stopWeapon(false);
             shieldInstance = null;
         }
     }

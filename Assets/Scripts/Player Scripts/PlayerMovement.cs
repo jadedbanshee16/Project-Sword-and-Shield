@@ -11,10 +11,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody m_rig;
     GameManager _manager;
     AudioSource _audio;
-
-    //Walking audio files.
-    [SerializeField]
-    AudioClip[] walkStoneClips;
+    AudioManager _audioManager;
     
     public float turnSpeed = 20f;
 
@@ -28,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
         m_rig = gameObject.GetComponent<Rigidbody>();
         _manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         _audio = GetComponent<AudioSource>();
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
 
         dead = false;
     }
@@ -105,9 +103,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void stepOnce()
     {
-        //Get a random sound from the list.
-        int rand = Random.Range(0, walkStoneClips.Length - 1);
-        //Player the step once.
-        _audio.PlayOneShot(walkStoneClips[rand]);
+        _audioManager.playSound(_audio, AudioManager.audioType.playerFootsteps);
     }
 }
