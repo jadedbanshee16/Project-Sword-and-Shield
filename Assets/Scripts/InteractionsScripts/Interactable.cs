@@ -20,6 +20,8 @@ public class Interactable : MonoBehaviour
 
     public Transform player_;
     public interactType interactableType;
+    protected AudioSource _audio;
+    protected AudioManager _audioManager;
 
     //Grab the inventory.
     public Inventory inv;
@@ -32,6 +34,8 @@ public class Interactable : MonoBehaviour
     private void Start()
     {
         inv = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Inventory>();
+        _audio = GetComponent<AudioSource>();
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
     }
 
     private void Update()

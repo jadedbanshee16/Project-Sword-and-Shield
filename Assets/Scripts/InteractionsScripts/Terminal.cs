@@ -26,6 +26,8 @@ public class Terminal : Interactable
         //Ensure the terminal starts in the 'off' position.
         switchUIPlane(currentPlane);
 
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
+        _audio = GetComponent<AudioSource>();
     }
 
     public override void Interact()
@@ -37,6 +39,8 @@ public class Terminal : Interactable
         loopPlanes();
         switchUIPlane(currentPlane);
 
+        _audioManager.playSound(_audio, AudioManager.audioType.interactionAudio, 3);
+
         //Quick binary switch.
         bool openable = false;
         if (currentPlane != 0)
@@ -44,7 +48,7 @@ public class Terminal : Interactable
             openable = true;
         }
 
-        Debug.Log(openable);
+        //Debug.Log(openable);
 
         //When set, go to door script and see if a match has occured.
         door.updateLock(openable);

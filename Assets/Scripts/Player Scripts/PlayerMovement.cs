@@ -93,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
         m_Animator.ResetTrigger("Die");
         m_Animator.SetBool("isWalking", true);
         m_rig.isKinematic = false;
+        _audioManager.playSound(_audio, AudioManager.audioType.gameAudio, 0);
         //Debug.Log("Made it");
         //Now restart the world.
         //GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().restartGame(true);

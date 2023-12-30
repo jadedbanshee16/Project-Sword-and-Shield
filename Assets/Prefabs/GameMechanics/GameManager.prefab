@@ -449,10 +449,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   factoryClips:
-  - {fileID: 8300000, guid: 3bd870d9aef0f41dda092f6b7c5ead81, type: 3}
+  - {fileID: 8300000, guid: eb2f9f2a39db09245baf52a86d363a0b, type: 3}
   - {fileID: 8300000, guid: fa3606ad74d52f449bc21b3053f22984, type: 3}
   - {fileID: 8300000, guid: fc720b65073103545a87e155210944a1, type: 3}
-  - {fileID: 8300000, guid: eb2f9f2a39db09245baf52a86d363a0b, type: 3}
   HUBClips:
   - {fileID: 8300000, guid: 1afd1ae47c6af48c08a65b91f3a4adb4, type: 3}
   - {fileID: 8300000, guid: 220628478a05f4db3b8635869f7687c5, type: 3}
@@ -487,6 +486,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0ecf18972377e4652ab7377a0993f14a, type: 3}
   - {fileID: 8300000, guid: f11db4559b3ffff45b62e9327fc5535d, type: 3}
   - {fileID: 8300000, guid: 662368c20c74f1347bfe72d20c30a417, type: 3}
+  gameSounds:
+  - {fileID: 8300000, guid: 9dd211fd2bb3e95469335dfd5ec19761, type: 3}
+  interactionSounds:
+  - {fileID: 8300000, guid: abdbbfd33a46f4549987385f85c536b5, type: 3}
+  - {fileID: 8300000, guid: 680ed4e46f90a85469d64308da50c44b, type: 3}
+  - {fileID: 8300000, guid: 411e72d9c3f2c4e3ea550f8d41597fda, type: 3}
+  - {fileID: 8300000, guid: 0207a4fe4390e544eaee32ede57e463d, type: 3}
 --- !u!1 &6360218539520136041
 GameObject:
   m_ObjectHideFlags: 0

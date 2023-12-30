@@ -6,10 +6,12 @@ public class AudioManager : MonoBehaviour
 {
     public enum audioType
     {
-        playerFootsteps,
-        exitAudio,
-        enemyAudio,
-        weaponAudio
+        playerFootsteps = 0,
+        exitAudio = 1,
+        enemyAudio = 2,
+        weaponAudio = 3,
+        gameAudio = 4,
+        interactionAudio = 5
     }
     //Ambient musics
     [SerializeField]
@@ -24,6 +26,10 @@ public class AudioManager : MonoBehaviour
     AudioClip[] enemyAttacks;
     [SerializeField]
     AudioClip[] weaponSounds;
+    [SerializeField]
+    AudioClip[] gameSounds;
+    [SerializeField]
+    AudioClip[] interactionSounds;
 
     AudioSource _ambience;
     AudioClip[][] allSounds;
@@ -33,13 +39,15 @@ public class AudioManager : MonoBehaviour
     {
         _ambience = GetComponentInChildren<AudioSource>();
 
-        allSounds = new AudioClip[4][];
+        allSounds = new AudioClip[6][];
 
         //Set up all the sound lists.
         allSounds[0] = factoryFootsteps;
         allSounds[1] = factoryExitClips;
         allSounds[2] = enemyAttacks;
         allSounds[3] = weaponSounds;
+        allSounds[4] = gameSounds;
+        allSounds[5] = interactionSounds;
     }
 
     public void playAmbient(int lvl)

@@ -26,6 +26,7 @@ public class Doors : Interactable
             {
                 anim_.SetBool("Key", true);
                 opened = true;
+                _audioManager.playSound(_audio, AudioManager.audioType.interactionAudio, 1);
             }
         } else
         {

@@ -10,5 +10,7 @@ public class Teleporter : Interactable
     {
         //Get the pair and teleport.
         player_.transform.position = pair.transform.position;
+
+        _audioManager.playSound(_audio, AudioManager.audioType.interactionAudio, 2);
     }
 }

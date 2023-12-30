@@ -24,6 +24,8 @@ public class pickUps : Interactable
         inv.addToResourceInventory(resource, amount);
 
         this.gameObject.SetActive(false);
+
+        _audioManager.playSound(AudioManager.audioType.interactionAudio, 0);
     }
 
 }

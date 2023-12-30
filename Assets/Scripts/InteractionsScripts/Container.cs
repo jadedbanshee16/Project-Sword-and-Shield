@@ -18,6 +18,8 @@ public class Container : Interactable
     public void Start()
     {
         _manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PoolManager>();
+        _audioManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<AudioManager>();
+        _audio = GetComponent<AudioSource>();
     }
 
     public override void Interact()
@@ -27,6 +29,8 @@ public class Container : Interactable
             opened = true;
             //This chest will open when interacted with.
             anim_.SetBool("Opened", true);
+
+            _audioManager.playSound(_audio, AudioManager.audioType.interactionAudio, 0);
 
             //Instaniate and spit out the objects on each side.
             for (int i = 0; i < mandatoryContents; i++)
