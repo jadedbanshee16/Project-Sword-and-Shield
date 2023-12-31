@@ -83,8 +83,8 @@ public class PlayerMovement : MonoBehaviour
         dead = true;
         m_Animator.SetTrigger("Die");
         m_rig.isKinematic = true;
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setplayerStop_Dead(true, true);
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setFading(true, 0.2f);
+        _manager.setplayerStop_Dead(true, true);
+        _manager.setFading(true, 0.2f);
     }
 
     public void restartWorld()
@@ -94,12 +94,17 @@ public class PlayerMovement : MonoBehaviour
         m_Animator.SetBool("isWalking", true);
         m_rig.isKinematic = false;
         _audioManager.playSound(_audio, AudioManager.audioType.gameAudio, 0);
+
+        //Now save the current score.
+        _manager.setScore();
+        _manager.saveScore();
+
         //Debug.Log("Made it");
         //Now restart the world.
         //GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().restartGame(true);
         //GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().setplayerStop(false);
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().resetInventory();
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().loadHUB();
+        _manager.resetInventory();
+        _manager.loadHUB();
     }
 
     public void stepOnce()

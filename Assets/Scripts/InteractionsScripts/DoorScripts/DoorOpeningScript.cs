@@ -17,6 +17,7 @@ public class DoorOpeningScript : MonoBehaviour
         terminal3
     }
 
+    [SerializeField]
     private doorType type;
     public bool testLock()
     {

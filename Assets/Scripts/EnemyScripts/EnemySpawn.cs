@@ -9,9 +9,12 @@ public class EnemySpawn : MonoBehaviour
 
     public int island;
 
+    [SerializeField]
+    private bool triggered;
+
     private void Start()
     {
-        if (isFirst())
+        if (isFirst() && triggered)
         {
             spawnEnemy();
         }
@@ -55,7 +58,7 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
-    private void spawnEnemy()
+    public void spawnEnemy()
     {
         //When spawned, then spawn a single enemy.
         int rand = Random.Range(0, enemies.Length);

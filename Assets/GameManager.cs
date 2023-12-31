@@ -6,6 +6,7 @@ using Cinemachine;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour
 
     private string currentlvl;
 
+    private int[] currentScore;
+
     //An enum for zone types.
     private enum zoneType
     {
@@ -45,6 +48,13 @@ public class GameManager : MonoBehaviour
         exit,
         interactable,
         uninteractable
+    }
+
+    private void Awake()
+    {
+        currentScore = new int[2];
+
+        loadScore();
     }
 
 
@@ -147,6 +157,11 @@ public class GameManager : MonoBehaviour
         spawnPlayer(spawnZone.position);
     }
 
+    public void quitGame()
+    {
+        Application.Quit();
+    }
+
     public void resetInventory()
     {
         _inv.setUpInventory();
@@ -186,6 +201,22 @@ public class GameManager : MonoBehaviour
     public bool getplayerStop()
     {
         return playerStop;
+    }
+
+    public void setScore()
+    {
+        currentScore[0] = _inv.getInventory(pickUps.resourceTypes.cogs);
+        currentScore[1] = _inv.getInventory(pickUps.resourceTypes.springs);
+    }
+
+    public int getScore(int ind)
+    {
+        return currentScore[ind];
+    }
+
+    public int getScoreCount()
+    {
+        return currentScore.Length;
     }
 
     public void setFading(bool toFade, float speed)
@@ -258,5 +289,72 @@ public class GameManager : MonoBehaviour
     public void loadHUB()
     {
         SceneManager.LoadScene("HUBWorld");
+    }
+
+    public void loadScore()
+    {
+        //Attempt to find and load the last saved score.
+        string path = "PlayerScore.txt";
+
+        path = Path.Combine(Application.persistentDataPath, path);
+
+        if (File.Exists(path))
+        {
+            StreamReader read = new StreamReader(path);
+
+            //Read only the first line.
+            string line = read.ReadLine();
+
+            if(line != null)
+            {
+                string[] scores = line.Split(":");
+
+                for (int i = 0; i < currentScore.Length; i++)
+                {
+                    currentScore[i] = int.Parse(scores[i]);
+                }
+            } else
+            {
+                for(int i = 0; i < currentScore.Length; i++)
+                {
+                    currentScore[i] = 0;
+                }
+            }
+
+            read.Close();
+        } else
+        {
+            File.Create(path);
+        }
+    }
+
+    public void saveScore()
+    {
+        //Attempt to find and load the last saved score.
+        string path = "PlayerScore.txt";
+
+        path = Path.Combine(Application.persistentDataPath, path);
+
+        if (!File.Exists(path))
+        {
+            File.Create(path);
+        }
+
+        StreamWriter wr = new StreamWriter(path, false);
+
+        for (int i = 0; i < currentScore.Length; i++)
+        {
+            //Write on line.
+            wr.Write(currentScore[i].ToString());
+
+            //If not the end of current score, add a ':'.
+            if (i < currentScore.Length - 1)
+            {
+                wr.Write(":");
+            }
+        }
+
+        wr.Close();
+
     }
 }

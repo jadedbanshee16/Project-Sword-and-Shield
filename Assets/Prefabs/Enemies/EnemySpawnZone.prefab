@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5451872651624772023}
   - component: {fileID: -6755448826222541364}
   m_Layer: 0
-  m_Name: EnemyWaypoint
+  m_Name: EnemySpawnZone
   m_TagString: Waypoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: 7381902783854036333, guid: a2c9f26e74b025248a6ab9868996a4e3, type: 3}
+  - {fileID: 727763001915298273, guid: c84bea8dace9eda4792b1d69435cf82d, type: 3}
   island: 0
-  triggered: 1
+  triggered: 0
 --- !u!114 &-6755448826222541364
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,9 @@ public class ExitScript : MonoBehaviour
 
     private bool isOpen = true;
 
+    [SerializeField]
+    private bool isExitDoor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,9 +35,18 @@ public class ExitScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && isOpen)
         {
-            gameManager_.setFading(true, 0.5F);
-            gameManager_.setplayerStop_Dead(true, false);
-            playDoorAudio();
+            if (!isExitDoor)
+            {
+                gameManager_.setFading(true, 0.5F);
+                gameManager_.setplayerStop_Dead(true, false);
+                playDoorAudio();
+            } else
+            {
+                //GameManager quit function.
+                Debug.Log("Quit");
+                gameManager_.quitGame();
+            }
+
         }
     }
 
