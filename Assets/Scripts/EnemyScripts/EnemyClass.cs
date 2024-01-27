@@ -128,6 +128,7 @@ public class EnemyClass : MonoBehaviour
         currentTargetLocation = Vector3.zero;
         _currentPath = new NavMeshPath();
         currentCorner = 0;
+        waitTimer = 0;
         //_agent.SetDestination(transform.position);
         //_agent.speed = speed;
         //_agent.angularSpeed = angularSpeed;
@@ -279,7 +280,9 @@ public class EnemyClass : MonoBehaviour
             }
             else if (currentState == enemyStates.dying)
             {
+                detectLight.color = alarmCol;
                 changedTargetLocation = transform.position;
+                rotateTo(transform.forward);
             }
         } else
         {
@@ -469,12 +472,15 @@ public class EnemyClass : MonoBehaviour
             currentState = enemyStates.dying;
             _rig.velocity = Vector3.zero;
             _anim.SetTrigger("Die");
+        } else
+        {
+            currentState = enemyStates.attackedPlayer;
         }
 
         _playerStats.deductStamina(cost);
 
         //Set the chase.
-        currentState = enemyStates.chasingPlayer;
+        //
     }
 
     public void setPlayerFound()

@@ -47,8 +47,8 @@ MonoBehaviour:
   type: 0
   idName: GhostSword01
   inventoryImage: {fileID: 21300000, guid: a19d649f2f9460c4184039cc178e611a, type: 3}
-  cooldown: 0.5
-  cost: 5
+  cooldown: 0
+  cost: 25
   ghostRange: 0.4
   damage: 25
   stun: 0
